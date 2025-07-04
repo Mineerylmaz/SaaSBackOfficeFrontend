@@ -11,3 +11,54 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+  --e-global-color-primary: #6EC1E4;
+  --e-global-color-secondary: #54595F;
+  --e-global-color-text: #00010D;
+  --e-global-color-accent: #61CE70;
+  --e-global-color-eb15a12: #254D9C;
+  --e-global-color-65fcc69: #227BBF;
+  --e-global-color-1d83210: #262626;
+  --e-global-color-48d439c: #00010D;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(135deg,
+      var(--e-global-color-primary),
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+  min-height: 100vh;
+  color: var(--e-global-color-text);
+}
+
+.navbar-custom {
+  background: linear-gradient(135deg,
+      var(--e-global-color-primary),
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+}
+
+.navbar-custom .nav-link,
+.navbar-custom .navbar-brand {
+  color: var(--e-global-color-48d439c);
+  font-weight: 500;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .navbar-brand:hover {
+  color: var(--e-global-color-accent);
+  text-decoration: none;
+}
+
+
+.admin {
+  margin: 0;
+  background: linear-gradient(135deg,
+      var(--e-global-color-primary),
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+  min-height: 100vh;
+  color: var(--e-global-color-text);
+}

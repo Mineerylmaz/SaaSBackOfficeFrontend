@@ -1,21 +1,21 @@
-
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
     email: '',
     password: '',
-
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.placeholder.toLowerCase()]: e.target.value });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,13 +28,14 @@ const Register = () => {
           firstname: formData.firstname,
           lastname: formData.lastname,
           email: formData.email,
-          password: formData.password
+          password: formData.password,
         }),
       });
 
       if (res.ok) {
-        alert('Kullanıcı başarıyla eklendi');
+
         setFormData({ firstname: '', lastname: '', email: '', password: '' });
+        navigate('/home');
       } else {
         const data = await res.json();
         alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
@@ -43,7 +44,6 @@ const Register = () => {
       alert('Sunucu hatası: ' + error.message);
     }
   };
-
 
   return (
     <StyledWrapper>
@@ -62,7 +62,6 @@ const Register = () => {
                   onChange={handleChange}
                   required
                 />
-
               </label>
               <label>
                 <input
@@ -73,7 +72,6 @@ const Register = () => {
                   onChange={handleChange}
                   required
                 />
-
               </label>
             </div>
             <label>
@@ -85,7 +83,6 @@ const Register = () => {
                 onChange={handleChange}
                 required
               />
-
             </label>
             <label>
               <input
@@ -96,7 +93,6 @@ const Register = () => {
                 onChange={handleChange}
                 required
               />
-
             </label>
 
             <button className="submit" type="submit">Submit</button>
@@ -109,9 +105,6 @@ const Register = () => {
     </StyledWrapper>
   );
 };
-
-
-
 
 const StyledWrapper = styled.div`
   height: 100vh;
@@ -135,6 +128,21 @@ const StyledWrapper = styled.div`
     transform: scale(0.98);
     border-radius: 20px;
   }
+    .input{
+
+      display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    border-radius: 25px;
+    
+    margin:10px;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: #171717;
+    box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+    }
 
   .card:hover {
     box-shadow: 0px 0px 30px 1px rgba(0, 255, 117, 0.30);
@@ -142,9 +150,9 @@ const StyledWrapper = styled.div`
   .form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-width: 350px;
-    padding: 20px;
+    gap: 18px; 
+    max-width: 400px;
+    padding: 60px; 
     border-radius: 20px;
     position: relative;
     background-color: #171717;
@@ -152,6 +160,12 @@ const StyledWrapper = styled.div`
     border: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
     border-radius: 22px;
     transition: all .3s;
+    
+  padding-left: 40px;   
+  padding-right: 40px;  
+  padding-top: 60px;
+  padding-bottom: 60px;
+
   }
 
   .title {
@@ -208,8 +222,13 @@ const StyledWrapper = styled.div`
   .flex {
     display: flex;
     width: 100%;
-    gap: 6px;
+    gap: 66px; 
+    
   }
+    
+.flex label {
+  flex: 1;  
+}
 
   .form label {
     position: relative;
@@ -219,10 +238,12 @@ const StyledWrapper = styled.div`
     background-color: #333;
     color: #fff;
     width: 100%;
-    padding: 20px 05px 05px 10px;
+    padding: 25px 0px 10px 2px;
+    font-size: 16px; 
     outline: 0;
     border: 1px solid rgba(105, 105, 105, 0.397);
-    border-radius: 10px;
+    border-radius: 12px; 
+    width:100%;
   }
 
   .form label .input + span {
@@ -252,12 +273,13 @@ const StyledWrapper = styled.div`
   .submit {
     border: none;
     outline: none;
-    padding: 10px;
-    border-radius: 10px;
+    padding: 14px;
+    border-radius: 12px;
     color: #fff;
-    font-size: 16px;
+    font-size: 18px;
     transform: .3s ease;
     background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
+    cursor: pointer;
   }
 
   .submit:hover {
@@ -275,6 +297,7 @@ const StyledWrapper = styled.div`
       transform: scale(1.8);
       opacity: 0;
     }
-  }`;
+  }
+`;
 
 export default Register;

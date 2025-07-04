@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.placeholder.toLowerCase()]: e.target.value });
@@ -17,7 +16,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch('http://localhost:5000/api/login', {
+      const res = await fetch('http://localhost:5000/api/login/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -26,16 +25,31 @@ const Login = () => {
         }),
       });
 
+
       if (res.ok) {
         const data = await res.json();
 
 
-        document.cookie = `user=${encodeURIComponent(JSON.stringify({ userId: data.userId, email: data.email }))}; path=/; max-age=86400`;
+        localStorage.setItem(
+          'user',
+          JSON.stringify({
+            id: data.userId,
+            email: data.email,
+            role: data.role,
+          })
+        );
 
-        alert('Giriş başarılı!');
-        navigate('/pricing');
-      }
-      else {
+        document.cookie = `user=${encodeURIComponent(
+          JSON.stringify({ userId: data.userId, email: data.email })
+        )}; path=/; max-age=86400`;
+
+
+
+
+        localStorage.setItem('user', JSON.stringify(data));
+
+        navigate('/odeme');
+      } else {
         const data = await res.json();
         alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
       }
@@ -44,7 +58,6 @@ const Login = () => {
     }
   };
 
-
   return (
     <StyledWrapper>
       <div className="card">
@@ -52,7 +65,6 @@ const Login = () => {
           <form className="form" onSubmit={handleSubmit}>
             <p id="heading">Login</p>
             <div className="field">
-
               <input
                 type="email"
                 className="input-field"
@@ -64,7 +76,6 @@ const Login = () => {
               />
             </div>
             <div className="field">
-
               <input
                 type="password"
                 className="input-field"
@@ -75,16 +86,24 @@ const Login = () => {
               />
             </div>
             <div className="btn">
-              <button type="submit" className="button1">Login</button>
-              <Link to="/register" className="button2">Register</Link>
+              <button type="submit" className="button1">
+                Login
+              </button>
+              <Link to="/register" className="button2">
+                Register
+              </Link>
             </div>
-            <Link to="/forgotp" className="button3">Forgot Password</Link>
+            <Link to="/forgotp" className="button3">
+              Forgot Password
+            </Link>
           </form>
         </div>
       </div>
     </StyledWrapper>
   );
 };
+
+
 
 const StyledWrapper = styled.div`
   height: 100vh;
@@ -97,11 +116,14 @@ const StyledWrapper = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding-left: 2em;
-    padding-right: 2em;
-    padding-bottom: 0.4em;
+    
     background-color: #171717;
     border-radius: 20px;
+     gap: 15px;
+  padding-left: 3em;
+  padding-right: 3em;
+  padding-bottom: 1em;
+  width: 350px;
 
   }
 
@@ -138,6 +160,9 @@ const StyledWrapper = styled.div`
     outline: none;
     width: 100%;
     color: rgb(0, 255, 200);
+    padding: 12px 10px;
+  font-size: 1.1rem;
+  border-radius: 10px;
   }
 
   .form .btn {
@@ -222,9 +247,22 @@ const StyledWrapper = styled.div`
     transform: scale(0.98);
     border-radius: 20px;
   }
+    .button1, .button2 {
+  padding: 0.7em 3em;
+  margin:8px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+}
+  input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px #cce7ff inset; 
+  -webkit-text-fill-color: #000; 
+  transition: background-color 5000s ease-in-out 0s; 
+}
+
 
   .card:hover {
     box-shadow: 0px 0px 30px 1px rgba(0, 255, 117, 0.30);
   }`;
+
 
 export default Login;
