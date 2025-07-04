@@ -14,13 +14,13 @@ code {
 
 :root {
   --e-global-color-primary: #6EC1E4;
-  --e-global-color-secondary: #54595F;
-  --e-global-color-text: #00010D;
-  --e-global-color-accent: #61CE70;
-  --e-global-color-eb15a12: #254D9C;
-  --e-global-color-65fcc69: #227BBF;
+  --e-global-color-secondary: #98b1c8;
+  --e-global-color-text: #071f35;
+  --e-global-color-accent: #071f35;
+  --e-global-color-eb15a12: #24496b;
+  --e-global-color-65fcc69: #446d92;
   --e-global-color-1d83210: #262626;
-  --e-global-color-48d439c: #00010D;
+  --e-global-color-48d439c: #071f35;
 }
 
 body {
@@ -42,7 +42,7 @@ body {
 
 .navbar-custom .nav-link,
 .navbar-custom .navbar-brand {
-  color: var(--e-global-color-48d439c);
+  color: var(--e-global-color-text);
   font-weight: 500;
 }
 

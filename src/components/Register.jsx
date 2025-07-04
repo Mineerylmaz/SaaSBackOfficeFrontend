@@ -13,8 +13,9 @@ const Register = () => {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.placeholder.toLowerCase()]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
 
 
   const handleSubmit = async (e) => {
@@ -55,6 +56,7 @@ const Register = () => {
             <div className="flex">
               <label>
                 <input
+                  name='firstname'
                   className="input"
                   type="text"
                   placeholder="Firstname"
@@ -65,6 +67,7 @@ const Register = () => {
               </label>
               <label>
                 <input
+                  name='lastname'
                   className="input"
                   type="text"
                   placeholder="Lastname"
@@ -76,6 +79,7 @@ const Register = () => {
             </div>
             <label>
               <input
+                name='email'
                 className="input"
                 type="email"
                 placeholder="Email"
@@ -86,6 +90,7 @@ const Register = () => {
             </label>
             <label>
               <input
+                name='password'
                 className="input"
                 type="password"
                 placeholder="Password"
@@ -114,7 +119,7 @@ const StyledWrapper = styled.div`
   align-items: center;
  
   .card {
-    background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
+    background-image: linear-gradient(163deg, #98b1c8 0%, #3700ff 100%);
     border-radius: 22px;
     transition: all .3s;
   }
@@ -278,12 +283,14 @@ const StyledWrapper = styled.div`
     color: #fff;
     font-size: 18px;
     transform: .3s ease;
-    background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
+    
+      background-image: linear-gradient(163deg, #446d92 0%, #13034b 100%);
     cursor: pointer;
   }
 
   .submit:hover {
-     background-image: linear-gradient(163deg, #00642f 0%, #13034b 100%);
+      background-image: linear-gradient(163deg, #446d92 0%, #13034b 100%);
+       background-image: linear-gradient(163deg, #98b1c8 0%, #3700ff 100%);
     color: rgb(0, 255, 200);
   }
 

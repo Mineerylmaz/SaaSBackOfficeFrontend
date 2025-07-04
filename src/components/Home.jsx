@@ -5,60 +5,58 @@ import Navbars from './Navbars';
 import styled from 'styled-components';
 
 export default function Home() {
-    return (
-        <StyledWrapper>
-            <div className='home'>
-                <Navbars>
-
-                </Navbars>
+  return (
+    <StyledWrapper>
+      <div className='home'>
 
 
 
-                <div style={{ textAlign: 'center', marginTop: '5rem' }}>
-                    <h1>Hoşgeldiniz!</h1>
-                    <div className='road'>
-                        <div className='cloud1'></div>
-                        <div className='cloud2'></div>
-                        <div className='cloud3'></div>
-                        <div className='cloud4'></div>
-                        <div className='line'></div>
-                        <div className='tree'></div>
-                        <div className='bus'>
-                            <div className='up1'></div>
-                            <div className='up2'></div>
-                            <div className='up3'></div>
-                            <div className='win1'></div>
-                            <div className='win2'></div>
-                            <div className='win3'></div>
-                            <div className='win4'></div>
-                            <div className='whell1'></div>
-                            <div className='whell2'></div>
-                            <div className='whell3'></div>
-                            <div className='whell4'></div>
-                            <div className='fuel'></div>
-                            <div className='light'></div>
-                            <div className='foggy'></div>
 
-                        </div>
-                    </div>
+        <div style={{ textAlign: 'center', marginTop: '5rem' }}>
+          <h1>Hoşgeldiniz!</h1>
+          <div className='road'>
+            <div className='cloud1'></div>
+            <div className='cloud2'></div>
+            <div className='cloud3'></div>
+            <div className='cloud4'></div>
+            <div className='line'></div>
+            <div className='tree'></div>
+            <div className='bus'>
+              <div className='up1'></div>
+              <div className='up2'></div>
+              <div className='up3'></div>
+              <div className='win1'></div>
+              <div className='win2'></div>
+              <div className='win3'></div>
+              <div className='win4'></div>
+              <div className='whell1'></div>
+              <div className='whell2'></div>
+              <div className='whell3'></div>
+              <div className='whell4'></div>
+              <div className='fuel'></div>
+              <div className='light'></div>
+              <div className='foggy'></div>
 
-                </div>
             </div>
-        </StyledWrapper>
-    );
+          </div>
+
+        </div>
+      </div>
+    </StyledWrapper>
+  );
 }
 
 const StyledWrapper = styled.div`
 }
 .road {
-  position: fixed;   /* Veya absolute */
-  bottom: 0;          /* Ekranın altına yaslanır */
+  position: fixed;   
+  bottom: 0;        
   left: 0;
-  width: 100%;        /* Tam genişlik */
-  height: 80px;       /* Mevcut yükseklik */
+  width: 100%;       
+  height: 80px;       
   background-color: gray;
   border-radius: 2px;
-  z-index: 10;        /* Üste gelsin, altta kalmasın */
+  z-index: 10;        
 }
 
 
