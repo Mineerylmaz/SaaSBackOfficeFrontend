@@ -9,7 +9,7 @@ const Login = ({ setUser }) => {
 
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.placeholder.toLowerCase()]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -28,15 +28,30 @@ const Login = ({ setUser }) => {
       if (res.ok) {
         const data = await res.json();
 
-        const { token, id, email, role } = data;
+        const { token, id, email, role, plan } = data;
+
 
         if (token) {
           localStorage.setItem('token', token);
           localStorage.setItem('user', JSON.stringify({ id, email, role }));
+          localStorage.setItem('userId', id);
 
-          setUser({ id, email, role });
+          localStorage.setItem('selectedPlan', JSON.stringify(plan));
 
-          navigate('/odeme');
+          setUser({ id, email, role, plan });
+
+
+
+
+
+          const selectedPlan = JSON.parse(localStorage.getItem('selectedPlan'));
+
+          if (selectedPlan) {
+            navigate('/odeme');
+          } else {
+            navigate('/');
+          }
+
         } else {
           alert('Sunucudan geçerli bir token gelmedi!');
         }
@@ -50,6 +65,7 @@ const Login = ({ setUser }) => {
   }
 
 
+
   return (
     <StyledWrapper>
       <div className="card">
@@ -58,28 +74,31 @@ const Login = ({ setUser }) => {
             <p id="heading">Login</p>
             <div className="field">
               <input
-                name='email'
-                id='email'
+                autoComplete="email"
+                name="email"
+                id="email"
                 type="email"
+                placeholder='Email'
                 className="input-field"
-                placeholder="Email"
-                autoComplete="off"
                 value={formData.email}
                 onChange={handleChange}
                 required
               />
+
             </div>
             <div className="field">
               <input
-                name='password'
-                id='password'
+                name="password"
+                id="password"
                 type="password"
+                autoComplete="current-password"
                 className="input-field"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
+
             </div>
             <div className="btn">
               <button type="submit" className="button1">

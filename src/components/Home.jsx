@@ -4,16 +4,25 @@ import { Link } from 'react-router-dom';
 import Navbars from './Navbars';
 import styled from 'styled-components';
 
+
 export default function Home() {
   return (
     <StyledWrapper>
+
       <div className='home'>
 
 
-
-
+        <HeroSection>
+          <HeroTitle>Akıllı Transit Çözümleriyle Yolunuzu Kolaylaştırın</HeroTitle>
+          <HeroSubtitle>
+            Global açık veri platformu ile otobüs, tren ve diğer toplu taşıma hatlarınızı yönetin.
+          </HeroSubtitle>
+          <Link to="/pricing">
+            <HeroButton>Planları İncele</HeroButton>
+          </Link>
+        </HeroSection>
         <div style={{ textAlign: 'center', marginTop: '5rem' }}>
-          <h1>Hoşgeldiniz!</h1>
+
           <div className='road'>
             <div className='cloud1'></div>
             <div className='cloud2'></div>
@@ -41,23 +50,137 @@ export default function Home() {
           </div>
 
         </div>
+
+        <FeaturesSection id="features">
+          <SectionTitle>Özelliklerimiz</SectionTitle>
+          <FeaturesGrid>
+            <FeatureCard>
+              <FeatureIcon>🚍</FeatureIcon>
+              <FeatureTitle>Gerçek Zamanlı Otobüs Takibi</FeatureTitle>
+              <FeatureDesc>Güncel konum ve tahmini varış süreleri.</FeatureDesc>
+            </FeatureCard>
+
+            <FeatureCard>
+              <FeatureIcon>🗺️</FeatureIcon>
+              <FeatureTitle>Kapsamlı Harita Desteği</FeatureTitle>
+              <FeatureDesc>Duraklar ve güzergahlar interaktif haritalarda.</FeatureDesc>
+            </FeatureCard>
+
+            <FeatureCard>
+              <FeatureIcon>📊</FeatureIcon>
+              <FeatureTitle>Detaylı Raporlama</FeatureTitle>
+              <FeatureDesc>Performans ve kullanım analitiği.</FeatureDesc>
+            </FeatureCard>
+
+            <FeatureCard>
+              <FeatureIcon>🔗</FeatureIcon>
+              <FeatureTitle>Kolay API Entegrasyonu</FeatureTitle>
+              <FeatureDesc>Mevcut sistemlerinize hızlı bağlanın.</FeatureDesc>
+            </FeatureCard>
+          </FeaturesGrid>
+        </FeaturesSection>
+
+
       </div>
     </StyledWrapper>
   );
 }
 
+const HeroSection = styled.section`
+  padding: 8rem 3rem 5rem;
+ 
+  
+  color: var(--e-global-color-text);
+
+  text-align: center;
+`;
+
+const HeroTitle = styled.h1`
+  font-size: 3rem;
+  margin-bottom: 1rem;
+`;
+
+const HeroSubtitle = styled.p`
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+`;
+
+const HeroButton = styled.a`
+  background: white;
+  color: #0a9396;
+  padding: 0.8rem 2rem;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #98b1c8;
+    color: white;
+  }
+`;
+
+const FeaturesSection = styled.section`
+  padding: 5rem 3rem;
+   background: linear-gradient(135deg,
+      var(--e-global-color-primary),
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+  
+  color: var(--e-global-color-text);
+  text-align: center;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 2.25rem;
+  margin-bottom: 3rem;
+`;
+
+const FeaturesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 2rem;
+`;
+
+const FeatureCard = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+  transition: transform 0.2s ease;
+  cursor: default;
+
+  &:hover {
+    transform: translateY(-8px);
+  }
+`;
+
+const FeatureIcon = styled.div`
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+`;
+
+const FeatureTitle = styled.h3`
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+`;
+
+const FeatureDesc = styled.p`
+  font-size: 1rem;
+  color: #555;
+`;
 const StyledWrapper = styled.div`
 }
 .road {
-  position: fixed;   
-  bottom: 0;        
-  left: 0;
-  width: 100%;       
-  height: 80px;       
+  position: relative; /* fixed yerine */
+  width: 100%;
+  height: 80px;
   background-color: gray;
-  border-radius: 2px;
-  z-index: 10;        
+  margin-top: 2rem;
+  z-index: 10;
 }
+
 
 
 /*.tree{
@@ -277,6 +400,7 @@ const StyledWrapper = styled.div`
 
 
 }
+  
 
 .cloud1{
   width:100px;

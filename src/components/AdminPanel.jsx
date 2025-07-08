@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { FaUsers, FaDollarSign, FaCogs, FaFileInvoiceDollar } from 'react-icons/fa';
+import AddUserModal from './AddUserModal';
+import Swal from 'sweetalert2';
+import UserDataGrid from './UserDataGrid';
+import Silbuton from './Silbuton';
+
 
 const AdminPanel = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -13,16 +18,45 @@ const AdminPanel = () => {
     const [password, setPassword] = useState('');
     const [credits, setCredits] = useState(0);
     const [role, setRole] = useState('user');
+    const [newPlanRTLimit, setNewPlanRTLimit] = useState(0);
+    const [newPlanStaticLimit, setNewPlanStaticLimit] = useState(0);
 
 
     const [newPlanName, setNewPlanName] = useState('');
     const [newPlanPrice, setNewPlanPrice] = useState('');
     const [newPlanFeaturesText, setNewPlanFeaturesText] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [showNewPlanForm, setShowNewPlanForm] = React.useState(false);
+
 
     const admin = {
         name: 'Admin User',
         role: 'Super Admin',
         avatar: 'https://i.pravatar.cc/100'
+    };
+    const deletePlan = (planIndex) => {
+        Swal.fire({
+            title: 'Planı silmek istediğinize emin misiniz?',
+            text: "Bu işlem geri alınamaz!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const newPricing = [...pricing];
+                newPricing.splice(planIndex, 1);
+                setPricing(newPricing);
+
+                Swal.fire(
+                    'Silindi!',
+                    'Plan başarıyla silindi.',
+                    'success'
+                );
+            }
+        });
     };
 
     useEffect(() => {
@@ -54,52 +88,15 @@ const AdminPanel = () => {
     const totalUsers = users.length;
     const totalCredits = users.reduce((sum, user) => sum + (user.credits || 0), 0);
 
-    const [deletedUsers, setDeletedUsers] = useState([]);
-    const [showDeleted, setShowDeleted] = useState(false);
 
-    const UserTable = ({ users, onDelete }) => (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', color: '#071f35' }}>
-            <thead>
-                <tr style={{ borderBottom: '2px solid #071f35' }}>
-                    <th style={tableHeaderCell}>ID</th>
-                    <th style={tableHeaderCell}>Email</th>
-                    <th style={tableHeaderCell}>Plan</th>
-                    <th style={tableHeaderCell}>Last Login</th>
-                    <th style={tableHeaderCell}>Created At</th>
-                    <th style={tableHeaderCell}>Sil</th>
-                </tr>
-            </thead>
-            <tbody>
-                {users.map(user => (
-                    <tr key={user.id} style={{ borderBottom: '1px solid #071f35' }}>
-                        <td style={tableCell}>{user.id}</td>
-                        <td style={tableCell}>{user.email}</td>
-                        <td style={tableCell}>{user.plan || '-'}</td>
-                        <td style={tableCell}>{formatDate(user.last_login)}</td>
-                        <td style={tableCell}>{formatDate(user.created_at)}</td>
-                        <td style={tableCell}>
-                            {onDelete ? (
-                                <button
-                                    onClick={() => onDelete(user.id)}
-                                    style={{ cursor: 'pointer', background: 'red', color: 'white', border: 'none', borderRadius: '4px', padding: '4px 8px' }}
-                                >
-                                    ×
-                                </button>
-                            ) : (
-                                '-'
-                            )}
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    );
+
 
     const fetchUsers = () => {
         setLoadingUsers(true);
         fetch('http://localhost:5000/api/adminpanel/list-users')
             .then(res => res.json())
             .then(data => {
+                console.log("Fetched users after delete:", data);
                 setUsers(data);
                 setLoadingUsers(false);
             })
@@ -109,18 +106,7 @@ const AdminPanel = () => {
             });
     };
 
-    const fetchDeletedUsers = () => {
-        fetch('http://localhost:5000/api/adminpanel/deleted-users')
-            .then(res => res.json())
-            .then(data => {
-                setDeletedUsers(data);
-                setShowDeleted(true);
-            })
-            .catch(err => {
-                console.error(err);
-                alert('Silinen kullanıcılar alınamadı');
-            });
-    };
+
 
 
     const handleAddUser = async (e) => {
@@ -155,7 +141,11 @@ const AdminPanel = () => {
 
     const handlePricingChange = (planIndex, field, value) => {
         const newPricing = [...pricing];
-        if (field === 'features_bulk') {
+        if (field === 'rt_url_limit' || field === 'static_url_limit') {
+            newPricing[planIndex][field] = Number(value);
+        }
+
+        else if (field === 'features_bulk') {
             newPricing[planIndex].features = value
                 .split('\n')
                 .map(f => f.trim())
@@ -167,6 +157,7 @@ const AdminPanel = () => {
                 newPricing[planIndex][field] = value;
             }
         }
+
         setPricing(newPricing);
     };
 
@@ -206,7 +197,10 @@ const AdminPanel = () => {
             name: newPlanName.trim(),
             price: Number(newPlanPrice) || 0,
             features: featuresArray,
+            rt_url_limit: Number(newPlanRTLimit),
+            static_url_limit: Number(newPlanStaticLimit),
         };
+
 
         setPricing(prev => [...prev, newPlan]);
 
@@ -216,11 +210,11 @@ const AdminPanel = () => {
     };
 
     const savePricing = () => {
+        console.log('SAVE PRICING GÖNDERİLEN:', pricing);
+
         fetch('http://localhost:5000/api/pricing', {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(pricing),
         })
             .then(res => {
@@ -228,244 +222,417 @@ const AdminPanel = () => {
                 return res.json();
             })
             .then(data => {
+                console.log('BACKENDTEN DÖNEN:', data);
                 setPricing(data);
                 alert('Fiyatlar başarıyla güncellendi!');
             })
             .catch(err => alert(err.message));
     };
-    const deleteUser = (userId) => {
-        fetch(`http://localhost:5000/api/adminpanel/delete-user/${userId}`, {
-            method: 'DELETE',
-        })
-            .then(res => {
-                if (!res.ok) throw new Error('Silme işlemi başarısız');
-                return res.json();
-            })
-            .then(data => {
-                alert(data.message);
 
-                fetchUsers();
-            })
-            .catch(err => alert(err.message));
-    };
+
 
 
 
 
     return (
-        <div className='admin' style={{ display: 'flex', height: '100vh', fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
+        <div
+            className="admin"
+            style={{
+                display: "flex",
+                height: "100vh",
+                fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            }}
+        >
             <nav style={sidebarStyle}>
                 <div style={adminCardStyle}>
                     <img src={admin.avatar} alt="avatar" style={avatarStyle} />
                     <div>
-                        <h3 style={{ margin: '0', color: '#d1eaff' }}>{admin.name}</h3>
-                        <p style={{ margin: '0', color: '#227BBF' }}>{admin.role}</p>
+                        <h3 style={{ margin: "0", color: "#d1eaff" }}>{admin.name}</h3>
+                        <p style={{ margin: "0", color: "#227BBF" }}>{admin.role}</p>
                     </div>
                 </div>
 
-                <MenuItem icon={<FaUsers />} text="Dashboard" active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
-                <MenuItem icon={<FaUsers />} text="Kullanıcılar" active={activeTab === 'users'} onClick={() => setActiveTab('users')} />
-                <MenuItem icon={<FaFileInvoiceDollar />} text="Fiyatları Kontrol Et" active={activeTab === 'pricing'} onClick={() => setActiveTab('pricing')} />
-                <MenuItem icon={<FaCogs />} text="Ayarlar" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
+                <MenuItem
+                    icon={<FaUsers />}
+                    text="Dashboard"
+                    active={activeTab === "dashboard"}
+                    onClick={() => setActiveTab("dashboard")}
+                />
+                <MenuItem
+                    icon={<FaUsers />}
+                    text="Kullanıcılar"
+                    active={activeTab === "users"}
+                    onClick={() => setActiveTab("users")}
+                />
+                <MenuItem
+                    icon={<FaFileInvoiceDollar />}
+                    text="Fiyatları Kontrol Et"
+                    active={activeTab === "pricing"}
+                    onClick={() => setActiveTab("pricing")}
+                />
+                <MenuItem
+                    icon={<FaCogs />}
+                    text="Ayarlar"
+                    active={activeTab === "settings"}
+                    onClick={() => setActiveTab("settings")}
+                />
             </nav>
 
-            <main style={{ flexGrow: 1, padding: '2rem', overflowY: 'auto' }}>
+            <main style={{ flexGrow: 1, padding: "2rem", overflowY: "auto" }}>
                 {(loadingUsers || loadingPricing) ? (
                     <p>Yükleniyor...</p>
                 ) : (
                     <>
-                        {activeTab === 'dashboard' && (
+                        {activeTab === "dashboard" && (
                             <>
-                                <h1 style={{ color: '#071f35' }}>Dashboard</h1>
+                                <h1 style={{ color: "#071f35" }}>Dashboard</h1>
                                 <div style={cardsContainerStyle}>
-                                    <DashboardCard icon={<FaUsers color="#227BBF" />} title="Toplam Kullanıcı" value={totalUsers} />
-                                    <DashboardCard icon={<FaDollarSign color="#227BBF" />} title="Toplam Kredi" value={totalCredits} />
-                                    {pricing.map(plan => (
-                                        <DashboardCard
-                                            key={plan.id}
-                                            icon={<FaDollarSign color="#227BBF" />}
-                                            title={plan.name}
-                                            value={`$${plan.price}`}
-                                        />
-                                    ))}
+                                    <DashboardCard
+                                        icon={<FaUsers color="#227BBF" />}
+                                        title="Toplam Kullanıcı"
+                                        value={totalUsers}
+                                    />
+                                    <DashboardCard
+                                        icon={<FaDollarSign color="#227BBF" />}
+                                        title="Toplam Kredi"
+                                        value={totalCredits}
+                                    />
                                 </div>
                             </>
                         )}
 
-                        {activeTab === 'users' && (
+                        {activeTab === "users" && (
                             <>
-                                <h1 style={{ color: '#071f35' }}>Kullanıcı Ekle</h1>
-                                <form onSubmit={handleAddUser} style={{ marginBottom: '2rem' }}>
-                                    <input
-                                        type="email"
-                                        placeholder="E-posta"
-                                        value={email}
-                                        onChange={e => setEmail(e.target.value)}
-                                        required
-                                        style={{ marginRight: '10px' }}
-                                    />
-                                    <input
-                                        type="password"
-                                        placeholder="Şifre"
-                                        value={password}
-                                        onChange={e => setPassword(e.target.value)}
-                                        required
-                                        style={{ marginRight: '10px' }}
-                                    />
-                                    <input
-                                        type="number"
-                                        placeholder="Kredi"
-                                        value={credits}
-                                        onChange={e => setCredits(Number(e.target.value))}
-                                        style={{ marginRight: '10px', width: '80px' }}
-                                    />
-                                    <select value={role} onChange={e => setRole(e.target.value)} style={{ marginRight: '10px' }}>
-                                        <option value="user">Kullanıcı</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                    <button type="submit">Ekle</button>
-                                </form>
+                                <button
+                                    onClick={() => setModalOpen(true)}
+                                    style={{
+                                        fontSize: "18px",
+                                        padding: "8px 16px",
+                                        marginBottom: "1rem",
+                                        backgroundColor: "#446d92",
+                                        color: "#fff",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    + Kullanıcı Ekle
+                                </button>
 
-                                <h1 style={{ color: '#071f35' }}>Kullanıcı Listesi</h1>
+                                <AddUserModal
+                                    visible={modalOpen}
+                                    onClose={() => setModalOpen(false)}
+                                    email={email}
+                                    setEmail={setEmail}
+                                    password={password}
+                                    setPassword={setPassword}
+                                    credits={credits}
+                                    setCredits={setCredits}
+                                    role={role}
+                                    setRole={setRole}
+                                    handleAddUser={handleAddUser}
+                                />
+
+                                <h1 style={{ color: "#071f35" }}>Kullanıcı Listesi</h1>
                                 {loadingUsers ? (
                                     <p>Yükleniyor...</p>
                                 ) : (
-                                    <UserTable users={users} onDelete={deleteUser} />
-                                )}
-
-                                <button
-                                    onClick={fetchDeletedUsers}
-                                    style={{ marginTop: '1rem', padding: '8px 12px', cursor: 'pointer' }}
-                                >
-                                    Silinenleri Göster
-                                </button>
-
-                                {showDeleted && (
-                                    <div style={{ marginTop: '2rem' }}>
-                                        <h2 style={{ color: '#071f35' }}>Silinen Kullanıcılar</h2>
-                                        <UserTable users={deletedUsers} />
-                                    </div>
+                                    <UserDataGrid users={users} fetchUsers={fetchUsers} />
                                 )}
                             </>
                         )}
 
-
-
-                        {activeTab === 'pricing' && (
+                        {activeTab === "pricing" && (
                             <div>
-                                <h1 style={{ color: '#071f35' }}>Fiyatları Kontrol Et</h1>
-                                {pricing.map((plan, index) => (
-                                    <div key={plan.id} style={{ marginBottom: '25px', paddingBottom: '10px', borderBottom: '1px solid #3ec6ff' }}>
-                                        <label style={{ color: '#071f35' }}>
-                                            Plan Adı:{' '}
-                                            <input
-                                                type="text"
-                                                value={plan.name}
-                                                onChange={e => handlePricingChange(index, 'name', e.target.value)}
-                                                style={inputStyle}
-                                            />
-                                        </label>
-                                        <label style={{ marginLeft: '20px', color: '#071f35' }}>
-                                            Fiyat:{' '}
-                                            <input
-                                                type="number"
-                                                value={plan.price}
-                                                onChange={e => handlePricingChange(index, 'price', e.target.value)}
-                                                style={{ ...inputStyle, width: '80px' }}
-                                            />
-                                        </label>
+                                <button
+                                    onClick={() => setShowNewPlanForm(true)}
+                                    style={{
+                                        fontSize: "18px",
+                                        padding: "8px 16px",
+                                        marginBottom: "1rem",
+                                        backgroundColor: "#446d92",
+                                        color: "#fff",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    + Yeni Plan Ekle
+                                </button>
 
-                                        <div>
-                                            <label style={{ marginTop: '10px', color: '#071f35', display: 'block' }}>
-                                                Özellik Ekle:
-                                            </label>
-                                            <div style={{ display: 'flex', marginBottom: '10px' }}>
+                                <h1 style={{ color: "#071f35", marginBottom: "1.5rem" }}>
+                                    Fiyatları Kontrol Et
+                                </h1>
+
+                                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                                    {pricing.map((plan, index) => (
+                                        <div
+                                            key={plan.id}
+                                            style={{
+                                                backgroundColor: "#446d92",
+                                                padding: "1.5rem 2rem",
+                                                borderRadius: "12px",
+                                                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                                border: "1px solid #cce4ff",
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: "1.5rem",
+                                                    flexWrap: "wrap",
+                                                }}
+                                            >
+                                                <label
+                                                    style={{
+                                                        flex: "1 1 200px",
+                                                        color: "#071f35",
+                                                        fontWeight: "600",
+                                                    }}
+                                                >
+                                                    Plan Adı:
+                                                    <input
+                                                        type="text"
+                                                        value={plan.name}
+                                                        onChange={(e) =>
+                                                            handlePricingChange(index, "name", e.target.value)
+                                                        }
+                                                        style={{
+                                                            ...inputStyle,
+                                                            width: "100%",
+                                                            marginTop: "0.25rem",
+                                                        }}
+                                                    />
+                                                </label>
+
+                                                <label
+                                                    style={{
+                                                        flex: "0 0 120px",
+                                                        color: "#071f35",
+                                                        fontWeight: "600",
+                                                    }}
+                                                >
+                                                    Fiyat:
+                                                    <input
+                                                        type="number"
+                                                        value={plan.price}
+                                                        onChange={(e) =>
+                                                            handlePricingChange(index, "price", e.target.value)
+                                                        }
+                                                        style={{
+                                                            ...inputStyle,
+                                                            width: "100%",
+                                                            marginTop: "0.25rem",
+                                                        }}
+                                                    />
+                                                </label>
+
+                                                <label
+                                                    style={{
+                                                        flex: "0 0 120px",
+                                                        color: "#071f35",
+                                                        fontWeight: "600",
+                                                    }}
+                                                >
+                                                    RT Limit:
+                                                    <input
+                                                        type="number"
+                                                        value={plan.rt_url_limit || 0}
+                                                        onChange={(e) =>
+                                                            handlePricingChange(index, "rt_url_limit", Number(e.target.value))
+                                                        }
+                                                        style={{
+                                                            ...inputStyle,
+                                                            width: "100%",
+                                                            marginTop: "0.25rem",
+                                                        }}
+                                                    />
+                                                </label>
+
+                                                <label
+                                                    style={{
+                                                        flex: "0 0 120px",
+                                                        color: "#071f35",
+                                                        fontWeight: "600",
+                                                    }}
+                                                >
+                                                    Static Limit:
+                                                    <input
+                                                        type="number"
+                                                        value={plan.static_url_limit || 0}
+                                                        onChange={(e) =>
+                                                            handlePricingChange(index, "static_url_limit", Number(e.target.value))
+                                                        }
+                                                        style={{
+                                                            ...inputStyle,
+                                                            width: "100%",
+                                                            marginTop: "0.25rem",
+                                                        }}
+                                                    />
+                                                </label>
+
+                                                <Silbuton
+                                                    onClick={() => deletePlan(index)}
+                                                    style={{
+                                                        marginLeft: "auto",
+                                                        backgroundColor: "#d33",
+                                                        color: "white",
+                                                        border: "none",
+                                                        padding: "6px 12px",
+                                                        borderRadius: "6px",
+                                                        cursor: "pointer",
+                                                        fontWeight: "600",
+                                                    }}
+                                                >
+                                                    Sil
+                                                </Silbuton>
+                                            </div>
+
+
+                                        </div>
+                                    ))}
+
+
+                                    {showNewPlanForm && (
+                                        <div
+                                            style={{
+                                                backgroundColor: "#446d92",
+                                                padding: "1.5rem 2rem",
+                                                borderRadius: "12px",
+                                                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                                border: "1px solid #cce4ff",
+                                                marginBottom: "1rem",
+                                            }}
+                                        >
+                                            <h2 style={{ marginBottom: "1rem", color: "#071f35" }}>Yeni Plan Ekle</h2>
+
+                                            {/* Form inputlar */}
+                                            <label
+                                                style={{
+                                                    flex: "1 1 200px",
+                                                    color: "#071f35",
+                                                    fontWeight: "600",
+                                                }}
+                                            >
+                                                Plan Adı:
                                                 <input
                                                     type="text"
-                                                    value={newFeature[index] || ''}
-                                                    onChange={e => handleNewFeatureChange(index, e.target.value)}
-                                                    placeholder="Özellik gir"
-                                                    style={inputStyle}
+                                                    value={newPlanName}
+                                                    onChange={(e) => setNewPlanName(e.target.value)}
+                                                    style={{
+                                                        ...inputStyle,
+                                                        width: "100%",
+                                                        marginTop: "0.25rem",
+                                                    }}
                                                 />
-                                                <button
-                                                    onClick={() => addFeature(index)}
-                                                    style={{ marginLeft: '10px', ...toggleButtonStyle }}
-                                                >
-                                                    Ekle
-                                                </button>
-                                            </div>
+                                            </label>
 
-                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                                {plan.features.map((feature, fIndex) => (
-                                                    <div key={fIndex} style={chipStyle}>
-                                                        {feature}
-                                                        <span
-                                                            onClick={() => removeFeature(index, fIndex)}
-                                                            style={{ marginLeft: '8px', cursor: 'pointer', fontWeight: 'bold' }}
-                                                        >
-                                                            ×
-                                                        </span>
-                                                    </div>
-                                                ))}
-                                            </div>
+                                            <label
+                                                style={{
+                                                    flex: "0 0 120px",
+                                                    color: "#071f35",
+                                                    fontWeight: "600",
+                                                }}
+                                            >
+                                                Fiyat:
+                                                <input
+                                                    type="number"
+                                                    value={newPlanPrice}
+                                                    onChange={(e) => setNewPlanPrice(e.target.value)}
+                                                    style={{ ...inputStyle, width: "100%", marginTop: "0.25rem" }}
+                                                />
+                                            </label>
+
+                                            <label
+                                                style={{
+                                                    flex: "0 0 120px",
+                                                    color: "#071f35",
+                                                    fontWeight: "600",
+                                                }}
+                                            >
+                                                RT Limit:
+                                                <input
+                                                    type="number"
+                                                    value={newPlanRTLimit}
+                                                    onChange={(e) => setNewPlanRTLimit(e.target.value)}
+                                                    style={{ ...inputStyle, width: "100%", marginTop: "0.25rem" }}
+                                                />
+                                            </label>
+
+                                            <label
+                                                style={{
+                                                    flex: "0 0 120px",
+                                                    color: "#071f35",
+                                                    fontWeight: "600",
+                                                }}
+                                            >
+                                                Static Limit:
+                                                <input
+                                                    type="number"
+                                                    value={newPlanStaticLimit}
+                                                    onChange={(e) => setNewPlanStaticLimit(e.target.value)}
+                                                    style={{ ...inputStyle, width: "100%", marginTop: "0.25rem" }}
+                                                    placeholder="0"
+                                                />
+                                            </label>
+
+                                            <button
+                                                onClick={() => {
+                                                    addNewPlan();
+                                                    setShowNewPlanForm(false); // formu kapat
+                                                }}
+                                                style={{
+                                                    ...saveButtonStyle,
+                                                    marginTop: "1rem",
+                                                    backgroundColor: "#446d92",
+                                                    color: "#fff",
+                                                }}
+                                            >
+                                                Yeni Plan Ekle
+                                            </button>
+
+                                            <button
+                                                onClick={() => setShowNewPlanForm(false)}
+                                                style={{
+                                                    marginTop: "1rem",
+                                                    marginLeft: "1rem",
+                                                    backgroundColor: "#999",
+                                                    color: "#fff",
+                                                    border: "none",
+                                                    padding: "6px 12px",
+                                                    borderRadius: "6px",
+                                                    cursor: "pointer",
+                                                }}
+                                            >
+                                                İptal
+                                            </button>
                                         </div>
-                                    </div>
-                                ))}
+                                    )}
 
-                                <div style={{ marginTop: '30px', padding: '10px', border: '1px solid #3ec6ff', borderRadius: '10px' }}>
-                                    <h2 style={{ color: '#071f35' }}>Yeni Plan Ekle</h2>
-                                    <label style={{ color: '#071f35' }}>
-                                        Plan Adı:{' '}
-                                        <input
-                                            type="text"
-                                            value={newPlanName}
-                                            onChange={e => setNewPlanName(e.target.value)}
-                                            style={inputStyle}
-                                            placeholder="Yeni plan adı"
-                                        />
-                                    </label>
-                                    <label style={{ marginLeft: '20px', color: '#071f35' }}>
-                                        Fiyat:{' '}
-                                        <input
-                                            type="number"
-                                            value={newPlanPrice}
-                                            onChange={e => setNewPlanPrice(e.target.value)}
-                                            style={{ ...inputStyle, width: '80px' }}
-                                            placeholder="0"
-                                        />
-                                    </label>
-                                    <label style={{ display: 'block', marginTop: '10px', color: '#071f35' }}>
-                                        Özellikler (her satıra bir özellik):
-                                    </label>
-                                    <textarea
-                                        value={newPlanFeaturesText}
-                                        onChange={e => setNewPlanFeaturesText(e.target.value)}
-                                        style={textareaStyle}
-                                        placeholder="Özellikleri yazın..."
-                                        rows={4}
-                                    />
 
                                     <button
-                                        onClick={addNewPlan}
-                                        style={{ ...saveButtonStyle, marginTop: '10px' }}
+                                        onClick={savePricing}
+                                        style={{
+                                            ...saveButtonStyle,
+                                            backgroundColor: "#446d92",
+                                            color: "#fff",
+                                            maxWidth: "200px",
+                                            alignSelf: "flex-start",
+                                            marginTop: "2rem",
+                                        }}
                                     >
-                                        Yeni Plan Ekle
+                                        Fiyatları Kaydet
                                     </button>
                                 </div>
-
-                                <button
-                                    onClick={savePricing}
-                                    style={{ ...saveButtonStyle, marginTop: '30px' }}
-                                >
-                                    Fiyatları Kaydet
-                                </button>
                             </div>
                         )}
 
-                        {activeTab === 'settings' && (
+
+                        {activeTab === "settings" && (
                             <div>
-                                <h1 style={{ color: '#071f35' }}>Ayarlar</h1>
-                                <p style={{ color: '#071f35' }}>Admin panel ayarları burada olabilir.</p>
+                                <h1 style={{ color: "#071f35" }}>Ayarlar</h1>
+                                <p style={{ color: "#071f35" }}>Admin panel ayarları burada olabilir.</p>
                             </div>
                         )}
                     </>
@@ -473,6 +640,7 @@ const AdminPanel = () => {
             </main>
         </div>
     );
+
 };
 
 function formatDate(dateString) {

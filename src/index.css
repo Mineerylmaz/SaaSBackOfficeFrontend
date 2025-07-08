@@ -62,3 +62,91 @@ body {
   min-height: 100vh;
   color: var(--e-global-color-text);
 }
+
+.userdatagrid {
+  background: linear-gradient(135deg,
+      var(--e-global-color-primary),
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+  min-height: 100vh;
+  color: var(--e-global-color-text);
+
+}
+
+.settings {
+  background: linear-gradient(135deg,
+      var(--e-global-color-primary),
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+  min-height: 100vh;
+  color: var(--e-global-color-text);
+}
+
+.home {
+  background: linear-gradient(135deg,
+      var(--e-global-color-primary),
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+  color: var(--e-global-color-text);
+
+}
+
+.carditem {
+  position: fixed;
+  bottom: 60px;
+  /* Alt boşluk */
+  left: 290px;
+  /* Sol boşluk */
+  width: 250px;
+  /* İstersen genişlik ver */
+  z-index: 1000;
+  /* Üstte görünsün */
+}
+
+
+.cards {
+  flex: 1;
+}
+
+.card {
+  background: linear-gradient(135deg,
+      var(--e-global-color-primary),
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.card__bullets {
+  line-height: 1.4;
+}
+
+.card__heading {
+  font-size: 1.05em;
+  font-weight: 600;
+}
+
+.card__price {
+  font-size: 1.75em;
+  font-weight: 700;
+}
+
+.flow>*+* {
+  margin-top: var(--flow-space, 1.25em);
+}
+
+.card:hover {
+  --lightness: 80%;
+  background: #6EC1E4;
+  color: #000;
+  outline: 1px solid rgb(255, 110, 193, 228);
+  box-shadow:
+    inset 0 0 80px whitesmoke,
+    inset 20px 0 80px #6EC1E4,
+    inset -20px 0 80px #0ff,
+    inset 20px 0 300px #f0f,
+    inset -20px 0 300px #0ff,
+    0 0 50px #fff,
+    -10px 0 80px #f0f,
+    10px 0 80px #0ff;
+}

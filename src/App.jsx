@@ -9,6 +9,11 @@ import Home from './components/Home';
 import NotFound from './components/NotFound';
 import Navbars from './components/Navbars';
 import { useState, useEffect } from 'react';
+import Profil from './components/Profil';
+import Settings from './components/Settings';
+import TransitMap from './components/TransitMap';
+
+
 
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -22,6 +27,7 @@ export default function App() {
     <Router>
       <Navbars user={user} setUser={setUser} />
       <Routes>
+
         <Route path="/" element={<Home />} />
 
         <Route path="/home" element={<Home />} />
@@ -29,11 +35,18 @@ export default function App() {
         <Route path="/about" element={<NotFound />} />
 
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/transitmap" element={<TransitMap />} />
         <Route
           path="/login"
-          element={user ? <Navigate to="/odeme" /> : <Login setUser={setUser} />}
+          element={user ? <Navigate to="/" /> : <Login setUser={setUser} />}
         />
 
+        <Route path="/profil" element={<Profil user={user} />} />
+
+        <Route
+          path="/ayarlar"
+          element={user ? <Settings user={user} /> : <Navigate to="/login" />}
+        />
         <Route path="/odeme" element={user ? <Odeme /> : <Navigate to="/login" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgotp" element={<Forgotp />} />

@@ -54,7 +54,12 @@ const Pricing = () => {
               {Array.isArray(plan.features) && plan.features.map((feature, i) => (
                 <li key={i}>{feature}</li>
               ))}
+
+              <li>RT URL Limit: {plan.rt_url_limit || 0}</li>
+              <li>Static URL Limit: {plan.static_url_limit || 0}</li>
             </ul>
+
+
 
             <a
               className="card__cta cta"
