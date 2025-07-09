@@ -7,8 +7,9 @@ import Radio from './Radio';
 import Profile from './Profile';
 import Pricing from './Pricing';
 import Silbuton from './Silbuton';
+import ProfileSettings from './ProfileSettings';
 
-const Settings = ({ user }) => {
+const Settings = ({ user, selectedPlan }) => {
     const [plan, setPlan] = useState(null);
     const [settings, setSettings] = useState({
         rt_urls: [],
@@ -31,34 +32,38 @@ const Settings = ({ user }) => {
             return;
         }
 
-        const savedPlanStr = localStorage.getItem('selectedPlan');
-        let savedPlan = null;
-        try {
-            if (savedPlanStr && savedPlanStr !== "undefined") {
-                savedPlan = JSON.parse(savedPlanStr);
-            }
-        } catch {
-            savedPlan = null;
-        }
-        if (savedPlan) setPlan(savedPlan);
-
-        fetch(`/api/userSettings/settings/${user.id}`)
+        fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`)
             .then(res => res.json())
             .then(data => {
                 console.log("API cevabı:", data);
-                setSettings(data.settings || {
+
+                const defaultSettings = {
                     rt_urls: [],
                     static_urls: [],
                     autoRenew: false,
                     notifications: false,
-                });
+                };
+
+                const newSettings = {
+                    ...defaultSettings,
+                    ...data.settings,
+                    rt_urls: Array.isArray(data.settings?.rt_urls) ? data.settings.rt_urls : [],
+                    static_urls: Array.isArray(data.settings?.static_urls) ? data.settings.static_urls : [],
+                };
+
+                setSettings(newSettings);
+
+                if (data.plan) {
+                    console.log("Plan var:", data.plan);
+                    setPlan(data.plan);
+                } else {
+                    console.log("Plan yok");
+                }
+
                 setLoading(false);
             })
             .catch(() => setLoading(false));
     }, [user?.id]);
-
-
-
 
 
 
@@ -217,11 +222,6 @@ const Settings = ({ user }) => {
                             </AccordionWrapper>
                         )}
                     </ContentWrapper>
-                </HorizontalWrapper>
-            )}
-
-            {selectedMenu === 'profile' && (
-                <>
                     {plan && (
                         <PlanCard>
                             <div className="card__heading">Plan</div>
@@ -234,7 +234,15 @@ const Settings = ({ user }) => {
                             </div>
                         </PlanCard>
                     )}
-                    <Profile />
+                </HorizontalWrapper>
+            )}
+
+            {selectedMenu === 'profile' && (
+                <>
+
+                    <Profile user={user} />
+                    <ProfileSettings user={user} />
+
                 </>
             )}
         </Wrapper>
@@ -260,15 +268,75 @@ const HorizontalWrapper = styled.div`
 `;
 
 const PlanCard = styled.div`
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 15px;
-  width: 280px;  
-  box-sizing: border-box;
-  flex-shrink: 0;
+  position: relative;
+  width: 300px; /* boyutları ayarla */
+  padding: 20px;
+  background-color: #446d92;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #fff;
+  cursor: default;
 
+ &::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg,
+     
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+  z-index: -2;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+&:hover::before {
+  transform: scale(1.05);
+}
+
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+   background: linear-gradient(135deg,
+    
+      var(--e-global-color-secondary),
+      var(--e-global-color-65fcc69));
+    transform: scale(0.98);
+    filter: blur(20px);
+    z-index: -2;
+    transition: filter 0.3s ease;
+  }
+
+
+
+  &:hover::after {
+    filter: blur(30px);
+  }
+
+  .cards__heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .cards__price {
+    font-size: 1.2rem;
+    color: #e81cff;
+    font-weight: 600;
+  }
+
+  .cards__bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.95rem;
+  }
 `;
+
 
 
 

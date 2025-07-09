@@ -29,18 +29,30 @@ const Odeme = () => {
     if (userStr) {
       const user = JSON.parse(userStr);
       setUserId(user.id);
-      console.log('userId from localStorage:', user.id);
-    } else {
-      console.log('No user in localStorage');
+
+
+      if (user.plan) {
+
+        setPlan(user.plan);
+      }
     }
   }, []);
 
+
+
   useEffect(() => {
     const savedPlan = localStorage.getItem('selectedPlan');
-    if (savedPlan) setPlan(JSON.parse(savedPlan));
+    if (savedPlan) {
+      setPlan(JSON.parse(savedPlan));
+    }
 
-
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      setUserId(user.id);
+    }
   }, []);
+
 
 
 
@@ -53,6 +65,10 @@ const Odeme = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan: planName }),
       });
+
+
+
+
 
       console.log('API yanıt durumu:', response.status);
 
@@ -69,6 +85,7 @@ const Odeme = () => {
 
 
 
+
   const handlePayment = async () => {
     console.log('userId:', userId);
     console.log('plan:', plan);
@@ -82,11 +99,20 @@ const Odeme = () => {
 
     if (paymentSuccess) {
       await updateUserPlanBackend(userId, plan.name);
-      localStorage.setItem('selectedPlan', JSON.stringify(plan));
+
+
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        user.plan = plan;
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('selectedPlan', JSON.stringify(plan));
+
+      }
+
       Swal.fire('Başarılı', `Ödeme alındı: ${plan.name}`, 'success');
-    } else {
-      Swal.fire('Hata', 'Ödeme başarısız!', 'error');
     }
+
   };
 
 
@@ -95,15 +121,15 @@ const Odeme = () => {
     <div>
       <StyledWrapper>
         <div className="content">
-          <div className='carditem'>
+          <div className='cardsitem'>
             <Card />
           </div>
           <div className="cards">
             {plan ? (
-              <div className="card">
-                <h2 className='card__heading'>Seçilen Plan: {plan.name}</h2>
-                <p className='card__price'>Fiyat: ${plan.price}</p>
-                <ul className='card__bullets flow'>
+              <div className="cardss">
+                <h2 className='cards__heading'>Seçilen Plan: {plan.name}</h2>
+                <p className='cards__price'>Fiyat: ${plan.price}</p>
+                <ul className='cards__bullets flow'>
                   {plan.features.map((f, i) => (
                     <li key={i}>{f}</li>
                   ))}
@@ -145,7 +171,7 @@ const StyledWrapper = styled.div`
     background-image: linear-gradient(163deg, #6EC1E4 0%, #3700ff 100%);
     color: rgb(0, 0, 0);}
 
-  .carditem {
+  .cardsitem {
     flex: 1;
     display: flex;
     justify-content: center;
@@ -157,22 +183,22 @@ const StyledWrapper = styled.div`
     flex: 1;
   }
 
-  .card {
+  .cardss {
     background-color: #eceff133;
     padding: 1rem;
     border-radius: 8px;
   }
 
-  .card__bullets {
+  .cards__bullets {
     line-height: 1.4;
   }
 
-  .card__heading {
+  .cards__heading {
     font-size: 1.05em;
     font-weight: 600;
   }
 
-  .card__price {
+  .cards__price {
     font-size: 1.75em;
     font-weight: 700;
   }
@@ -181,7 +207,7 @@ const StyledWrapper = styled.div`
     margin-top: var(--flow-space, 1.25em);
   }
 
-  .card:hover {
+  .cards:hover {
     --lightness: 80%;
     background: #6EC1E4;
     color: #000;

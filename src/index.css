@@ -94,13 +94,13 @@ body {
 .carditem {
   position: fixed;
   bottom: 60px;
-  /* Alt boşluk */
+
   left: 290px;
-  /* Sol boşluk */
+
   width: 250px;
-  /* İstersen genişlik ver */
+
   z-index: 1000;
-  /* Üstte görünsün */
+
 }
 
 

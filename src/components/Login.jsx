@@ -6,6 +6,40 @@ import { Link, useNavigate } from 'react-router-dom';
 const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
+  const handleLogin = async () => {
+    const res = await fetch('http://localhost:5000/api/login/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log('Backendden gelen plan:', data.plan);
+
+    localStorage.setItem('user', JSON.stringify({
+      id: data.id,
+      email: data.email,
+      role: data.role,
+      plan: data.plan,
+      token: data.token
+    }));
+
+    setUser({
+      id: data.id,
+      email: data.email,
+      role: data.role,
+      plan: data.plan,
+      token: data.token
+    });
+  };
+
+
 
 
   const handleChange = (e) => {
