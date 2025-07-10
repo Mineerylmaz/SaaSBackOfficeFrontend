@@ -46,6 +46,16 @@ const Radio = ({ selectedMenu, setSelectedMenu, admin }) => {
         </svg>
         Real Time URL Ayarları
       </MenuItem>
+      <MenuItem
+        active={selectedMenu === "urlresults"}
+        onClick={() => setSelectedMenu("urlresults")}
+      >
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M4.5 1a.5.5 0 0 1 .5.5V2h6v-.5a.5.5 0 0 1 1 0V2h.5A1.5 1.5 0 0 1 14 3.5v9A1.5 1.5 0 0 1 12.5 14h-9A1.5 1.5 0 0 1 2 12.5v-9A1.5 1.5 0 0 1 3.5 2H4v-.5a.5.5 0 0 1 .5-.5zM13 5H3v7.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V5z" />
+        </svg>
+        URL Sonuçları
+      </MenuItem>
 
       <MenuItem
         active={selectedMenu === "notifications"}

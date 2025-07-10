@@ -1,68 +1,77 @@
+
 import React from 'react';
 import styled from 'styled-components';
 
 const Input = ({ placeholder, type = "text", value, onChange }) => {
-    return (
-        <StyledWrapper>
-            <div className="input-container">
-                <input
-                    placeholder={placeholder}
-                    type={type}
-                    value={value}
-                    onChange={onChange}
-                />
-            </div>
-        </StyledWrapper>
-    );
-};
+  return (
+    <StyledWrapper>
+      <div className="input-container">
+        <input
+          placeholder={placeholder}
+          type={type}
+          value={value}
+          onChange={onChange}
+        />
+      </div>
+    </StyledWrapper>
+  );
+}
 
 const StyledWrapper = styled.div`
-  .input-container {
-    display: flex;
-    background: white;
-    border-radius: 1rem;
-    background: linear-gradient(173deg, #23272f 0%, #14161a 100%);
-    box-shadow:
-      10px 10px 20px #0e1013,
-      -10px -10px 40px #383e4b;
-    padding: 0.3rem;
-    gap: 0.3rem;
+  .inputbox {
+    position: relative;
+    width: 196px;
   }
 
-  .input-container input {
-    border-radius: 0.8rem;
-    background: #23272f;
-    box-shadow:
-      inset 5px 5px 10px #0e1013,
-      inset -5px -5px 10px #383e4b,
-      0px 0px 100px rgba(255, 212, 59, 0),
-      0px 0px 100px rgba(255, 102, 0, 0);
+  .inputbox input {
+    position: relative;
     width: 100%;
-    flex-basis: 100%;
-    padding: 1rem;
+    padding: 20px 10px 10px;
+    background: transparent;
+    outline: none;
+    box-shadow: none;
     border: none;
-    border: 1px solid transparent;
-    color: white;
-    transition: all 0.2s ease-in-out;
+    color: #23242a;
+    font-size: 1em;
+    letter-spacing: 0.05em;
+    transition: 0.5s;
+    z-index: 10;
   }
 
-  .input-container input:focus {
-   background: linear-gradient(135deg,
-      var(--e-global-color-primary),
-      var(--e-global-color-secondary),
-      var(--e-global-color-65fcc69));
-  color: var(--e-global-color-text);
+  .inputbox span {
+    position: absolute;
+    left: 0;
+    padding: 20px 10px 10px;
+    font-size: 1em;
+    color: #8f8f8f;
+    letter-spacing: 00.05em;
+    transition: 0.5s;
+    pointer-events: none;
   }
 
-  @media (max-width: 500px) {
-    .input-container {
-      flex-direction: column;
-    }
-
-    .input-container input {
-      border-radius: 0.8rem;
-    }
+  .inputbox input:valid ~span,
+  .inputbox input:focus ~span {
+    color: #45f3ff;
+    transform: translateX(-10px) translateY(-34px);
+    font-size: 0,75em;
   }
-`;
+
+  .inputbox i {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #45f3ff;
+    border-radius: 4px;
+    transition: 0.5s;
+    pointer-events: none;
+    z-index: 9;
+  }
+
+  .inputbox input:valid ~i,
+  .inputbox input:focus ~i {
+    height: 44px;
+  }`;
 
 export default Input;

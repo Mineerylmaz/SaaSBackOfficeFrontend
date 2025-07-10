@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Register from './components/Register';
 import Login from './components/Login';
-import Forgotp from './components/Forgotp';
 import Odeme from './components/Odeme';
 import Pricing from './components/Pricing';
 import AdminPanel from './components/AdminPanel';
@@ -49,7 +48,7 @@ export default function App() {
         />
         <Route path="/odeme" element={user ? <Odeme /> : <Navigate to="/login" />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/forgotp" element={<Forgotp />} />
+        <Route path="/notfound" element={<NotFound />} />
         <Route
           path="/admin"
           element={user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login" />}

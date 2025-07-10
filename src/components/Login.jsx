@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
+
 
 
 const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState('');
   const handleLogin = async () => {
     const res = await fetch('http://localhost:5000/api/login/login', {
       method: 'POST',
@@ -87,14 +91,26 @@ const Login = ({ setUser }) => {
           }
 
         } else {
-          alert('Sunucudan geçerli bir token gelmedi!');
+          Swal.fire({
+            icon: 'error',
+            title: 'Hata',
+            text: 'Sunucudan geçerli bir token gelmedi!',
+          });
         }
       } else {
         const data = await res.json();
-        alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
+        Swal.fire({
+          icon: 'error',
+          title: 'Giriş Başarısız',
+          text: data.error || 'Bilinmeyen bir hata oluştu!',
+        });
       }
     } catch (error) {
-      alert('Sunucu hatası: ' + error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Sunucu Hatası',
+        text: error.message,
+      });
     }
   }
 
@@ -142,7 +158,7 @@ const Login = ({ setUser }) => {
                 Register
               </Link>
             </div>
-            <Link to="/forgotp" className="button3">
+            <Link to="/notfound" className="button3">
               Forgot Password
             </Link>
           </form>

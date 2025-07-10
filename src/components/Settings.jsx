@@ -5,11 +5,11 @@ import Button from './Button';
 import Swal from 'sweetalert2';
 import Radio from './Radio';
 import Profile from './Profile';
-import Pricing from './Pricing';
 import Silbuton from './Silbuton';
-import ProfileSettings from './ProfileSettings';
+import UrlResultsGrid from './UrlResultsGrid';
+import DateFilter from './DateFilter';
 
-const Settings = ({ user, selectedPlan }) => {
+const Settings = ({ user }) => {
     const [plan, setPlan] = useState(null);
     const [settings, setSettings] = useState({
         rt_urls: [],
@@ -19,12 +19,14 @@ const Settings = ({ user, selectedPlan }) => {
     });
     const [loading, setLoading] = useState(true);
 
-
     const [selectedMenu, setSelectedMenu] = useState('rt');
-
-
     const [openRT, setOpenRT] = useState(true);
     const [openStatic, setOpenStatic] = useState(true);
+
+    const [results, setResults] = useState([]);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
 
     useEffect(() => {
         if (!user?.id) {
@@ -35,8 +37,7 @@ const Settings = ({ user, selectedPlan }) => {
         fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`)
             .then(res => res.json())
             .then(data => {
-                console.log("API cevabı:", data);
-
+                console.log('Settings API response:', data);
                 const defaultSettings = {
                     rt_urls: [],
                     static_urls: [],
@@ -54,10 +55,9 @@ const Settings = ({ user, selectedPlan }) => {
                 setSettings(newSettings);
 
                 if (data.plan) {
-                    console.log("Plan var:", data.plan);
                     setPlan(data.plan);
                 } else {
-                    console.log("Plan yok");
+                    setPlan(null);
                 }
 
                 setLoading(false);
@@ -66,27 +66,51 @@ const Settings = ({ user, selectedPlan }) => {
     }, [user?.id]);
 
 
+    const fetchResults = () => {
+        if (!user?.id) return;
 
+        let url = `http://localhost:5000/api/userSettings/urlResults/${user.id}`;
+        const params = [];
+        if (startDate) params.push(`start=${encodeURIComponent(new Date(startDate).toISOString())}`);
+        if (endDate) params.push(`end=${encodeURIComponent(new Date(endDate).toISOString())}`);
+        if (params.length) url += '?' + params.join('&');
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => setResults(data))
+            .catch(err => console.error('URL sonuçları çekilirken hata:', err));
+    };
+
+    useEffect(() => {
+        if (selectedMenu === 'urlresults') {
+            fetchResults();
+        }
+    }, [selectedMenu, user?.id]);
 
 
     const handleSettingChange = (key, value) => {
         setSettings(prev => ({ ...prev, [key]: value }));
     };
 
-
     const handleRtUrlChange = (index, field, value) => {
         const newUrls = [...settings.rt_urls];
         newUrls[index] = { ...newUrls[index], [field]: value };
         handleSettingChange('rt_urls', newUrls);
     };
+
     const addRtUrl = () => {
         if (settings.rt_urls.length >= (plan?.rt_url_limit || 0)) {
-            alert(`RT URL limiti: ${plan.rt_url_limit} adet ile sınırlıdır.`);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Limit Aşıldı',
+                text: `Static URL limiti ${plan.rt_url_limit} adet ile sınırlıdır.`,
+            });
             return;
         }
-        handleSettingChange('rt_urls', [...settings.rt_urls, { url: '', frequency: 1 }]);
+        handleSettingChange('rt_urls', [...settings.rt_urls, { url: '', frequency: '' }]);
     };
-    const removeRtUrl = index => {
+
+    const removeRtUrl = (index) => {
         const newUrls = [...settings.rt_urls];
         newUrls.splice(index, 1);
         handleSettingChange('rt_urls', newUrls);
@@ -97,14 +121,20 @@ const Settings = ({ user, selectedPlan }) => {
         newUrls[index] = { ...newUrls[index], [field]: value };
         handleSettingChange('static_urls', newUrls);
     };
+
     const addStaticUrl = () => {
         if (settings.static_urls.length >= (plan?.static_url_limit || 0)) {
-            alert(`Static URL limiti: ${plan.static_url_limit} adet ile sınırlıdır.`);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Limit Aşıldı',
+                text: `Static URL limiti ${plan.static_url_limit} adet ile sınırlıdır.`,
+            });
             return;
         }
-        handleSettingChange('static_urls', [...settings.static_urls, { url: '', frequency: 1 }]);
+        handleSettingChange('static_urls', [...settings.static_urls, { url: '', frequency: '' }]);
     };
-    const removeStaticUrl = index => {
+
+    const removeStaticUrl = (index) => {
         const newUrls = [...settings.static_urls];
         newUrls.splice(index, 1);
         handleSettingChange('static_urls', newUrls);
@@ -113,7 +143,7 @@ const Settings = ({ user, selectedPlan }) => {
     const [saving, setSaving] = useState(false);
     const saveSettings = () => {
         setSaving(true);
-        fetch(`/api/userSettings/settings/${user.id}`, {
+        fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ settings }),
@@ -144,7 +174,7 @@ const Settings = ({ user, selectedPlan }) => {
         <Wrapper>
             <Radio selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
 
-            {(selectedMenu === 'rt' || selectedMenu === 'static') && (
+            {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults') && (
                 <HorizontalWrapper>
                     <ContentWrapper>
                         {selectedMenu === 'rt' && (
@@ -157,6 +187,13 @@ const Settings = ({ user, selectedPlan }) => {
                                         <Row key={idx}>
                                             <Input
                                                 type="text"
+                                                placeholder="Başlık"
+                                                value={item.name || ''}
+                                                onChange={e => handleRtUrlChange(idx, 'name', e.target.value)}
+                                                style={{ flex: 2 }}
+                                            />
+                                            <Input
+                                                type="text"
                                                 placeholder="RT URL"
                                                 value={item.url}
                                                 onChange={e => handleRtUrlChange(idx, 'url', e.target.value)}
@@ -164,7 +201,6 @@ const Settings = ({ user, selectedPlan }) => {
                                             />
                                             <Input
                                                 type="number"
-                                                min={1}
                                                 placeholder="Çağrı Sıklığı (sn)"
                                                 value={item.frequency}
                                                 onChange={e => handleRtUrlChange(idx, 'frequency', Number(e.target.value))}
@@ -172,9 +208,10 @@ const Settings = ({ user, selectedPlan }) => {
                                             />
                                             <Silbuton onClick={() => removeRtUrl(idx)}>Sil</Silbuton>
                                         </Row>
+
                                     ))}
                                     <Button onClick={addRtUrl} disabled={settings.rt_urls.length >= (plan?.rt_url_limit || 0)}>
-
+                                        URL Ekle
                                     </Button>
                                 </AccordionContent>
                                 <SaveButton onClick={saveSettings} disabled={saving}>
@@ -193,14 +230,21 @@ const Settings = ({ user, selectedPlan }) => {
                                         <Row key={idx}>
                                             <Input
                                                 type="text"
+                                                placeholder="Başlık"
+                                                value={item.name || ''}
+                                                onChange={e => handleStaticUrlChange(idx, 'name', e.target.value)}
+                                                style={{ flex: 2 }}
+                                            />
+                                            <Input
+                                                type="text"
                                                 placeholder="Static URL"
                                                 value={item.url}
                                                 onChange={e => handleStaticUrlChange(idx, 'url', e.target.value)}
                                                 style={{ flex: 3 }}
                                             />
+
                                             <Input
                                                 type="number"
-                                                min={1}
                                                 placeholder="Çağrı Sıklığı (sn)"
                                                 value={item.frequency}
                                                 onChange={e => handleStaticUrlChange(idx, 'frequency', Number(e.target.value))}
@@ -208,12 +252,15 @@ const Settings = ({ user, selectedPlan }) => {
                                             />
                                             <Silbuton onClick={() => removeStaticUrl(idx)} />
                                         </Row>
+
+
+
                                     ))}
                                     <Button
                                         onClick={addStaticUrl}
                                         disabled={settings.static_urls.length >= (plan?.static_url_limit || 0)}
                                     >
-
+                                        URL Ekle
                                     </Button>
                                 </AccordionContent>
                                 <SaveButton onClick={saveSettings} disabled={saving}>
@@ -221,36 +268,66 @@ const Settings = ({ user, selectedPlan }) => {
                                 </SaveButton>
                             </AccordionWrapper>
                         )}
+
+                        {selectedMenu === 'urlresults' && (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    flex: 1,
+                                    width: '100%',
+                                    boxSizing: 'border-box',
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        flex: 1,
+                                        width: '100%',
+                                        overflowY: 'auto',
+                                        overflowX: 'hidden',
+                                    }}
+                                >
+                                    <UrlResultsGrid userId={user.id} />
+                                </div>
+                            </div>
+                        )}
                     </ContentWrapper>
+
                     {plan && (
                         <PlanCard>
                             <div className="card__heading">Plan</div>
                             <div className="card__price">{plan.name}</div>
                             <div className="card__bullets flow">
-                                <div><strong>RT URL Limit:</strong> {plan.rt_url_limit}</div>
-                                <div><strong>Static URL Limit:</strong> {plan.static_url_limit}</div>
-                                <div><strong>Mevcut RT URL:</strong> {settings.rt_urls?.length || 0}</div>
-                                <div><strong>Mevcut Static URL:</strong> {settings.static_urls?.length || 0}</div>
+                                <div>
+                                    <strong>RT URL Limit:</strong> {plan.rt_url_limit}
+                                </div>
+                                <div>
+                                    <strong>Static URL Limit:</strong> {plan.static_url_limit}
+                                </div>
+                                <div>
+                                    <strong>Mevcut RT URL:</strong> {settings.rt_urls?.length || 0}
+                                </div>
+                                <div>
+                                    <strong>Mevcut Static URL:</strong> {settings.static_urls?.length || 0}
+                                </div>
                             </div>
                         </PlanCard>
                     )}
                 </HorizontalWrapper>
             )}
 
-            {selectedMenu === 'profile' && (
-                <>
-
-                    <Profile user={user} />
-                    <ProfileSettings user={user} />
-
-                </>
-            )}
+            {selectedMenu === 'profile' && <Profile user={user} settings={settings} />}
         </Wrapper>
     );
 
 };
 
+
 export default Settings;
+
+
 const Wrapper = styled.div`
   max-width: 1000px;
   margin: 0 auto;
@@ -269,7 +346,7 @@ const HorizontalWrapper = styled.div`
 
 const PlanCard = styled.div`
   position: relative;
-  width: 300px; /* boyutları ayarla */
+  width: 300px;
   padding: 20px;
   background-color: #446d92;
   border-radius: 12px;
@@ -279,40 +356,39 @@ const PlanCard = styled.div`
   color: #fff;
   cursor: default;
 
- &::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 14px;
-  background: linear-gradient(135deg,
-     
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: linear-gradient(
+      135deg,
       var(--e-global-color-secondary),
-      var(--e-global-color-65fcc69));
-  z-index: -2;
-  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+      var(--e-global-color-65fcc69)
+    );
+    z-index: -2;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
 
-&:hover::before {
-  transform: scale(1.05);
-}
-
+  &:hover::before {
+    transform: scale(1.05);
+  }
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     inset: 0;
     border-radius: 12px;
-   background: linear-gradient(135deg,
-    
+    background: linear-gradient(
+      135deg,
       var(--e-global-color-secondary),
-      var(--e-global-color-65fcc69));
+      var(--e-global-color-65fcc69)
+    );
     transform: scale(0.98);
     filter: blur(20px);
     z-index: -2;
     transition: filter 0.3s ease;
   }
-
-
 
   &:hover::after {
     filter: blur(30px);
@@ -334,41 +410,6 @@ const PlanCard = styled.div`
     flex-direction: column;
     gap: 4px;
     font-size: 0.95rem;
-  }
-`;
-
-
-
-
-
-
-
-
-const MenuWrapper = styled.div`
-  width: 200px;
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 10px;
-  height: fit-content;
-`;
-
-const MenuItem = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  
-  font-weight: ${({ active }) => (active ? '600' : '400')};
-  background: none;
-  border: none;
-  padding: 10px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  text-align: left;
-
-  &:hover {
-    color: #60a5fa;
-    background-color: #334155;
   }
 `;
 
@@ -404,10 +445,12 @@ const AccordionContent = styled.div`
 `;
 
 const Row = styled.div`
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+  
   align-items: center;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  width: 100%;
 `;
 
 const SaveButton = styled.button`
@@ -423,11 +466,10 @@ const SaveButton = styled.button`
   transition: background-color 0.3s ease;
 
   margin-left: auto;
-  display: inline-block; /* ya da kaldır */
+  display: inline-block;
 
   &:disabled {
     background: #999;
     cursor: not-allowed;
   }
 `;
-

@@ -107,7 +107,7 @@ const HeroSubtitle = styled.p`
 
 const HeroButton = styled.a`
   background: white;
-  color: #0a9396;
+  color: #071f35;
   padding: 0.8rem 2rem;
   font-weight: 700;
   border-radius: 50px;
@@ -116,9 +116,14 @@ const HeroButton = styled.a`
   transition: all 0.3s ease;
 
   &:hover {
-    background: #98b1c8;
+    background: #071f35;
     color: white;
+        text-decoration: none;
   }
+        &:visited {
+  text-decoration: none;
+}
+
 `;
 
 const FeaturesSection = styled.section`

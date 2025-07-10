@@ -507,7 +507,7 @@ const AdminPanel = () => {
                                         >
                                             <h2 style={{ marginBottom: "1rem", color: "#071f35" }}>Yeni Plan Ekle</h2>
 
-                                            {/* Form inputlar */}
+
                                             <label
                                                 style={{
                                                     flex: "1 1 200px",
@@ -580,7 +580,7 @@ const AdminPanel = () => {
                                             <button
                                                 onClick={() => {
                                                     addNewPlan();
-                                                    setShowNewPlanForm(false); // formu kapat
+                                                    setShowNewPlanForm(false);
                                                 }}
                                                 style={{
                                                     ...saveButtonStyle,

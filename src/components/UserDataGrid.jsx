@@ -131,35 +131,18 @@ export default function UserDataGrid() {
             width: 130,
 
         },
-        {
-            field: 'rt_url_count',
-            headerName: 'RT URL Sayısı',
-            width: 130,
-            // valueGetter: (params) => params.row.settings?.rt_urls?.length || 0,
-        },
-        {
-            field: 'static_url_count',
-            headerName: 'Static URL Sayısı',
-            width: 130,
-            //  valueGetter: (params) => params.row.settings?.static_urls?.length || 0,
-        },
-        {
-            field: 'api_key',
-            headerName: 'API Key',
-            width: 300,
-            // renderCell: (params) => params.value || '-',
-        },
+
         {
             field: 'last_login',
             headerName: 'Son Giriş',
             width: 160,
-            //  renderCell: (params) => (params.value ? formatDate(params.value) : '-'),
+            renderCell: (params) => (params.value ? formatDate(params.value) : '-'),
         },
         {
             field: 'created_at',
             headerName: 'Oluşturulma Tarihi',
             width: 160,
-            // renderCell: (params) => (params.value ? formatDate(params.value) : '-'),
+            renderCell: (params) => (params.value ? formatDate(params.value) : '-'),
         },
     ];
 

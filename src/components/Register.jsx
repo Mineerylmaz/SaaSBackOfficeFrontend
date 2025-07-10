@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Register = () => {
+const Register = ({ setUser }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -16,6 +16,39 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
+  const handleLogin = async () => {
+    const res = await fetch('http://localhost:5000/api/login/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log('Backendden gelen plan:', data.plan);
+
+    localStorage.setItem('user', JSON.stringify({
+      id: data.id,
+      email: data.email,
+      role: data.role,
+      plan: data.plan,
+      token: data.token
+    }));
+
+    setUser({
+      id: data.id,
+      email: data.email,
+      role: data.role,
+      plan: data.plan,
+      token: data.token
+    });
+  };
 
 
   const handleSubmit = async (e) => {
@@ -35,8 +68,25 @@ const Register = () => {
 
       if (res.ok) {
 
-        setFormData({ firstname: '', lastname: '', email: '', password: '' });
-        navigate('/home');
+        const loginRes = await fetch('http://localhost:5000/api/login/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        if (loginRes.ok) {
+          const loginData = await loginRes.json();
+
+          localStorage.setItem('user', loginData.user);
+          localStorage.setItem('token', loginData.token);
+          setFormData({ firstname: '', lastname: '', email: '', password: '' });
+          navigate('/home');
+        } else {
+          alert('Kayıt başarılı, ancak otomatik giriş yapılamadı.');
+        }
       } else {
         const data = await res.json();
         alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
@@ -45,6 +95,7 @@ const Register = () => {
       alert('Sunucu hatası: ' + error.message);
     }
   };
+
 
   return (
     <StyledWrapper>
