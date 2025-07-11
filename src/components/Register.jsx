@@ -80,13 +80,28 @@ const Register = ({ setUser }) => {
         if (loginRes.ok) {
           const loginData = await loginRes.json();
 
-          localStorage.setItem('user', loginData.user);
+          setUser({
+            id: loginData.id,
+            email: loginData.email,
+            role: loginData.role,
+            plan: loginData.plan,
+            token: loginData.token,
+          });
+
+          localStorage.setItem('user', JSON.stringify({
+            id: loginData.id,
+            email: loginData.email,
+            role: loginData.role,
+            plan: loginData.plan,
+          }));
           localStorage.setItem('token', loginData.token);
+
           setFormData({ firstname: '', lastname: '', email: '', password: '' });
           navigate('/home');
         } else {
           alert('Kayıt başarılı, ancak otomatik giriş yapılamadı.');
         }
+
       } else {
         const data = await res.json();
         alert('Hata: ' + (data.error || 'Bilinmeyen hata'));

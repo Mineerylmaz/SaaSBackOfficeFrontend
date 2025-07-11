@@ -35,10 +35,7 @@ export default function App() {
 
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/transitmap" element={<TransitMap />} />
-        <Route
-          path="/login"
-          element={user ? <Navigate to="/" /> : <Login setUser={setUser} />}
-        />
+        <Route path="/login" element={user ? <Navigate to="/odeme" /> : <Login setUser={setUser} />} />
 
         <Route path="/profil" element={<Profil user={user} />} />
 
@@ -47,7 +44,8 @@ export default function App() {
           element={user ? <Settings user={user} /> : <Navigate to="/login" />}
         />
         <Route path="/odeme" element={user ? <Odeme /> : <Navigate to="/login" />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register setUser={setUser} />} />
+
         <Route path="/notfound" element={<NotFound />} />
         <Route
           path="/admin"

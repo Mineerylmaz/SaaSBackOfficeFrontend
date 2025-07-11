@@ -8,7 +8,7 @@ const AddUserModal = ({ visible, onClose, email, setEmail, password, setPassword
         <div style={overlayStyle}>
             <div style={modalStyle}>
                 <h2>Kullanıcı Ekle</h2>
-                <form onSubmit={handleAddUser}>
+                <form onSubmit={handleAddUser} aria-label="add-user-form">
                     <input
                         type="email"
                         placeholder="E-posta"

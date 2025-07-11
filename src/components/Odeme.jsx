@@ -26,32 +26,20 @@ const Odeme = () => {
   };
   useEffect(() => {
     const userStr = localStorage.getItem('user');
+    const savedPlan = localStorage.getItem('selectedPlan');
+
     if (userStr) {
       const user = JSON.parse(userStr);
       setUserId(user.id);
 
-
-      if (user.plan) {
-
+      if (savedPlan) {
+        setPlan(JSON.parse(savedPlan));
+      } else if (user.plan) {
         setPlan(user.plan);
       }
     }
   }, []);
 
-
-
-  useEffect(() => {
-    const savedPlan = localStorage.getItem('selectedPlan');
-    if (savedPlan) {
-      setPlan(JSON.parse(savedPlan));
-    }
-
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      setUserId(user.id);
-    }
-  }, []);
 
 
 
@@ -129,11 +117,7 @@ const Odeme = () => {
               <div className="cardss">
                 <h2 className='cards__heading'>Seçilen Plan: {plan.name}</h2>
                 <p className='cards__price'>Fiyat: ${plan.price}</p>
-                <ul className='cards__bullets flow'>
-                  {plan.features.map((f, i) => (
-                    <li key={i}>{f}</li>
-                  ))}
-                </ul>
+
                 <button className='btn' onClick={handlePayment}>
                   Öde
                 </button>

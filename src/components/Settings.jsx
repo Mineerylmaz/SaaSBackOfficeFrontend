@@ -26,6 +26,24 @@ const Settings = ({ user }) => {
     const [results, setResults] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [deletedUrls, setDeletedUrls] = useState([]);
+
+
+    const filteredRtUrls = settings.rt_urls.filter(item =>
+        !deletedUrls.some(d => d.url === item.url && d.type === 'rt')
+    );
+
+    const filteredStaticUrls = settings.static_urls.filter(item =>
+        !deletedUrls.some(d => d.url === item.url && d.type === 'static')
+    );
+
+
+    const fetchDeletedUrls = async () => {
+        const res = await fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.id}`);
+        const data = await res.json();
+        setDeletedUrls(data);
+    };
+
 
 
     useEffect(() => {
@@ -91,6 +109,15 @@ const Settings = ({ user }) => {
     const handleSettingChange = (key, value) => {
         setSettings(prev => ({ ...prev, [key]: value }));
     };
+    useEffect(() => {
+        if (!user?.id) return;
+
+        fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.id}`)
+            .then(res => res.json())
+            .then(data => setDeletedUrls(data))
+            .catch(err => console.error(err));
+    }, [user?.id]);
+
 
     const handleRtUrlChange = (index, field, value) => {
         const newUrls = [...settings.rt_urls];
@@ -140,6 +167,8 @@ const Settings = ({ user }) => {
         handleSettingChange('static_urls', newUrls);
     };
 
+
+
     const [saving, setSaving] = useState(false);
     const saveSettings = () => {
         setSaving(true);
@@ -180,10 +209,10 @@ const Settings = ({ user }) => {
                         {selectedMenu === 'rt' && (
                             <AccordionWrapper>
                                 <AccordionHeader onClick={() => setOpenRT(!openRT)}>
-                                    Real Time URL Listesi ({settings.rt_urls.length})
+                                    Real Time URL Listesi ({filteredRtUrls.length})
                                 </AccordionHeader>
                                 <AccordionContent open={openRT}>
-                                    {settings.rt_urls.map((item, idx) => (
+                                    {filteredRtUrls.map((item, idx) => (
                                         <Row key={idx}>
                                             <Input
                                                 type="text"
@@ -210,7 +239,7 @@ const Settings = ({ user }) => {
                                         </Row>
 
                                     ))}
-                                    <Button onClick={addRtUrl} disabled={settings.rt_urls.length >= (plan?.rt_url_limit || 0)}>
+                                    <Button onClick={addRtUrl} isabled={filteredRtUrls.length >= (plan?.rt_url_limit || 0)}>
                                         URL Ekle
                                     </Button>
                                 </AccordionContent>
@@ -223,10 +252,10 @@ const Settings = ({ user }) => {
                         {selectedMenu === 'static' && (
                             <AccordionWrapper>
                                 <AccordionHeader onClick={() => setOpenStatic(!openStatic)}>
-                                    Static URL Listesi ({settings.static_urls.length})
+                                    Static URL Listesi ({filteredStaticUrls.length})
                                 </AccordionHeader>
                                 <AccordionContent open={openStatic}>
-                                    {settings.static_urls.map((item, idx) => (
+                                    {filteredStaticUrls.map((item, idx) => (
                                         <Row key={idx}>
                                             <Input
                                                 type="text"
@@ -258,7 +287,7 @@ const Settings = ({ user }) => {
                                     ))}
                                     <Button
                                         onClick={addStaticUrl}
-                                        disabled={settings.static_urls.length >= (plan?.static_url_limit || 0)}
+                                        disabled={filteredStaticUrls.length >= (plan?.static_url_limit || 0)}
                                     >
                                         URL Ekle
                                     </Button>
