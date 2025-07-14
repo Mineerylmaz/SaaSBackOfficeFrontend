@@ -57,6 +57,18 @@ const Pricing = () => {
 
               <li>RT URL Limit: {plan.rt_url_limit || 0}</li>
               <li>Static URL Limit: {plan.static_url_limit || 0}</li>
+              <li>Max File Size: {plan.max_file_size || 0} MB</li>
+              <li>
+                Roller:{" "}
+                {plan.roles && plan.roles.length > 0
+                  ? plan.roles.map((r, i) => (
+                    <span key={i}>
+                      {r.role} ({r.count}){i < plan.roles.length - 1 ? ", " : ""}
+                    </span>
+                  ))
+                  : "Yok"}
+              </li>
+
             </ul>
 
 

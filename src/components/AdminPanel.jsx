@@ -7,6 +7,17 @@ import Silbuton from './Silbuton';
 
 
 const AdminPanel = () => {
+
+
+    const [showAddRoleForm, setShowAddRoleForm] = useState({}); // planIndex: bool
+    const [newRolePerPlan, setNewRolePerPlan] = useState({});
+    const [newRoleCountPerPlan, setNewRoleCountPerPlan] = useState({});
+    const [showRoleModal, setShowRoleModal] = useState(false);
+    const [selectedPlanForRoleAdd, setSelectedPlanForRoleAdd] = useState(null);
+    const [newRole, setNewRole] = useState('');
+    const [newRoleCount, setNewRoleCount] = useState(0);
+
+
     const [activeTab, setActiveTab] = useState('dashboard');
     const [users, setUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(true);
@@ -28,12 +39,80 @@ const AdminPanel = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [showNewPlanForm, setShowNewPlanForm] = React.useState(false);
 
+    const [newPlanMaxFileSize, setNewPlanMaxFileSize] = useState(0);
 
     const admin = {
         name: 'Admin User',
         role: 'Super Admin',
         avatar: 'https://i.pravatar.cc/100'
     };
+
+    const toggleAddRoleForm = (index) => {
+        setShowAddRoleForm(prev => ({
+            ...prev,
+            [index]: !prev[index]
+        }));
+    };
+
+    function addRoleToPlan(planIndex, role, count) {
+        if (!role || count <= 0) return;
+
+        setPricing(prev => {
+            const newPricing = [...prev];
+            if (!newPricing[planIndex].roles) {
+                newPricing[planIndex].roles = [];
+            }
+            // Eğer aynı role zaten varsa eklemeden önce kontrol et
+            const exists = newPricing[planIndex].roles.find(r => r.role === role);
+            if (exists) {
+                exists.count += count; // Varsa sayıyı güncelle
+            } else {
+                newPricing[planIndex].roles.push({ role, count });
+            }
+            return newPricing;
+        });
+
+        // Modal kapatma ve input temizleme işlemi burada yapılabilir
+        setShowRoleModal(false);
+        setNewRole('');
+        setNewRoleCount(0);
+    }
+    const handleRoleCountChange = (planIndex, roleIndex, count) => {
+        setPricing(prev => {
+            // Kopya oluştur
+            const updated = prev.map((plan, i) => {
+                if (i === planIndex) {
+                    // Rol listesinin kopyasını oluştur
+                    const newRoles = plan.roles ? [...plan.roles] : [];
+                    newRoles[roleIndex] = {
+                        ...newRoles[roleIndex],
+                        count: count,
+                    };
+                    return { ...plan, roles: newRoles };
+                }
+                return plan;
+            });
+            return updated;
+        });
+    };
+
+    const removeRole = (planIndex, roleIndex) => {
+        setPricing(prev => {
+            const updated = prev.map((plan, i) => {
+                if (i === planIndex) {
+                    const newRoles = [...(plan.roles || [])];
+                    newRoles.splice(roleIndex, 1);
+                    return { ...plan, roles: newRoles };
+                }
+                return plan;
+            });
+            return updated;
+        });
+    };
+
+
+
+
     const deletePlan = (planIndex) => {
         Swal.fire({
             title: 'Planı silmek istediğinize emin misiniz?',
@@ -58,6 +137,9 @@ const AdminPanel = () => {
             }
         });
     };
+
+
+
 
     useEffect(() => {
         fetch('http://localhost:5000/api/register/list-users')
@@ -199,6 +281,8 @@ const AdminPanel = () => {
             features: featuresArray,
             rt_url_limit: Number(newPlanRTLimit),
             static_url_limit: Number(newPlanStaticLimit),
+            max_file_size: Number(newPlanMaxFileSize) || 0,
+            roles: []
         };
 
 
@@ -471,6 +555,59 @@ const AdminPanel = () => {
                                                         }}
                                                     />
                                                 </label>
+                                                <label
+                                                    style={{
+                                                        flex: "0 0 120px",
+                                                        color: "#071f35",
+                                                        fontWeight: "600",
+                                                    }}
+                                                >
+                                                    Dosya Boyutu:
+                                                    <input
+                                                        type="number"
+                                                        value={plan.max_file_size || 0}
+                                                        onChange={(e) =>
+                                                            handlePricingChange(index, "max_file_size", Number(e.target.value))
+                                                        }
+                                                        style={{
+                                                            ...inputStyle,
+                                                            width: "100%",
+                                                            marginTop: "0.25rem",
+                                                        }}
+                                                        placeholder="MB"
+                                                    />
+                                                </label>
+                                                {plan.roles && plan.roles.map((r, i) => (
+                                                    <div
+                                                        key={i}
+                                                        style={roleRowStyle}
+
+                                                    >
+                                                        <span style={roleNameStyle}>{r.role}</span>
+                                                        <input
+                                                            type="number"
+                                                            value={r.count}
+                                                            min={0}
+                                                            onChange={e => handleRoleCountChange(index, i, Number(e.target.value))}
+                                                            style={roleCountInputStyle}
+                                                        />
+                                                        <Silbuton onClick={() => removeRole(index, i)}>Sil</Silbuton>
+                                                    </div>
+                                                ))}
+
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedPlanForRoleAdd(index);
+                                                        setShowRoleModal(true);
+                                                        setNewRole('');
+                                                        setNewRoleCount(0);
+                                                    }}
+                                                    style={addRoleButtonStyle}
+                                                >
+                                                    Rol Ekle
+                                                </button>
+
+
 
                                                 <Silbuton
                                                     onClick={() => deletePlan(index)}
@@ -483,16 +620,52 @@ const AdminPanel = () => {
                                                         borderRadius: "6px",
                                                         cursor: "pointer",
                                                         fontWeight: "600",
+                                                        marginTop: '10px'
                                                     }}
                                                 >
                                                     Sil
                                                 </Silbuton>
                                             </div>
-
-
                                         </div>
                                     ))}
-
+                                    {showRoleModal && (
+                                        <div style={{
+                                            position: 'fixed',
+                                            top: 0, left: 0, right: 0, bottom: 0,
+                                            backgroundColor: 'rgba(0,0,0,0.5)',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            zIndex: 9999,
+                                        }}>
+                                            <div style={textareaStyle} >
+                                                <h3>Rol Ekle</h3>
+                                                <select value={newRole} onChange={e => setNewRole(e.target.value)} style={selectStyle}>
+                                                    <option value="">Rol Seç</option>
+                                                    <option value="viewer">Viewer</option>
+                                                    <option value="editor">Editor</option>
+                                                    <option value="admin">Admin</option>
+                                                </select>
+                                                <input
+                                                    type="number"
+                                                    min={0}
+                                                    value={newRoleCount}
+                                                    onChange={e => setNewRoleCount(Number(e.target.value))}
+                                                    placeholder="Kişi Sayısı"
+                                                    style={inputStyle}
+                                                />
+                                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                                    <button onClick={() => setShowRoleModal(false)}>İptal</button>
+                                                    <button onClick={() => {
+                                                        if (selectedPlanForRoleAdd !== null) {
+                                                            addRoleToPlan(selectedPlanForRoleAdd, newRole, newRoleCount);
+                                                            setShowRoleModal(false);
+                                                        }
+                                                    }}>Ekle</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {showNewPlanForm && (
                                         <div
@@ -576,6 +749,27 @@ const AdminPanel = () => {
                                                     placeholder="0"
                                                 />
                                             </label>
+                                            <label
+                                                style={{
+                                                    flex: "0 0 120px",
+                                                    color: "#071f35",
+                                                    fontWeight: "600",
+                                                }}
+                                            >
+                                                Maks. Dosya Boyutu:
+                                                <input
+                                                    type="number"
+                                                    value={newPlanMaxFileSize}
+                                                    onChange={(e) => setNewPlanMaxFileSize(e.target.value)}
+                                                    style={{
+                                                        ...inputStyle,
+                                                        width: "100%",
+                                                        marginTop: "0.25rem",
+                                                    }}
+                                                    placeholder="MB"
+                                                />
+                                            </label>
+
 
                                             <button
                                                 onClick={() => {
@@ -638,7 +832,7 @@ const AdminPanel = () => {
                     </>
                 )}
             </main>
-        </div>
+        </div >
     );
 
 };
@@ -684,9 +878,12 @@ const UserTable = ({ users, onDelete }) => (
 );
 
 
+
+
+
 const inputStyle = {
     marginLeft: '10px',
-    backgroundColor: '#227BBF',
+    backgroundColor: '#d9e8ff',
     border: '1px solid #3ec6ff',
     color: '#071f35',
     borderRadius: '5px',
@@ -698,12 +895,13 @@ const textareaStyle = {
     display: 'block',
     width: '100%',
     maxWidth: '500px',
-    backgroundColor: '#227BBF',
+    backgroundColor: 'white',  // Geçerli renk ver
     border: '1px solid #3ec6ff',
     color: '#071f35',
     borderRadius: '5px',
     padding: '10px'
 };
+
 
 const chipStyle = {
     background: '#3ec6ff',
@@ -722,6 +920,84 @@ const toggleButtonStyle = {
     padding: '5px 10px',
     cursor: 'pointer'
 };
+const roleRowStyle = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#d9e8ff",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    marginTop: "8px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+    fontWeight: "600",
+    color: "#034078",
+};
+
+const roleNameStyle = {
+    flex: 1,
+    fontWeight: "700",
+    fontSize: "14px",
+};
+
+const roleCountInputStyle = {
+    width: "60px",
+    borderRadius: "6px",
+    border: "1px solid #7baaf7",
+    padding: "4px 8px",
+    fontWeight: "500",
+    color: "#034078",
+    backgroundColor: "#f0f7ff",
+    outline: "none",
+    transition: "border-color 0.3s",
+};
+
+const roleCountInputFocus = {
+    borderColor: "#1e40af",
+};
+
+
+const addRoleFormStyle = {
+    display: "flex",
+    gap: "12px",
+    alignItems: "center",
+    marginTop: "16px",
+    backgroundColor: "#f0f7ff",
+    padding: "12px 16px",
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+};
+
+const selectStyle = {
+    padding: "8px 12px",
+    borderRadius: "8px",
+    border: "1px solid #7baaf7",
+    backgroundColor: "white",
+    color: "#034078",
+    fontWeight: "600",
+    minWidth: "120px",
+    cursor: "pointer",
+    transition: "border-color 0.3s",
+};
+
+
+
+const addRoleButtonStyle = {
+    backgroundColor: "#446d92",
+    color: "white",
+    padding: "8px 16px",
+    borderRadius: "10px",
+    border: "none",
+    cursor: "pointer",
+    fontWeight: "700",
+    fontSize: "14px",
+    boxShadow: "0 2px 6px rgba(68,109,146,0.7)",
+    transition: "background-color 0.3s",
+};
+
+const addRoleButtonHover = {
+    backgroundColor: "#35577d",
+};
+
 
 const saveButtonStyle = {
     marginTop: '20px',

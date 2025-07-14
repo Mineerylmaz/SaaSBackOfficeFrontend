@@ -72,6 +72,7 @@ const Profile = ({ user, settings }) => {
   );
 };
 
+
 const StyledWrapper = styled.div`
   .profile-page {
     display: flex;
@@ -79,6 +80,13 @@ const StyledWrapper = styled.div`
     align-items: flex-start;
     max-width: 1200px;
     margin: 0 auto;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      max-width: 100%;
+      padding: 0 10px;
+      gap: 15px;
+    }
   }
 
   .profile-card {
@@ -89,6 +97,13 @@ const StyledWrapper = styled.div`
     padding: 20px;
     position: relative;
     height: 400px;
+
+    @media (max-width: 768px) {
+      flex: none;
+      width: 100%;
+      height: auto;
+      padding-bottom: 40px; /* Avatar ve başlık alanı için biraz boşluk */
+    }
   }
 
   .cards__img {
@@ -96,6 +111,10 @@ const StyledWrapper = styled.div`
     width: 100%;
     background: #333;
     border-radius: 20px 20px 0 0;
+
+    @media (max-width: 768px) {
+      height: 120px;
+    }
   }
 
   .cards__avatar {
@@ -109,11 +128,25 @@ const StyledWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media (max-width: 768px) {
+      position: relative;
+      top: auto;
+      left: auto;
+      margin: -45px auto 10px auto; /* Üstten biraz yukarı çek ve ortala */
+      width: 70px;
+      height: 70px;
+    }
   }
 
   .cards__avatar svg {
     width: 80px;
     height: 80px;
+
+    @media (max-width: 768px) {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   .cards__title {
@@ -121,32 +154,31 @@ const StyledWrapper = styled.div`
     font-size: 16px;
     font-weight: bold;
     text-align: center;
+
+    @media (max-width: 768px) {
+      margin-top: 0;
+      font-size: 18px;
+    }
   }
 
-  .rt-url-list {
+  .rt-url-list, .static-url-list {
     flex: 1;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       var(--e-global-color-primary),
       var(--e-global-color-secondary),
-      var(--e-global-color-65fcc69));
+      var(--e-global-color-65fcc69)
+    );
     border-radius: 8px;
     padding: 1rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     max-height: 400px;
     overflow-y: auto;
-  }
 
-  .static-url-list {
-   flex: 1;
-    background: linear-gradient(135deg,
-      var(--e-global-color-primary),
-      var(--e-global-color-secondary),
-      var(--e-global-color-65fcc69));
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    max-height: 400px;
-    overflow-y: auto;
+    @media (max-width: 768px) {
+      max-height: none;
+      width: 100%;
+    }
   }
 
   h2 {
@@ -161,5 +193,6 @@ const StyledWrapper = styled.div`
     text-align: center;
   }
 `;
+
 
 export default Profile;

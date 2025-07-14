@@ -8,6 +8,7 @@ import Profile from './Profile';
 import Silbuton from './Silbuton';
 import UrlResultsGrid from './UrlResultsGrid';
 import DateFilter from './DateFilter';
+import DragDropFileUpload from './DragDropFileUpload';
 
 const Settings = ({ user }) => {
     const [plan, setPlan] = useState(null);
@@ -18,6 +19,7 @@ const Settings = ({ user }) => {
         notifications: false,
     });
     const [loading, setLoading] = useState(true);
+    const [fakeFileSize, setFakeFileSize] = useState(0);
 
     const [selectedMenu, setSelectedMenu] = useState('rt');
     const [openRT, setOpenRT] = useState(true);
@@ -347,6 +349,15 @@ const Settings = ({ user }) => {
                 </HorizontalWrapper>
             )}
 
+            {selectedMenu === 'upload' && (
+
+                <div>
+                    <DragDropFileUpload></DragDropFileUpload>
+                </div>
+            )}
+
+
+
             {selectedMenu === 'profile' && <Profile user={user} settings={settings} />}
         </Wrapper>
     );
@@ -354,9 +365,70 @@ const Settings = ({ user }) => {
 };
 
 
+
+
+
 export default Settings;
 
 
+
+
+const AccordionWrapper = styled.div`
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+`;
+
+const AccordionHeader = styled.button`
+  width: 100%;
+  background: #446d92;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  text-align: left;
+  font-weight: 600;
+  cursor: pointer;
+`;
+
+const AccordionContent = styled.div`
+  background: #f1f5f9;
+  max-height: ${({ open }) => (open ? '1000px' : '0')};
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding: ${({ open }) => (open ? '15px' : '0 15px')};
+`;
+
+const Row = styled.div`
+  
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+`;
+
+
+const SaveButton = styled.button`
+  padding: 12px 25px;
+  margin: 10px 0 0 0;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  background: #446d92;
+  color: #fff;
+  transition: background-color 0.3s ease;
+
+  margin-left: auto;
+  display: inline-block;
+
+  &:disabled {
+    background: #999;
+    cursor: not-allowed;
+  }
+`;
 const Wrapper = styled.div`
   max-width: 1000px;
   margin: 0 auto;
@@ -364,6 +436,13 @@ const Wrapper = styled.div`
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    max-width: 100%;
+    padding: 10px;
+  }
 `;
 
 const HorizontalWrapper = styled.div`
@@ -371,6 +450,21 @@ const HorizontalWrapper = styled.div`
   gap: 20px;
   align-items: flex-start;
   width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
+`;
+
+const ContentWrapper = styled.div`
+  flex: 1;
+  min-width: 350px;
+
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+  }
 `;
 
 const PlanCard = styled.div`
@@ -440,65 +534,35 @@ const PlanCard = styled.div`
     gap: 4px;
     font-size: 0.95rem;
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
-const ContentWrapper = styled.div`
+/* Profil kısmı için container */
+const ProfileWrapper = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+
+  @media (max-width: 768px) {
+    /* Mobilde tam genişlik */
+    width: 100%;
+  }
+`;
+
+/* URL sonuçları container */
+const UrlResultsContainer = styled.div`
   flex: 1;
-  min-width: 350px;
-`;
-
-const AccordionWrapper = styled.div`
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 15px;
-`;
-
-const AccordionHeader = styled.button`
   width: 100%;
-  background: #446d92;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  text-align: left;
-  font-weight: 600;
-  cursor: pointer;
-`;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 600px;
 
-const AccordionContent = styled.div`
-  background: #f1f5f9;
-  max-height: ${({ open }) => (open ? '1000px' : '0')};
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  padding: ${({ open }) => (open ? '15px' : '0 15px')};
-`;
-
-const Row = styled.div`
-  
-  align-items: center;
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-  width: 100%;
-`;
-
-const SaveButton = styled.button`
-  padding: 12px 25px;
-  margin: 10px 0 0 0;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  background: #446d92;
-  color: #fff;
-  transition: background-color 0.3s ease;
-
-  margin-left: auto;
-  display: inline-block;
-
-  &:disabled {
-    background: #999;
-    cursor: not-allowed;
+  @media (max-width: 768px) {
+    max-height: none;
+    overflow-y: visible;
   }
 `;
