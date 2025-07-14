@@ -54,29 +54,7 @@ const AdminPanel = () => {
         }));
     };
 
-    function addRoleToPlan(planIndex, role, count) {
-        if (!role || count <= 0) return;
 
-        setPricing(prev => {
-            const newPricing = [...prev];
-            if (!newPricing[planIndex].roles) {
-                newPricing[planIndex].roles = [];
-            }
-            // Eğer aynı role zaten varsa eklemeden önce kontrol et
-            const exists = newPricing[planIndex].roles.find(r => r.role === role);
-            if (exists) {
-                exists.count += count; // Varsa sayıyı güncelle
-            } else {
-                newPricing[planIndex].roles.push({ role, count });
-            }
-            return newPricing;
-        });
-
-        // Modal kapatma ve input temizleme işlemi burada yapılabilir
-        setShowRoleModal(false);
-        setNewRole('');
-        setNewRoleCount(0);
-    }
     const handleRoleCountChange = (planIndex, roleIndex, count) => {
         setPricing(prev => {
             // Kopya oluştur
@@ -292,6 +270,51 @@ const AdminPanel = () => {
         setNewPlanPrice('');
         setNewPlanFeaturesText('');
     };
+    function addRoleToPlan(planIndex, role, count) {
+        if (!role || count <= 0) return;
+
+        setPricing(prev => {
+            const newPricing = prev.map((plan, i) => {
+                if (i !== planIndex) return plan;
+
+                const roles = plan.roles ? [...plan.roles] : [];
+                const roleIndex = roles.findIndex(r => r.role === role);
+
+                if (roleIndex >= 0) {
+                    const updatedRole = {
+                        ...roles[roleIndex],
+                        count: roles[roleIndex].count + count,
+                    };
+                    const updatedRoles = [...roles];
+                    updatedRoles[roleIndex] = updatedRole;
+                    return { ...plan, roles: updatedRoles };
+                } else {
+                    return { ...plan, roles: [...roles, { role, count }] };
+                }
+            });
+            return newPricing;
+        });
+
+        setShowRoleModal(false);
+        setNewRole('');
+        setNewRoleCount(0);
+    }
+
+    const updateUserRoles = async (userId, roles) => {
+        try {
+            const response = await fetch(`/api/users/update-user-roles/${userId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roles }),
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Güncelleme başarısız');
+            alert('Roller başarıyla güncellendi');
+        } catch (error) {
+            alert('Hata: ' + error.message);
+        }
+    };
+
 
     const savePricing = () => {
         console.log('SAVE PRICING GÖNDERİLEN:', pricing);
@@ -659,7 +682,7 @@ const AdminPanel = () => {
                                                     <button onClick={() => {
                                                         if (selectedPlanForRoleAdd !== null) {
                                                             addRoleToPlan(selectedPlanForRoleAdd, newRole, newRoleCount);
-                                                            setShowRoleModal(false);
+
                                                         }
                                                     }}>Ekle</button>
                                                 </div>
@@ -868,6 +891,19 @@ const UserTable = ({ users, onDelete }) => (
                     <td style={tableCell}>{user.plan}</td>
                     <td style={tableCell}>{formatDate(user.last_login)}</td>
                     <td style={tableCell}>{formatDate(user.created_at)}</td>
+                    <div>
+                        <b>Roller:</b>
+                        {user.roles && user.roles.length > 0 ? (
+                            user.roles.map((r, i) => (
+                                <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                    <span>{r.role}</span>
+                                    <span>(Adet: {r.count})</span>
+                                </div>
+                            ))
+                        ) : (
+                            <span>Rol yok</span>
+                        )}
+                    </div>
                     <td style={tableCell}>
                         <button onClick={() => onDelete(user.id)} style={{ cursor: 'pointer' }}>✖</button>
                     </td>

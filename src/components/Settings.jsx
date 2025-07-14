@@ -9,6 +9,7 @@ import Silbuton from './Silbuton';
 import UrlResultsGrid from './UrlResultsGrid';
 import DateFilter from './DateFilter';
 import DragDropFileUpload from './DragDropFileUpload';
+import Roller from './Roller';
 
 const Settings = ({ user }) => {
     const [plan, setPlan] = useState(null);
@@ -354,6 +355,12 @@ const Settings = ({ user }) => {
                 <div>
                     <DragDropFileUpload></DragDropFileUpload>
                 </div>
+            )}
+            {selectedMenu === 'roller' && (
+                <div>
+                    <Roller></Roller>
+                </div>
+
             )}
 
 
