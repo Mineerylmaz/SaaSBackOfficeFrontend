@@ -11,9 +11,7 @@ Bu proje, SaaS Backoffice uygulamasının React ile geliştirilmiş frontend (ku
 - [Çalıştırma](#çalıştırma)
 - [Yapı ve Dizin](#yapı-ve-dizin)
 - [Kullanım](#kullanım)
-- [Çevresel Değişkenler](#çevresel-değişkenler)
-- [Katkıda Bulunma](#katkıda-bulunma)
-- [Lisans](#lisans)
+
 
 ---
 
@@ -52,16 +50,18 @@ React kullanarak geliştirilen bu frontend, kullanıcıların SaaS abonelik sür
 git clone https://github.com/Mineerylmaz/SaaSBackOfficeFrontend.git
 cd SaaSBackOfficeFrontend
 
+
 2.Bağımlılıkları yükle
 
 npm install
-3.Çalıştırma
+
+## Çalıştırma
 Projeyi yerel geliştirme sunucusunda başlat:
 
 npm start
 Tarayıcıda otomatik olarak http://localhost:3000 açılır.
 
-Yapı ve Dizin
+## Yapı ve Dizin
 
 /src
   /components         # React bileşenleri (Login, Register, Pricing, Payment, Navbar vs.)
@@ -69,5 +69,18 @@ Yapı ve Dizin
   /utils              # Yardımcı fonksiyonlar (API istekleri, token yönetimi vb.)
   App.js              # Uygulama ana bileşeni
 
-  
+## Kullanım
+Kayıt Ol: Yeni kullanıcı oluşturmak için /register sayfasını kullanın.
+
+Giriş Yap: Mevcut kullanıcılar /login sayfasından giriş yapabilir.
+
+Abonelik Planları: Giriş yaptıktan sonra /pricing sayfasından planlar listelenir.
+
+Ödeme: Plan seçildikten sonra ödeme işlemi /payment sayfasında gerçekleştirilir.
+
+Oturum: JWT token localStorage'da saklanır ve API çağrılarında kullanılır.
+
+Çıkış: Kullanıcı çıkış yaptığında localStorage temizlenir.
+
+
 
