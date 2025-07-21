@@ -9,6 +9,9 @@ export default function Navbars({ user, setUser }) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         localStorage.removeItem("selectedPlan");
+
+        localStorage.removeItem("invites");
+
         setUser(null);
         navigate("/");
     };

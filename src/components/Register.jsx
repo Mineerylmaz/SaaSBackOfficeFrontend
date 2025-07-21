@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const Register = ({ setUser }) => {
   const navigate = useNavigate();
-
+  const { inviteToken } = useParams();
+  const [inviteInfo, setInviteInfo] = useState(null);
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -12,62 +13,47 @@ const Register = ({ setUser }) => {
     password: '',
   });
 
+  useEffect(() => {
+    if (inviteToken) {
+      fetch(`http://localhost:5000/api/invites/${inviteToken}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) {
+            setInviteInfo(data);
+            setFormData(f => ({ ...f, email: data.email }));
+          } else {
+            setInviteInfo(null);
+          }
+        })
+        .catch(() => setInviteInfo(null));
+    }
+  }, [inviteToken]);
+
   const handleChange = (e) => {
+    if (inviteInfo && e.target.name === 'email') return;
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-
-  const handleLogin = async () => {
-    const res = await fetch('http://localhost:5000/api/login/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: formData.email,
-        password: formData.password
-      }),
-    });
-
-    const data = await res.json();
-
-    console.log('Backendden gelen plan:', data.plan);
-
-    localStorage.setItem('user', JSON.stringify({
-      id: data.id,
-      email: data.email,
-      role: data.role,
-      plan: data.plan,
-      token: data.token
-    }));
-
-    setUser({
-      id: data.id,
-      email: data.email,
-      role: data.role,
-      plan: data.plan,
-      token: data.token
-    });
-  };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      const bodyData = {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        email: formData.email,
+        password: formData.password,
+      };
+      if (inviteToken) bodyData.inviteToken = inviteToken;
+
       const res = await fetch('http://localhost:5000/api/register/add-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstname: formData.firstname,
-          lastname: formData.lastname,
-          email: formData.email,
-          password: formData.password,
-        }),
+        body: JSON.stringify(bodyData),
       });
 
       if (res.ok) {
-
+        // Kayıt başarılı, otomatik giriş yap
         const loginRes = await fetch('http://localhost:5000/api/login/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -101,7 +87,6 @@ const Register = ({ setUser }) => {
         } else {
           alert('Kayıt başarılı, ancak otomatik giriş yapılamadı.');
         }
-
       } else {
         const data = await res.json();
         alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
@@ -111,11 +96,29 @@ const Register = ({ setUser }) => {
     }
   };
 
-
   return (
     <StyledWrapper>
       <div className='card'>
         <div className="card2">
+          {inviteInfo && (
+            <div
+              style={{
+                backgroundColor: '#e3f2fd',
+                padding: '10px',
+                marginBottom: '15px',
+                borderRadius: '5px',
+                color: '#003366',
+                fontWeight: '600',
+                textAlign: 'center',
+              }}
+            >
+              <p>Davet Edilerek Kayıt Oluyorsunuz!</p>
+              <p>Davet Eden: <i>{inviteInfo.inviter_email || 'Bilinmiyor'}</i></p>
+              <p>Atanan Rol: <i>{inviteInfo.role}</i></p>
+              <p>Email alanı değiştirilemez.</p>
+            </div>
+          )}
+
           <form className="form" onSubmit={handleSubmit}>
             <p className="title">Register </p>
             <p className="message">Signup now and get full access to our app. </p>
@@ -152,6 +155,7 @@ const Register = ({ setUser }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                readOnly={!!inviteInfo} // davetliyse kilitli
               />
             </label>
             <label>
@@ -183,7 +187,7 @@ const StyledWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
- 
+
   .card {
     background-image: linear-gradient(163deg, #98b1c8 0%, #3700ff 100%);
     border-radius: 22px;
@@ -199,21 +203,19 @@ const StyledWrapper = styled.div`
     transform: scale(0.98);
     border-radius: 20px;
   }
-    .input{
-
-      display: flex;
+  .input{
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5em;
     border-radius: 25px;
-    
     margin:10px;
     border: none;
     outline: none;
     color: white;
     background-color: #171717;
     box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
-    }
+  }
 
   .card:hover {
     box-shadow: 0px 0px 30px 1px rgba(0, 255, 117, 0.30);
@@ -231,12 +233,10 @@ const StyledWrapper = styled.div`
     border: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
     border-radius: 22px;
     transition: all .3s;
-    
-  padding-left: 40px;   
-  padding-right: 40px;  
-  padding-top: 60px;
-  padding-bottom: 60px;
-
+    padding-left: 40px;   
+    padding-right: 40px;  
+    padding-top: 60px;
+    padding-bottom: 60px;
   }
 
   .title {
@@ -294,12 +294,11 @@ const StyledWrapper = styled.div`
     display: flex;
     width: 100%;
     gap: 66px; 
-    
   }
     
-.flex label {
-  flex: 1;  
-}
+  .flex label {
+    flex: 1;  
+  }
 
   .form label {
     position: relative;
@@ -336,11 +335,9 @@ const StyledWrapper = styled.div`
   .form label .input:valid + span {
     color: #00bfff;
     top: 0px;
-    font-size: 0.7em;
     font-weight: 600;
   }
 
- 
   .submit {
     border: none;
     outline: none;
@@ -348,15 +345,13 @@ const StyledWrapper = styled.div`
     border-radius: 12px;
     color: #fff;
     font-size: 18px;
-    transform: .3s ease;
-    
-      background-image: linear-gradient(163deg, #446d92 0%, #13034b 100%);
+    transition: .3s ease;
+    background-image: linear-gradient(163deg, #446d92 0%, #13034b 100%);
     cursor: pointer;
   }
 
   .submit:hover {
-      background-image: linear-gradient(163deg, #446d92 0%, #13034b 100%);
-       background-image: linear-gradient(163deg, #98b1c8 0%, #3700ff 100%);
+    background-image: linear-gradient(163deg, #98b1c8 0%, #3700ff 100%);
     color: rgb(0, 255, 200);
   }
 
@@ -365,7 +360,6 @@ const StyledWrapper = styled.div`
       transform: scale(0.9);
       opacity: 1;
     }
-
     to {
       transform: scale(1.8);
       opacity: 0;

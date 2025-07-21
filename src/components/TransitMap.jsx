@@ -4,9 +4,9 @@ import 'leaflet/dist/leaflet.css';
 import Papa from 'papaparse';
 import L from 'leaflet';
 
-// Icon tanımı
+
 const busStopIcon = new L.Icon({
-  iconUrl: '/icons/bus-stop.png',
+  iconUrl: '/icons/image.png',
   iconSize: [30, 30],
   iconAnchor: [15, 30],
   popupAnchor: [0, -30],

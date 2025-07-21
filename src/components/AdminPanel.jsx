@@ -331,7 +331,14 @@ const AdminPanel = () => {
             .then(data => {
                 console.log('BACKENDTEN DÖNEN:', data);
                 setPricing(data);
-                alert('Fiyatlar başarıyla güncellendi!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Başarılı!',
+                    text: 'Fiyatlar başarıyla güncellendi!',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Tamam'
+                });
+
             })
             .catch(err => alert(err.message));
     };
@@ -931,7 +938,7 @@ const textareaStyle = {
     display: 'block',
     width: '100%',
     maxWidth: '500px',
-    backgroundColor: 'white',  // Geçerli renk ver
+    backgroundColor: 'white',
     border: '1px solid #3ec6ff',
     color: '#071f35',
     borderRadius: '5px',

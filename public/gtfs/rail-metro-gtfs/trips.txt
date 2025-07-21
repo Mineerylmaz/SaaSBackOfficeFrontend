@@ -1,0 +1,1261 @@
+route_id,service_id,trip_id,trip_headsign,direction_id,block_id,shape_id,wheelchair_accessible
+1,DAYSOFWEEK,1,Evka - 3,,,,1
+1,DAYSOFWEEK,2,Evka - 3,,,,1
+1,DAYSOFWEEK,3,Evka - 3,,,,1
+1,DAYSOFWEEK,4,Evka - 3,,,,1
+1,DAYSOFWEEK,5,Evka - 3,,,,1
+1,DAYSOFWEEK,6,Evka - 3,,,,1
+1,DAYSOFWEEK,7,Evka - 3,,,,1
+1,DAYSOFWEEK,8,Evka - 3,,,,1
+1,DAYSOFWEEK,9,Evka - 3,,,,1
+1,DAYSOFWEEK,10,Evka - 3,,,,1
+1,DAYSOFWEEK,11,Evka - 3,,,,1
+1,DAYSOFWEEK,12,Evka - 3,,,,1
+1,DAYSOFWEEK,13,Evka - 3,,,,1
+1,DAYSOFWEEK,14,Evka - 3,,,,1
+1,DAYSOFWEEK,15,Evka - 3,,,,1
+1,DAYSOFWEEK,16,Evka - 3,,,,1
+1,DAYSOFWEEK,17,Evka - 3,,,,1
+1,DAYSOFWEEK,18,Evka - 3,,,,1
+1,DAYSOFWEEK,19,Evka - 3,,,,1
+1,DAYSOFWEEK,20,Evka - 3,,,,1
+1,DAYSOFWEEK,21,Evka - 3,,,,1
+1,DAYSOFWEEK,22,Evka - 3,,,,1
+1,DAYSOFWEEK,23,Evka - 3,,,,1
+1,DAYSOFWEEK,24,Evka - 3,,,,1
+1,DAYSOFWEEK,25,Evka - 3,,,,1
+1,DAYSOFWEEK,26,Evka - 3,,,,1
+1,DAYSOFWEEK,27,Evka - 3,,,,1
+1,DAYSOFWEEK,28,Evka - 3,,,,1
+1,DAYSOFWEEK,29,Evka - 3,,,,1
+1,DAYSOFWEEK,30,Evka - 3,,,,1
+1,DAYSOFWEEK,31,Evka - 3,,,,1
+1,DAYSOFWEEK,32,Evka - 3,,,,1
+1,DAYSOFWEEK,33,Evka - 3,,,,1
+1,DAYSOFWEEK,34,Evka - 3,,,,1
+1,DAYSOFWEEK,35,Evka - 3,,,,1
+1,DAYSOFWEEK,36,Evka - 3,,,,1
+1,DAYSOFWEEK,37,Evka - 3,,,,1
+1,DAYSOFWEEK,38,Evka - 3,,,,1
+1,DAYSOFWEEK,39,Evka - 3,,,,1
+1,DAYSOFWEEK,40,Evka - 3,,,,1
+1,DAYSOFWEEK,41,Evka - 3,,,,1
+1,DAYSOFWEEK,42,Evka - 3,,,,1
+1,DAYSOFWEEK,43,Evka - 3,,,,1
+1,DAYSOFWEEK,44,Evka - 3,,,,1
+1,DAYSOFWEEK,45,Evka - 3,,,,1
+1,DAYSOFWEEK,46,Evka - 3,,,,1
+1,DAYSOFWEEK,47,Evka - 3,,,,1
+1,DAYSOFWEEK,48,Evka - 3,,,,1
+1,DAYSOFWEEK,49,Evka - 3,,,,1
+1,DAYSOFWEEK,50,Evka - 3,,,,1
+1,DAYSOFWEEK,51,Evka - 3,,,,1
+1,DAYSOFWEEK,52,Evka - 3,,,,1
+1,DAYSOFWEEK,53,Evka - 3,,,,1
+1,DAYSOFWEEK,54,Evka - 3,,,,1
+1,DAYSOFWEEK,55,Evka - 3,,,,1
+1,DAYSOFWEEK,56,Evka - 3,,,,1
+1,DAYSOFWEEK,57,Evka - 3,,,,1
+1,DAYSOFWEEK,58,Evka - 3,,,,1
+1,DAYSOFWEEK,59,Evka - 3,,,,1
+1,DAYSOFWEEK,60,Evka - 3,,,,1
+1,DAYSOFWEEK,61,Evka - 3,,,,1
+1,DAYSOFWEEK,62,Evka - 3,,,,1
+1,DAYSOFWEEK,63,Evka - 3,,,,1
+1,DAYSOFWEEK,64,Evka - 3,,,,1
+1,DAYSOFWEEK,65,Evka - 3,,,,1
+1,DAYSOFWEEK,66,Evka - 3,,,,1
+1,DAYSOFWEEK,67,Evka - 3,,,,1
+1,DAYSOFWEEK,68,Evka - 3,,,,1
+1,DAYSOFWEEK,69,Evka - 3,,,,1
+1,DAYSOFWEEK,70,Evka - 3,,,,1
+1,DAYSOFWEEK,71,Evka - 3,,,,1
+1,DAYSOFWEEK,72,Evka - 3,,,,1
+1,DAYSOFWEEK,73,Evka - 3,,,,1
+1,DAYSOFWEEK,74,Evka - 3,,,,1
+1,DAYSOFWEEK,75,Evka - 3,,,,1
+1,DAYSOFWEEK,76,Evka - 3,,,,1
+1,DAYSOFWEEK,77,Evka - 3,,,,1
+1,DAYSOFWEEK,78,Evka - 3,,,,1
+1,DAYSOFWEEK,79,Evka - 3,,,,1
+1,DAYSOFWEEK,80,Evka - 3,,,,1
+1,DAYSOFWEEK,81,Evka - 3,,,,1
+1,DAYSOFWEEK,82,Evka - 3,,,,1
+1,DAYSOFWEEK,83,Evka - 3,,,,1
+1,DAYSOFWEEK,84,Evka - 3,,,,1
+1,DAYSOFWEEK,85,Evka - 3,,,,1
+1,DAYSOFWEEK,86,Evka - 3,,,,1
+1,DAYSOFWEEK,87,Evka - 3,,,,1
+1,DAYSOFWEEK,88,Evka - 3,,,,1
+1,DAYSOFWEEK,89,Evka - 3,,,,1
+1,DAYSOFWEEK,90,Evka - 3,,,,1
+1,DAYSOFWEEK,91,Evka - 3,,,,1
+1,DAYSOFWEEK,92,Evka - 3,,,,1
+1,DAYSOFWEEK,93,Evka - 3,,,,1
+1,DAYSOFWEEK,94,Evka - 3,,,,1
+1,DAYSOFWEEK,95,Evka - 3,,,,1
+1,DAYSOFWEEK,96,Evka - 3,,,,1
+1,DAYSOFWEEK,97,Evka - 3,,,,1
+1,DAYSOFWEEK,98,Evka - 3,,,,1
+1,DAYSOFWEEK,99,Evka - 3,,,,1
+1,DAYSOFWEEK,100,Evka - 3,,,,1
+1,DAYSOFWEEK,101,Evka - 3,,,,1
+1,DAYSOFWEEK,102,Evka - 3,,,,1
+1,DAYSOFWEEK,103,Evka - 3,,,,1
+1,DAYSOFWEEK,104,Evka - 3,,,,1
+1,DAYSOFWEEK,105,Evka - 3,,,,1
+1,DAYSOFWEEK,106,Evka - 3,,,,1
+1,DAYSOFWEEK,107,Evka - 3,,,,1
+1,DAYSOFWEEK,108,Evka - 3,,,,1
+1,DAYSOFWEEK,109,Evka - 3,,,,1
+1,DAYSOFWEEK,110,Evka - 3,,,,1
+1,DAYSOFWEEK,111,Evka - 3,,,,1
+1,DAYSOFWEEK,112,Evka - 3,,,,1
+1,DAYSOFWEEK,113,Evka - 3,,,,1
+1,DAYSOFWEEK,114,Evka - 3,,,,1
+1,DAYSOFWEEK,115,Evka - 3,,,,1
+1,DAYSOFWEEK,116,Evka - 3,,,,1
+1,DAYSOFWEEK,117,Evka - 3,,,,1
+1,DAYSOFWEEK,118,Evka - 3,,,,1
+1,DAYSOFWEEK,119,Evka - 3,,,,1
+1,DAYSOFWEEK,120,Evka - 3,,,,1
+1,DAYSOFWEEK,121,Evka - 3,,,,1
+1,DAYSOFWEEK,122,Evka - 3,,,,1
+1,DAYSOFWEEK,123,Evka - 3,,,,1
+1,DAYSOFWEEK,124,Evka - 3,,,,1
+1,DAYSOFWEEK,125,Evka - 3,,,,1
+1,DAYSOFWEEK,126,Evka - 3,,,,1
+1,DAYSOFWEEK,127,Evka - 3,,,,1
+1,DAYSOFWEEK,128,Evka - 3,,,,1
+1,DAYSOFWEEK,129,Evka - 3,,,,1
+1,DAYSOFWEEK,130,Evka - 3,,,,1
+1,DAYSOFWEEK,131,Evka - 3,,,,1
+1,DAYSOFWEEK,132,Evka - 3,,,,1
+1,DAYSOFWEEK,133,Evka - 3,,,,1
+1,DAYSOFWEEK,134,Evka - 3,,,,1
+1,DAYSOFWEEK,135,Evka - 3,,,,1
+1,DAYSOFWEEK,136,Evka - 3,,,,1
+1,DAYSOFWEEK,137,Evka - 3,,,,1
+1,DAYSOFWEEK,138,Evka - 3,,,,1
+1,DAYSOFWEEK,139,Evka - 3,,,,1
+1,DAYSOFWEEK,140,Evka - 3,,,,1
+1,DAYSOFWEEK,141,Evka - 3,,,,1
+1,DAYSOFWEEK,142,Evka - 3,,,,1
+1,DAYSOFWEEK,143,Evka - 3,,,,1
+1,DAYSOFWEEK,144,Evka - 3,,,,1
+1,DAYSOFWEEK,145,Evka - 3,,,,1
+1,DAYSOFWEEK,146,Evka - 3,,,,1
+1,DAYSOFWEEK,147,Evka - 3,,,,1
+1,DAYSOFWEEK,148,Evka - 3,,,,1
+1,DAYSOFWEEK,149,Evka - 3,,,,1
+1,DAYSOFWEEK,150,Evka - 3,,,,1
+1,DAYSOFWEEK,151,Evka - 3,,,,1
+1,DAYSOFWEEK,152,Evka - 3,,,,1
+1,DAYSOFWEEK,153,Evka - 3,,,,1
+1,DAYSOFWEEK,154,Evka - 3,,,,1
+1,DAYSOFWEEK,155,Evka - 3,,,,1
+1,DAYSOFWEEK,156,Evka - 3,,,,1
+1,DAYSOFWEEK,157,Evka - 3,,,,1
+1,DAYSOFWEEK,158,Evka - 3,,,,1
+1,DAYSOFWEEK,159,Evka - 3,,,,1
+1,DAYSOFWEEK,160,Evka - 3,,,,1
+1,DAYSOFWEEK,161,Evka - 3,,,,1
+1,DAYSOFWEEK,162,Evka - 3,,,,1
+1,DAYSOFWEEK,163,Evka - 3,,,,1
+1,DAYSOFWEEK,164,Evka - 3,,,,1
+1,DAYSOFWEEK,165,Evka - 3,,,,1
+1,DAYSOFWEEK,166,Evka - 3,,,,1
+1,DAYSOFWEEK,167,Evka - 3,,,,1
+1,DAYSOFWEEK,168,Evka - 3,,,,1
+1,DAYSOFWEEK,169,Evka - 3,,,,1
+1,DAYSOFWEEK,170,Evka - 3,,,,1
+1,DAYSOFWEEK,171,Evka - 3,,,,1
+1,DAYSOFWEEK,172,Evka - 3,,,,1
+1,DAYSOFWEEK,173,Evka - 3,,,,1
+1,DAYSOFWEEK,174,Evka - 3,,,,1
+1,DAYSOFWEEK,175,Evka - 3,,,,1
+1,DAYSOFWEEK,176,Evka - 3,,,,1
+1,DAYSOFWEEK,177,Evka - 3,,,,1
+1,DAYSOFWEEK,178,Evka - 3,,,,1
+1,DAYSOFWEEK,179,Evka - 3,,,,1
+1,DAYSOFWEEK,180,Evka - 3,,,,1
+1,DAYSOFWEEK,181,Evka - 3,,,,1
+1,DAYSOFWEEK,182,Evka - 3,,,,1
+1,DAYSOFWEEK,183,Evka - 3,,,,1
+1,DAYSOFWEEK,184,Evka - 3,,,,1
+1,DAYSOFWEEK,185,Evka - 3,,,,1
+1,DAYSOFWEEK,186,Evka - 3,,,,1
+1,DAYSOFWEEK,187,Evka - 3,,,,1
+1,DAYSOFWEEK,188,Evka - 3,,,,1
+1,DAYSOFWEEK,189,Evka - 3,,,,1
+1,DAYSOFWEEK,190,Evka - 3,,,,1
+1,DAYSOFWEEK,191,Evka - 3,,,,1
+1,DAYSOFWEEK,192,Evka - 3,,,,1
+1,DAYSOFWEEK,193,Evka - 3,,,,1
+1,DAYSOFWEEK,194,Evka - 3,,,,1
+1,DAYSOFWEEK,195,Evka - 3,,,,1
+1,DAYSOFWEEK,196,Evka - 3,,,,1
+1,DAYSOFWEEK,197,Evka - 3,,,,1
+1,DAYSOFWEEK,198,Evka - 3,,,,1
+1,DAYSOFWEEK,199,Evka - 3,,,,1
+1,DAYSOFWEEK,200,Evka - 3,,,,1
+1,DAYSOFWEEK,201,Evka - 3,,,,1
+1,DAYSOFWEEK,202,Evka - 3,,,,1
+1,DAYSOFWEEK,203,Evka - 3,,,,1
+1,DAYSOFWEEK,204,Evka - 3,,,,1
+1,DAYSOFWEEK,205,Evka - 3,,,,1
+1,DAYSOFWEEK,206,Evka - 3,,,,1
+1,DAYSOFWEEK,207,Evka - 3,,,,1
+1,DAYSOFWEEK,208,Evka - 3,,,,1
+1,DAYSOFWEEK,209,Evka - 3,,,,1
+1,DAYSOFWEEK,210,Evka - 3,,,,1
+1,DAYSOFWEEK,211,Evka - 3,,,,1
+1,DAYSOFWEEK,212,Evka - 3,,,,1
+1,DAYSOFWEEK,213,Evka - 3,,,,1
+1,DAYSOFWEEK,214,Evka - 3,,,,1
+1,DAYSOFWEEK,215,Evka - 3,,,,1
+1,DAYSOFWEEK,216,Evka - 3,,,,1
+1,DAYSOFWEEK,217,Evka - 3,,,,1
+1,DAYSOFWEEK,218,Evka - 3,,,,1
+1,DAYSOFWEEK,219,Evka - 3,,,,1
+1,DAYSOFWEEK,220,Evka - 3,,,,1
+1,DAYSOFWEEK,221,Evka - 3,,,,1
+1,DAYSOFWEEK,222,Evka - 3,,,,1
+1,DAYSOFWEEK,223,Evka - 3,,,,1
+1,DAYSOFWEEK,224,Evka - 3,,,,1
+1,DAYSOFWEEK,225,Evka - 3,,,,1
+1,DAYSOFWEEK,226,Evka - 3,,,,1
+1,DAYSOFWEEK,227,Evka - 3,,,,1
+1,DAYSOFWEEK,228,Evka - 3,,,,1
+1,DAYSOFWEEK,229,Evka - 3,,,,1
+1,DAYSOFWEEK,230,Evka - 3,,,,1
+1,DAYSOFWEEK,231,Evka - 3,,,,1
+1,DAYSOFWEEK,232,Evka - 3,,,,1
+1,DAYSOFWEEK,233,Evka - 3,,,,1
+1,DAYSOFWEEK,234,Evka - 3,,,,1
+1,DAYSOFWEEK,235,Evka - 3,,,,1
+1,DAYSOFWEEK,236,Evka - 3,,,,1
+1,DAYSOFWEEK,237,Evka - 3,,,,1
+1,DAYSOFWEEK,238,Evka - 3,,,,1
+1,DAYSOFWEEK,239,Evka - 3,,,,1
+1,DAYSOFWEEK,240,Evka - 3,,,,1
+1,DAYSOFWEEK,241,Evka - 3,,,,1
+1,DAYSOFWEEK,242,Evka - 3,,,,1
+1,DAYSOFWEEK,243,Evka - 3,,,,1
+1,DAYSOFWEEK,244,Evka - 3,,,,1
+1,DAYSOFWEEK,245,Evka - 3,,,,1
+1,DAYSOFWEEK,246,Evka - 3,,,,1
+1,DAYSOFWEEK,247,Evka - 3,,,,1
+1,DAYSOFWEEK,248,Evka - 3,,,,1
+1,DAYSOFWEEK,249,Evka - 3,,,,1
+1,DAYSOFWEEK,250,Evka - 3,,,,1
+1,DAYSOFWEEK,251,Evka - 3,,,,1
+1,DAYSOFWEEK,252,Evka - 3,,,,1
+1,DAYSOFWEEK,253,Evka - 3,,,,1
+1,DAYSOFWEEK,254,Evka - 3,,,,1
+1,DAYSOFWEEK,255,Evka - 3,,,,1
+1,DAYSOFWEEK,256,Evka - 3,,,,1
+1,DAYSOFWEEK,257,Evka - 3,,,,1
+1,DAYSOFWEEK,258,Evka - 3,,,,1
+1,DAYSOFWEEK,259,Evka - 3,,,,1
+1,DAYSOFWEEK,260,Evka - 3,,,,1
+1,SATURDAY,261,Evka - 3,,,,1
+1,SATURDAY,262,Evka - 3,,,,1
+1,SATURDAY,263,Evka - 3,,,,1
+1,SATURDAY,264,Evka - 3,,,,1
+1,SATURDAY,265,Evka - 3,,,,1
+1,SATURDAY,266,Evka - 3,,,,1
+1,SATURDAY,267,Evka - 3,,,,1
+1,SATURDAY,268,Evka - 3,,,,1
+1,SATURDAY,269,Evka - 3,,,,1
+1,SATURDAY,270,Evka - 3,,,,1
+1,SATURDAY,271,Evka - 3,,,,1
+1,SATURDAY,272,Evka - 3,,,,1
+1,SATURDAY,273,Evka - 3,,,,1
+1,SATURDAY,274,Evka - 3,,,,1
+1,SATURDAY,275,Evka - 3,,,,1
+1,SATURDAY,276,Evka - 3,,,,1
+1,SATURDAY,277,Evka - 3,,,,1
+1,SATURDAY,278,Evka - 3,,,,1
+1,SATURDAY,279,Evka - 3,,,,1
+1,SATURDAY,280,Evka - 3,,,,1
+1,SATURDAY,281,Evka - 3,,,,1
+1,SATURDAY,282,Evka - 3,,,,1
+1,SATURDAY,283,Evka - 3,,,,1
+1,SATURDAY,284,Evka - 3,,,,1
+1,SATURDAY,285,Evka - 3,,,,1
+1,SATURDAY,286,Evka - 3,,,,1
+1,SATURDAY,287,Evka - 3,,,,1
+1,SATURDAY,288,Evka - 3,,,,1
+1,SATURDAY,289,Evka - 3,,,,1
+1,SATURDAY,290,Evka - 3,,,,1
+1,SATURDAY,291,Evka - 3,,,,1
+1,SATURDAY,292,Evka - 3,,,,1
+1,SATURDAY,293,Evka - 3,,,,1
+1,SATURDAY,294,Evka - 3,,,,1
+1,SATURDAY,295,Evka - 3,,,,1
+1,SATURDAY,296,Evka - 3,,,,1
+1,SATURDAY,297,Evka - 3,,,,1
+1,SATURDAY,298,Evka - 3,,,,1
+1,SATURDAY,299,Evka - 3,,,,1
+1,SATURDAY,300,Evka - 3,,,,1
+1,SATURDAY,301,Evka - 3,,,,1
+1,SATURDAY,302,Evka - 3,,,,1
+1,SATURDAY,303,Evka - 3,,,,1
+1,SATURDAY,304,Evka - 3,,,,1
+1,SATURDAY,305,Evka - 3,,,,1
+1,SATURDAY,306,Evka - 3,,,,1
+1,SATURDAY,307,Evka - 3,,,,1
+1,SATURDAY,308,Evka - 3,,,,1
+1,SATURDAY,309,Evka - 3,,,,1
+1,SATURDAY,310,Evka - 3,,,,1
+1,SATURDAY,311,Evka - 3,,,,1
+1,SATURDAY,312,Evka - 3,,,,1
+1,SATURDAY,313,Evka - 3,,,,1
+1,SATURDAY,314,Evka - 3,,,,1
+1,SATURDAY,315,Evka - 3,,,,1
+1,SATURDAY,316,Evka - 3,,,,1
+1,SATURDAY,317,Evka - 3,,,,1
+1,SATURDAY,318,Evka - 3,,,,1
+1,SATURDAY,319,Evka - 3,,,,1
+1,SATURDAY,320,Evka - 3,,,,1
+1,SATURDAY,321,Evka - 3,,,,1
+1,SATURDAY,322,Evka - 3,,,,1
+1,SATURDAY,323,Evka - 3,,,,1
+1,SATURDAY,324,Evka - 3,,,,1
+1,SATURDAY,325,Evka - 3,,,,1
+1,SATURDAY,326,Evka - 3,,,,1
+1,SATURDAY,327,Evka - 3,,,,1
+1,SATURDAY,328,Evka - 3,,,,1
+1,SATURDAY,329,Evka - 3,,,,1
+1,SATURDAY,330,Evka - 3,,,,1
+1,SATURDAY,331,Evka - 3,,,,1
+1,SATURDAY,332,Evka - 3,,,,1
+1,SATURDAY,333,Evka - 3,,,,1
+1,SATURDAY,334,Evka - 3,,,,1
+1,SATURDAY,335,Evka - 3,,,,1
+1,SATURDAY,336,Evka - 3,,,,1
+1,SATURDAY,337,Evka - 3,,,,1
+1,SATURDAY,338,Evka - 3,,,,1
+1,SATURDAY,339,Evka - 3,,,,1
+1,SATURDAY,340,Evka - 3,,,,1
+1,SATURDAY,341,Evka - 3,,,,1
+1,SATURDAY,342,Evka - 3,,,,1
+1,SATURDAY,343,Evka - 3,,,,1
+1,SATURDAY,344,Evka - 3,,,,1
+1,SATURDAY,345,Evka - 3,,,,1
+1,SATURDAY,346,Evka - 3,,,,1
+1,SATURDAY,347,Evka - 3,,,,1
+1,SATURDAY,348,Evka - 3,,,,1
+1,SATURDAY,349,Evka - 3,,,,1
+1,SATURDAY,350,Evka - 3,,,,1
+1,SATURDAY,351,Evka - 3,,,,1
+1,SATURDAY,352,Evka - 3,,,,1
+1,SATURDAY,353,Evka - 3,,,,1
+1,SATURDAY,354,Evka - 3,,,,1
+1,SATURDAY,355,Evka - 3,,,,1
+1,SATURDAY,356,Evka - 3,,,,1
+1,SATURDAY,357,Evka - 3,,,,1
+1,SATURDAY,358,Evka - 3,,,,1
+1,SATURDAY,359,Evka - 3,,,,1
+1,SATURDAY,360,Evka - 3,,,,1
+1,SATURDAY,361,Evka - 3,,,,1
+1,SATURDAY,362,Evka - 3,,,,1
+1,SATURDAY,363,Evka - 3,,,,1
+1,SATURDAY,364,Evka - 3,,,,1
+1,SATURDAY,365,Evka - 3,,,,1
+1,SATURDAY,366,Evka - 3,,,,1
+1,SATURDAY,367,Evka - 3,,,,1
+1,SATURDAY,368,Evka - 3,,,,1
+1,SATURDAY,369,Evka - 3,,,,1
+1,SATURDAY,370,Evka - 3,,,,1
+1,SATURDAY,371,Evka - 3,,,,1
+1,SATURDAY,372,Evka - 3,,,,1
+1,SATURDAY,373,Evka - 3,,,,1
+1,SATURDAY,374,Evka - 3,,,,1
+1,SATURDAY,375,Evka - 3,,,,1
+1,SATURDAY,376,Evka - 3,,,,1
+1,SATURDAY,377,Evka - 3,,,,1
+1,SATURDAY,378,Evka - 3,,,,1
+1,SATURDAY,379,Evka - 3,,,,1
+1,SATURDAY,380,Evka - 3,,,,1
+1,SATURDAY,381,Evka - 3,,,,1
+1,SATURDAY,382,Evka - 3,,,,1
+1,SATURDAY,383,Evka - 3,,,,1
+1,SATURDAY,384,Evka - 3,,,,1
+1,SATURDAY,385,Evka - 3,,,,1
+1,SATURDAY,386,Evka - 3,,,,1
+1,SATURDAY,387,Evka - 3,,,,1
+1,SATURDAY,388,Evka - 3,,,,1
+1,SATURDAY,389,Evka - 3,,,,1
+1,SATURDAY,390,Evka - 3,,,,1
+1,SATURDAY,391,Evka - 3,,,,1
+1,SATURDAY,392,Evka - 3,,,,1
+1,SATURDAY,393,Evka - 3,,,,1
+1,SATURDAY,394,Evka - 3,,,,1
+1,SATURDAY,395,Evka - 3,,,,1
+1,SATURDAY,396,Evka - 3,,,,1
+1,SATURDAY,397,Evka - 3,,,,1
+1,SATURDAY,398,Evka - 3,,,,1
+1,SATURDAY,399,Evka - 3,,,,1
+1,SATURDAY,400,Evka - 3,,,,1
+1,SATURDAY,401,Evka - 3,,,,1
+1,SATURDAY,402,Evka - 3,,,,1
+1,SATURDAY,403,Evka - 3,,,,1
+1,SATURDAY,404,Evka - 3,,,,1
+1,SATURDAY,405,Evka - 3,,,,1
+1,SATURDAY,406,Evka - 3,,,,1
+1,SATURDAY,407,Evka - 3,,,,1
+1,SATURDAY,408,Evka - 3,,,,1
+1,SATURDAY,409,Evka - 3,,,,1
+1,SATURDAY,410,Evka - 3,,,,1
+1,SATURDAY,411,Evka - 3,,,,1
+1,SATURDAY,412,Evka - 3,,,,1
+1,SATURDAY,413,Evka - 3,,,,1
+1,SATURDAY,414,Evka - 3,,,,1
+1,SATURDAY,415,Evka - 3,,,,1
+1,SATURDAY,416,Evka - 3,,,,1
+1,SATURDAY,417,Evka - 3,,,,1
+1,SATURDAY,418,Evka - 3,,,,1
+1,SATURDAY,419,Evka - 3,,,,1
+1,SATURDAY,420,Evka - 3,,,,1
+1,SATURDAY,421,Evka - 3,,,,1
+1,SATURDAY,422,Evka - 3,,,,1
+1,SATURDAY,423,Evka - 3,,,,1
+1,SATURDAY,424,Evka - 3,,,,1
+1,SATURDAY,425,Evka - 3,,,,1
+1,SATURDAY,426,Evka - 3,,,,1
+1,SATURDAY,427,Evka - 3,,,,1
+1,SATURDAY,428,Evka - 3,,,,1
+1,SATURDAY,429,Evka - 3,,,,1
+1,SATURDAY,430,Evka - 3,,,,1
+1,SATURDAY,431,Evka - 3,,,,1
+1,SATURDAY,432,Evka - 3,,,,1
+1,SATURDAY,433,Evka - 3,,,,1
+1,SATURDAY,434,Evka - 3,,,,1
+1,SATURDAY,435,Evka - 3,,,,1
+1,SATURDAY,436,Evka - 3,,,,1
+1,SATURDAY,437,Evka - 3,,,,1
+1,SATURDAY,438,Evka - 3,,,,1
+1,SATURDAY,439,Evka - 3,,,,1
+1,SATURDAY,440,Evka - 3,,,,1
+1,SATURDAY,441,Evka - 3,,,,1
+1,SATURDAY,442,Evka - 3,,,,1
+1,SATURDAY,443,Evka - 3,,,,1
+1,SATURDAY,444,Evka - 3,,,,1
+1,SATURDAY,445,Evka - 3,,,,1
+1,SATURDAY,446,Evka - 3,,,,1
+1,SATURDAY,447,Evka - 3,,,,1
+1,SATURDAY,448,Evka - 3,,,,1
+1,SATURDAY,449,Evka - 3,,,,1
+1,SATURDAY,450,Evka - 3,,,,1
+1,SATURDAY,451,Evka - 3,,,,1
+1,SATURDAY,452,Evka - 3,,,,1
+1,SATURDAY,453,Evka - 3,,,,1
+1,SATURDAY,454,Evka - 3,,,,1
+1,SATURDAY,455,Evka - 3,,,,1
+1,SATURDAY,456,Evka - 3,,,,1
+1,SATURDAY,457,Evka - 3,,,,1
+1,SATURDAY,458,Evka - 3,,,,1
+1,SATURDAY,459,Evka - 3,,,,1
+1,SATURDAY,460,Evka - 3,,,,1
+1,SATURDAY,461,Evka - 3,,,,1
+1,SUNDAY,462,Evka - 3,,,,1
+1,SUNDAY,463,Evka - 3,,,,1
+1,SUNDAY,464,Evka - 3,,,,1
+1,SUNDAY,465,Evka - 3,,,,1
+1,SUNDAY,466,Evka - 3,,,,1
+1,SUNDAY,467,Evka - 3,,,,1
+1,SUNDAY,468,Evka - 3,,,,1
+1,SUNDAY,469,Evka - 3,,,,1
+1,SUNDAY,470,Evka - 3,,,,1
+1,SUNDAY,471,Evka - 3,,,,1
+1,SUNDAY,472,Evka - 3,,,,1
+1,SUNDAY,473,Evka - 3,,,,1
+1,SUNDAY,474,Evka - 3,,,,1
+1,SUNDAY,475,Evka - 3,,,,1
+1,SUNDAY,476,Evka - 3,,,,1
+1,SUNDAY,477,Evka - 3,,,,1
+1,SUNDAY,478,Evka - 3,,,,1
+1,SUNDAY,479,Evka - 3,,,,1
+1,SUNDAY,480,Evka - 3,,,,1
+1,SUNDAY,481,Evka - 3,,,,1
+1,SUNDAY,482,Evka - 3,,,,1
+1,SUNDAY,483,Evka - 3,,,,1
+1,SUNDAY,484,Evka - 3,,,,1
+1,SUNDAY,485,Evka - 3,,,,1
+1,SUNDAY,486,Evka - 3,,,,1
+1,SUNDAY,487,Evka - 3,,,,1
+1,SUNDAY,488,Evka - 3,,,,1
+1,SUNDAY,489,Evka - 3,,,,1
+1,SUNDAY,490,Evka - 3,,,,1
+1,SUNDAY,491,Evka - 3,,,,1
+1,SUNDAY,492,Evka - 3,,,,1
+1,SUNDAY,493,Evka - 3,,,,1
+1,SUNDAY,494,Evka - 3,,,,1
+1,SUNDAY,495,Evka - 3,,,,1
+1,SUNDAY,496,Evka - 3,,,,1
+1,SUNDAY,497,Evka - 3,,,,1
+1,SUNDAY,498,Evka - 3,,,,1
+1,SUNDAY,499,Evka - 3,,,,1
+1,SUNDAY,500,Evka - 3,,,,1
+1,SUNDAY,501,Evka - 3,,,,1
+1,SUNDAY,502,Evka - 3,,,,1
+1,SUNDAY,503,Evka - 3,,,,1
+1,SUNDAY,504,Evka - 3,,,,1
+1,SUNDAY,505,Evka - 3,,,,1
+1,SUNDAY,506,Evka - 3,,,,1
+1,SUNDAY,507,Evka - 3,,,,1
+1,SUNDAY,508,Evka - 3,,,,1
+1,SUNDAY,509,Evka - 3,,,,1
+1,SUNDAY,510,Evka - 3,,,,1
+1,SUNDAY,511,Evka - 3,,,,1
+1,SUNDAY,512,Evka - 3,,,,1
+1,SUNDAY,513,Evka - 3,,,,1
+1,SUNDAY,514,Evka - 3,,,,1
+1,SUNDAY,515,Evka - 3,,,,1
+1,SUNDAY,516,Evka - 3,,,,1
+1,SUNDAY,517,Evka - 3,,,,1
+1,SUNDAY,518,Evka - 3,,,,1
+1,SUNDAY,519,Evka - 3,,,,1
+1,SUNDAY,520,Evka - 3,,,,1
+1,SUNDAY,521,Evka - 3,,,,1
+1,SUNDAY,522,Evka - 3,,,,1
+1,SUNDAY,523,Evka - 3,,,,1
+1,SUNDAY,524,Evka - 3,,,,1
+1,SUNDAY,525,Evka - 3,,,,1
+1,SUNDAY,526,Evka - 3,,,,1
+1,SUNDAY,527,Evka - 3,,,,1
+1,SUNDAY,528,Evka - 3,,,,1
+1,SUNDAY,529,Evka - 3,,,,1
+1,SUNDAY,530,Evka - 3,,,,1
+1,SUNDAY,531,Evka - 3,,,,1
+1,SUNDAY,532,Evka - 3,,,,1
+1,SUNDAY,533,Evka - 3,,,,1
+1,SUNDAY,534,Evka - 3,,,,1
+1,SUNDAY,535,Evka - 3,,,,1
+1,SUNDAY,536,Evka - 3,,,,1
+1,SUNDAY,537,Evka - 3,,,,1
+1,SUNDAY,538,Evka - 3,,,,1
+1,SUNDAY,539,Evka - 3,,,,1
+1,SUNDAY,540,Evka - 3,,,,1
+1,SUNDAY,541,Evka - 3,,,,1
+1,SUNDAY,542,Evka - 3,,,,1
+1,SUNDAY,543,Evka - 3,,,,1
+1,SUNDAY,544,Evka - 3,,,,1
+1,SUNDAY,545,Evka - 3,,,,1
+1,SUNDAY,546,Evka - 3,,,,1
+1,SUNDAY,547,Evka - 3,,,,1
+1,SUNDAY,548,Evka - 3,,,,1
+1,SUNDAY,549,Evka - 3,,,,1
+1,SUNDAY,550,Evka - 3,,,,1
+1,SUNDAY,551,Evka - 3,,,,1
+1,SUNDAY,552,Evka - 3,,,,1
+1,SUNDAY,553,Evka - 3,,,,1
+1,SUNDAY,554,Evka - 3,,,,1
+1,SUNDAY,555,Evka - 3,,,,1
+1,SUNDAY,556,Evka - 3,,,,1
+1,SUNDAY,557,Evka - 3,,,,1
+1,SUNDAY,558,Evka - 3,,,,1
+1,SUNDAY,559,Evka - 3,,,,1
+1,SUNDAY,560,Evka - 3,,,,1
+1,SUNDAY,561,Evka - 3,,,,1
+1,SUNDAY,562,Evka - 3,,,,1
+1,SUNDAY,563,Evka - 3,,,,1
+1,SUNDAY,564,Evka - 3,,,,1
+1,SUNDAY,565,Evka - 3,,,,1
+1,SUNDAY,566,Evka - 3,,,,1
+1,SUNDAY,567,Evka - 3,,,,1
+1,SUNDAY,568,Evka - 3,,,,1
+1,SUNDAY,569,Evka - 3,,,,1
+1,SUNDAY,570,Evka - 3,,,,1
+1,SUNDAY,571,Evka - 3,,,,1
+1,SUNDAY,572,Evka - 3,,,,1
+1,SUNDAY,573,Evka - 3,,,,1
+1,SUNDAY,574,Evka - 3,,,,1
+1,SUNDAY,575,Evka - 3,,,,1
+1,SUNDAY,576,Evka - 3,,,,1
+1,SUNDAY,577,Evka - 3,,,,1
+1,SUNDAY,578,Evka - 3,,,,1
+1,SUNDAY,579,Evka - 3,,,,1
+1,SUNDAY,580,Evka - 3,,,,1
+1,SUNDAY,581,Evka - 3,,,,1
+1,SUNDAY,582,Evka - 3,,,,1
+1,SUNDAY,583,Evka - 3,,,,1
+1,SUNDAY,584,Evka - 3,,,,1
+1,SUNDAY,585,Evka - 3,,,,1
+1,SUNDAY,586,Evka - 3,,,,1
+1,SUNDAY,587,Evka - 3,,,,1
+1,SUNDAY,588,Evka - 3,,,,1
+1,SUNDAY,589,Evka - 3,,,,1
+1,SUNDAY,590,Evka - 3,,,,1
+1,SUNDAY,591,Evka - 3,,,,1
+1,SUNDAY,592,Evka - 3,,,,1
+1,SUNDAY,593,Evka - 3,,,,1
+1,SUNDAY,594,Evka - 3,,,,1
+1,SUNDAY,595,Evka - 3,,,,1
+1,SUNDAY,596,Evka - 3,,,,1
+1,SUNDAY,597,Evka - 3,,,,1
+1,SUNDAY,598,Evka - 3,,,,1
+1,SUNDAY,599,Evka - 3,,,,1
+1,SUNDAY,600,Evka - 3,,,,1
+1,SUNDAY,601,Evka - 3,,,,1
+1,SUNDAY,602,Evka - 3,,,,1
+1,SUNDAY,603,Evka - 3,,,,1
+1,SUNDAY,604,Evka - 3,,,,1
+1,SUNDAY,605,Evka - 3,,,,1
+1,SUNDAY,606,Evka - 3,,,,1
+1,SUNDAY,607,Evka - 3,,,,1
+1,SUNDAY,608,Evka - 3,,,,1
+1,SUNDAY,609,Evka - 3,,,,1
+1,SUNDAY,610,Evka - 3,,,,1
+1,SUNDAY,611,Evka - 3,,,,1
+1,SUNDAY,612,Evka - 3,,,,1
+1,SUNDAY,613,Evka - 3,,,,1
+1,SUNDAY,614,Evka - 3,,,,1
+1,SUNDAY,615,Evka - 3,,,,1
+1,SUNDAY,616,Evka - 3,,,,1
+1,SUNDAY,617,Evka - 3,,,,1
+1,SUNDAY,618,Evka - 3,,,,1
+1,SUNDAY,619,Evka - 3,,,,1
+1,SUNDAY,620,Evka - 3,,,,1
+1,SUNDAY,621,Evka - 3,,,,1
+1,SUNDAY,622,Evka - 3,,,,1
+1,SUNDAY,623,Evka - 3,,,,1
+1,SUNDAY,624,Evka - 3,,,,1
+2,DAYSOFWEEK,625,Kaymakamlık,,,,1
+2,DAYSOFWEEK,626,Kaymakamlık,,,,1
+2,DAYSOFWEEK,627,Kaymakamlık,,,,1
+2,DAYSOFWEEK,628,Kaymakamlık,,,,1
+2,DAYSOFWEEK,629,Kaymakamlık,,,,1
+2,DAYSOFWEEK,630,Kaymakamlık,,,,1
+2,DAYSOFWEEK,631,Kaymakamlık,,,,1
+2,DAYSOFWEEK,632,Kaymakamlık,,,,1
+2,DAYSOFWEEK,633,Kaymakamlık,,,,1
+2,DAYSOFWEEK,634,Kaymakamlık,,,,1
+2,DAYSOFWEEK,635,Kaymakamlık,,,,1
+2,DAYSOFWEEK,636,Kaymakamlık,,,,1
+2,DAYSOFWEEK,637,Kaymakamlık,,,,1
+2,DAYSOFWEEK,638,Kaymakamlık,,,,1
+2,DAYSOFWEEK,639,Kaymakamlık,,,,1
+2,DAYSOFWEEK,640,Kaymakamlık,,,,1
+2,DAYSOFWEEK,641,Kaymakamlık,,,,1
+2,DAYSOFWEEK,642,Kaymakamlık,,,,1
+2,DAYSOFWEEK,643,Kaymakamlık,,,,1
+2,DAYSOFWEEK,644,Kaymakamlık,,,,1
+2,DAYSOFWEEK,645,Kaymakamlık,,,,1
+2,DAYSOFWEEK,646,Kaymakamlık,,,,1
+2,DAYSOFWEEK,647,Kaymakamlık,,,,1
+2,DAYSOFWEEK,648,Kaymakamlık,,,,1
+2,DAYSOFWEEK,649,Kaymakamlık,,,,1
+2,DAYSOFWEEK,650,Kaymakamlık,,,,1
+2,DAYSOFWEEK,651,Kaymakamlık,,,,1
+2,DAYSOFWEEK,652,Kaymakamlık,,,,1
+2,DAYSOFWEEK,653,Kaymakamlık,,,,1
+2,DAYSOFWEEK,654,Kaymakamlık,,,,1
+2,DAYSOFWEEK,655,Kaymakamlık,,,,1
+2,DAYSOFWEEK,656,Kaymakamlık,,,,1
+2,DAYSOFWEEK,657,Kaymakamlık,,,,1
+2,DAYSOFWEEK,658,Kaymakamlık,,,,1
+2,DAYSOFWEEK,659,Kaymakamlık,,,,1
+2,DAYSOFWEEK,660,Kaymakamlık,,,,1
+2,DAYSOFWEEK,661,Kaymakamlık,,,,1
+2,DAYSOFWEEK,662,Kaymakamlık,,,,1
+2,DAYSOFWEEK,663,Kaymakamlık,,,,1
+2,DAYSOFWEEK,664,Kaymakamlık,,,,1
+2,DAYSOFWEEK,665,Kaymakamlık,,,,1
+2,DAYSOFWEEK,666,Kaymakamlık,,,,1
+2,DAYSOFWEEK,667,Kaymakamlık,,,,1
+2,DAYSOFWEEK,668,Kaymakamlık,,,,1
+2,DAYSOFWEEK,669,Kaymakamlık,,,,1
+2,DAYSOFWEEK,670,Kaymakamlık,,,,1
+2,DAYSOFWEEK,671,Kaymakamlık,,,,1
+2,DAYSOFWEEK,672,Kaymakamlık,,,,1
+2,DAYSOFWEEK,673,Kaymakamlık,,,,1
+2,DAYSOFWEEK,674,Kaymakamlık,,,,1
+2,DAYSOFWEEK,675,Kaymakamlık,,,,1
+2,DAYSOFWEEK,676,Kaymakamlık,,,,1
+2,DAYSOFWEEK,677,Kaymakamlık,,,,1
+2,DAYSOFWEEK,678,Kaymakamlık,,,,1
+2,DAYSOFWEEK,679,Kaymakamlık,,,,1
+2,DAYSOFWEEK,680,Kaymakamlık,,,,1
+2,DAYSOFWEEK,681,Kaymakamlık,,,,1
+2,DAYSOFWEEK,682,Kaymakamlık,,,,1
+2,DAYSOFWEEK,683,Kaymakamlık,,,,1
+2,DAYSOFWEEK,684,Kaymakamlık,,,,1
+2,DAYSOFWEEK,685,Kaymakamlık,,,,1
+2,DAYSOFWEEK,686,Kaymakamlık,,,,1
+2,DAYSOFWEEK,687,Kaymakamlık,,,,1
+2,DAYSOFWEEK,688,Kaymakamlık,,,,1
+2,DAYSOFWEEK,689,Kaymakamlık,,,,1
+2,DAYSOFWEEK,690,Kaymakamlık,,,,1
+2,DAYSOFWEEK,691,Kaymakamlık,,,,1
+2,DAYSOFWEEK,692,Kaymakamlık,,,,1
+2,DAYSOFWEEK,693,Kaymakamlık,,,,1
+2,DAYSOFWEEK,694,Kaymakamlık,,,,1
+2,DAYSOFWEEK,695,Kaymakamlık,,,,1
+2,DAYSOFWEEK,696,Kaymakamlık,,,,1
+2,DAYSOFWEEK,697,Kaymakamlık,,,,1
+2,DAYSOFWEEK,698,Kaymakamlık,,,,1
+2,DAYSOFWEEK,699,Kaymakamlık,,,,1
+2,DAYSOFWEEK,700,Kaymakamlık,,,,1
+2,DAYSOFWEEK,701,Kaymakamlık,,,,1
+2,DAYSOFWEEK,702,Kaymakamlık,,,,1
+2,DAYSOFWEEK,703,Kaymakamlık,,,,1
+2,DAYSOFWEEK,704,Kaymakamlık,,,,1
+2,DAYSOFWEEK,705,Kaymakamlık,,,,1
+2,DAYSOFWEEK,706,Kaymakamlık,,,,1
+2,DAYSOFWEEK,707,Kaymakamlık,,,,1
+2,DAYSOFWEEK,708,Kaymakamlık,,,,1
+2,DAYSOFWEEK,709,Kaymakamlık,,,,1
+2,DAYSOFWEEK,710,Kaymakamlık,,,,1
+2,DAYSOFWEEK,711,Kaymakamlık,,,,1
+2,DAYSOFWEEK,712,Kaymakamlık,,,,1
+2,DAYSOFWEEK,713,Kaymakamlık,,,,1
+2,DAYSOFWEEK,714,Kaymakamlık,,,,1
+2,DAYSOFWEEK,715,Kaymakamlık,,,,1
+2,DAYSOFWEEK,716,Kaymakamlık,,,,1
+2,DAYSOFWEEK,717,Kaymakamlık,,,,1
+2,DAYSOFWEEK,718,Kaymakamlık,,,,1
+2,DAYSOFWEEK,719,Kaymakamlık,,,,1
+2,DAYSOFWEEK,720,Kaymakamlık,,,,1
+2,DAYSOFWEEK,721,Kaymakamlık,,,,1
+2,DAYSOFWEEK,722,Kaymakamlık,,,,1
+2,DAYSOFWEEK,723,Kaymakamlık,,,,1
+2,DAYSOFWEEK,724,Kaymakamlık,,,,1
+2,DAYSOFWEEK,725,Kaymakamlık,,,,1
+2,DAYSOFWEEK,726,Kaymakamlık,,,,1
+2,DAYSOFWEEK,727,Kaymakamlık,,,,1
+2,DAYSOFWEEK,728,Kaymakamlık,,,,1
+2,DAYSOFWEEK,729,Kaymakamlık,,,,1
+2,DAYSOFWEEK,730,Kaymakamlık,,,,1
+2,DAYSOFWEEK,731,Kaymakamlık,,,,1
+2,DAYSOFWEEK,732,Kaymakamlık,,,,1
+2,DAYSOFWEEK,733,Kaymakamlık,,,,1
+2,DAYSOFWEEK,734,Kaymakamlık,,,,1
+2,DAYSOFWEEK,735,Kaymakamlık,,,,1
+2,DAYSOFWEEK,736,Kaymakamlık,,,,1
+2,DAYSOFWEEK,737,Kaymakamlık,,,,1
+2,DAYSOFWEEK,738,Kaymakamlık,,,,1
+2,DAYSOFWEEK,739,Kaymakamlık,,,,1
+2,DAYSOFWEEK,740,Kaymakamlık,,,,1
+2,DAYSOFWEEK,741,Kaymakamlık,,,,1
+2,DAYSOFWEEK,742,Kaymakamlık,,,,1
+2,DAYSOFWEEK,743,Kaymakamlık,,,,1
+2,DAYSOFWEEK,744,Kaymakamlık,,,,1
+2,DAYSOFWEEK,745,Kaymakamlık,,,,1
+2,DAYSOFWEEK,746,Kaymakamlık,,,,1
+2,DAYSOFWEEK,747,Kaymakamlık,,,,1
+2,DAYSOFWEEK,748,Kaymakamlık,,,,1
+2,DAYSOFWEEK,749,Kaymakamlık,,,,1
+2,DAYSOFWEEK,750,Kaymakamlık,,,,1
+2,DAYSOFWEEK,751,Kaymakamlık,,,,1
+2,DAYSOFWEEK,752,Kaymakamlık,,,,1
+2,DAYSOFWEEK,753,Kaymakamlık,,,,1
+2,DAYSOFWEEK,754,Kaymakamlık,,,,1
+2,DAYSOFWEEK,755,Kaymakamlık,,,,1
+2,DAYSOFWEEK,756,Kaymakamlık,,,,1
+2,DAYSOFWEEK,757,Kaymakamlık,,,,1
+2,DAYSOFWEEK,758,Kaymakamlık,,,,1
+2,DAYSOFWEEK,759,Kaymakamlık,,,,1
+2,DAYSOFWEEK,760,Kaymakamlık,,,,1
+2,DAYSOFWEEK,761,Kaymakamlık,,,,1
+2,DAYSOFWEEK,762,Kaymakamlık,,,,1
+2,DAYSOFWEEK,763,Kaymakamlık,,,,1
+2,DAYSOFWEEK,764,Kaymakamlık,,,,1
+2,DAYSOFWEEK,765,Kaymakamlık,,,,1
+2,DAYSOFWEEK,766,Kaymakamlık,,,,1
+2,DAYSOFWEEK,767,Kaymakamlık,,,,1
+2,DAYSOFWEEK,768,Kaymakamlık,,,,1
+2,DAYSOFWEEK,769,Kaymakamlık,,,,1
+2,DAYSOFWEEK,770,Kaymakamlık,,,,1
+2,DAYSOFWEEK,771,Kaymakamlık,,,,1
+2,DAYSOFWEEK,772,Kaymakamlık,,,,1
+2,DAYSOFWEEK,773,Kaymakamlık,,,,1
+2,DAYSOFWEEK,774,Kaymakamlık,,,,1
+2,DAYSOFWEEK,775,Kaymakamlık,,,,1
+2,DAYSOFWEEK,776,Kaymakamlık,,,,1
+2,DAYSOFWEEK,777,Kaymakamlık,,,,1
+2,DAYSOFWEEK,778,Kaymakamlık,,,,1
+2,DAYSOFWEEK,779,Kaymakamlık,,,,1
+2,DAYSOFWEEK,780,Kaymakamlık,,,,1
+2,DAYSOFWEEK,781,Kaymakamlık,,,,1
+2,DAYSOFWEEK,782,Kaymakamlık,,,,1
+2,DAYSOFWEEK,783,Kaymakamlık,,,,1
+2,DAYSOFWEEK,784,Kaymakamlık,,,,1
+2,DAYSOFWEEK,785,Kaymakamlık,,,,1
+2,DAYSOFWEEK,786,Kaymakamlık,,,,1
+2,DAYSOFWEEK,787,Kaymakamlık,,,,1
+2,DAYSOFWEEK,788,Kaymakamlık,,,,1
+2,DAYSOFWEEK,789,Kaymakamlık,,,,1
+2,DAYSOFWEEK,790,Kaymakamlık,,,,1
+2,DAYSOFWEEK,791,Kaymakamlık,,,,1
+2,DAYSOFWEEK,792,Kaymakamlık,,,,1
+2,DAYSOFWEEK,793,Kaymakamlık,,,,1
+2,DAYSOFWEEK,794,Kaymakamlık,,,,1
+2,DAYSOFWEEK,795,Kaymakamlık,,,,1
+2,DAYSOFWEEK,796,Kaymakamlık,,,,1
+2,DAYSOFWEEK,797,Kaymakamlık,,,,1
+2,DAYSOFWEEK,798,Kaymakamlık,,,,1
+2,DAYSOFWEEK,799,Kaymakamlık,,,,1
+2,DAYSOFWEEK,800,Kaymakamlık,,,,1
+2,DAYSOFWEEK,801,Kaymakamlık,,,,1
+2,DAYSOFWEEK,802,Kaymakamlık,,,,1
+2,DAYSOFWEEK,803,Kaymakamlık,,,,1
+2,DAYSOFWEEK,804,Kaymakamlık,,,,1
+2,DAYSOFWEEK,805,Kaymakamlık,,,,1
+2,DAYSOFWEEK,806,Kaymakamlık,,,,1
+2,DAYSOFWEEK,807,Kaymakamlık,,,,1
+2,DAYSOFWEEK,808,Kaymakamlık,,,,1
+2,DAYSOFWEEK,809,Kaymakamlık,,,,1
+2,DAYSOFWEEK,810,Kaymakamlık,,,,1
+2,DAYSOFWEEK,811,Kaymakamlık,,,,1
+2,DAYSOFWEEK,812,Kaymakamlık,,,,1
+2,DAYSOFWEEK,813,Kaymakamlık,,,,1
+2,DAYSOFWEEK,814,Kaymakamlık,,,,1
+2,DAYSOFWEEK,815,Kaymakamlık,,,,1
+2,DAYSOFWEEK,816,Kaymakamlık,,,,1
+2,DAYSOFWEEK,817,Kaymakamlık,,,,1
+2,DAYSOFWEEK,818,Kaymakamlık,,,,1
+2,DAYSOFWEEK,819,Kaymakamlık,,,,1
+2,DAYSOFWEEK,820,Kaymakamlık,,,,1
+2,DAYSOFWEEK,821,Kaymakamlık,,,,1
+2,DAYSOFWEEK,822,Kaymakamlık,,,,1
+2,DAYSOFWEEK,823,Kaymakamlık,,,,1
+2,DAYSOFWEEK,824,Kaymakamlık,,,,1
+2,DAYSOFWEEK,825,Kaymakamlık,,,,1
+2,DAYSOFWEEK,826,Kaymakamlık,,,,1
+2,DAYSOFWEEK,827,Kaymakamlık,,,,1
+2,DAYSOFWEEK,828,Kaymakamlık,,,,1
+2,DAYSOFWEEK,829,Kaymakamlık,,,,1
+2,DAYSOFWEEK,830,Kaymakamlık,,,,1
+2,DAYSOFWEEK,831,Kaymakamlık,,,,1
+2,DAYSOFWEEK,832,Kaymakamlık,,,,1
+2,DAYSOFWEEK,833,Kaymakamlık,,,,1
+2,DAYSOFWEEK,834,Kaymakamlık,,,,1
+2,DAYSOFWEEK,835,Kaymakamlık,,,,1
+2,DAYSOFWEEK,836,Kaymakamlık,,,,1
+2,DAYSOFWEEK,837,Kaymakamlık,,,,1
+2,DAYSOFWEEK,838,Kaymakamlık,,,,1
+2,DAYSOFWEEK,839,Kaymakamlık,,,,1
+2,DAYSOFWEEK,840,Kaymakamlık,,,,1
+2,DAYSOFWEEK,841,Kaymakamlık,,,,1
+2,DAYSOFWEEK,842,Kaymakamlık,,,,1
+2,DAYSOFWEEK,843,Kaymakamlık,,,,1
+2,DAYSOFWEEK,844,Kaymakamlık,,,,1
+2,DAYSOFWEEK,845,Kaymakamlık,,,,1
+2,DAYSOFWEEK,846,Kaymakamlık,,,,1
+2,DAYSOFWEEK,847,Kaymakamlık,,,,1
+2,DAYSOFWEEK,848,Kaymakamlık,,,,1
+2,DAYSOFWEEK,849,Kaymakamlık,,,,1
+2,DAYSOFWEEK,850,Kaymakamlık,,,,1
+2,DAYSOFWEEK,851,Kaymakamlık,,,,1
+2,DAYSOFWEEK,852,Kaymakamlık,,,,1
+2,DAYSOFWEEK,853,Kaymakamlık,,,,1
+2,DAYSOFWEEK,854,Kaymakamlık,,,,1
+2,DAYSOFWEEK,855,Kaymakamlık,,,,1
+2,DAYSOFWEEK,856,Kaymakamlık,,,,1
+2,DAYSOFWEEK,857,Kaymakamlık,,,,1
+2,DAYSOFWEEK,858,Kaymakamlık,,,,1
+2,DAYSOFWEEK,859,Kaymakamlık,,,,1
+2,DAYSOFWEEK,860,Kaymakamlık,,,,1
+2,DAYSOFWEEK,861,Kaymakamlık,,,,1
+2,DAYSOFWEEK,862,Kaymakamlık,,,,1
+2,DAYSOFWEEK,863,Kaymakamlık,,,,1
+2,DAYSOFWEEK,864,Kaymakamlık,,,,1
+2,DAYSOFWEEK,865,Kaymakamlık,,,,1
+2,DAYSOFWEEK,866,Kaymakamlık,,,,1
+2,DAYSOFWEEK,867,Kaymakamlık,,,,1
+2,DAYSOFWEEK,868,Kaymakamlık,,,,1
+2,DAYSOFWEEK,869,Kaymakamlık,,,,1
+2,DAYSOFWEEK,870,Kaymakamlık,,,,1
+2,DAYSOFWEEK,871,Kaymakamlık,,,,1
+2,DAYSOFWEEK,872,Kaymakamlık,,,,1
+2,DAYSOFWEEK,873,Kaymakamlık,,,,1
+2,DAYSOFWEEK,874,Kaymakamlık,,,,1
+2,DAYSOFWEEK,875,Kaymakamlık,,,,1
+2,DAYSOFWEEK,876,Kaymakamlık,,,,1
+2,DAYSOFWEEK,877,Kaymakamlık,,,,1
+2,DAYSOFWEEK,878,Kaymakamlık,,,,1
+2,DAYSOFWEEK,879,Kaymakamlık,,,,1
+2,DAYSOFWEEK,880,Kaymakamlık,,,,1
+2,DAYSOFWEEK,881,Kaymakamlık,,,,1
+2,DAYSOFWEEK,882,Kaymakamlık,,,,1
+2,DAYSOFWEEK,883,Kaymakamlık,,,,1
+2,DAYSOFWEEK,884,Kaymakamlık,,,,1
+2,SATURDAY,885,Kaymakamlık,,,,1
+2,SATURDAY,886,Kaymakamlık,,,,1
+2,SATURDAY,887,Kaymakamlık,,,,1
+2,SATURDAY,888,Kaymakamlık,,,,1
+2,SATURDAY,889,Kaymakamlık,,,,1
+2,SATURDAY,890,Kaymakamlık,,,,1
+2,SATURDAY,891,Kaymakamlık,,,,1
+2,SATURDAY,892,Kaymakamlık,,,,1
+2,SATURDAY,893,Kaymakamlık,,,,1
+2,SATURDAY,894,Kaymakamlık,,,,1
+2,SATURDAY,895,Kaymakamlık,,,,1
+2,SATURDAY,896,Kaymakamlık,,,,1
+2,SATURDAY,897,Kaymakamlık,,,,1
+2,SATURDAY,898,Kaymakamlık,,,,1
+2,SATURDAY,899,Kaymakamlık,,,,1
+2,SATURDAY,900,Kaymakamlık,,,,1
+2,SATURDAY,901,Kaymakamlık,,,,1
+2,SATURDAY,902,Kaymakamlık,,,,1
+2,SATURDAY,903,Kaymakamlık,,,,1
+2,SATURDAY,904,Kaymakamlık,,,,1
+2,SATURDAY,905,Kaymakamlık,,,,1
+2,SATURDAY,906,Kaymakamlık,,,,1
+2,SATURDAY,907,Kaymakamlık,,,,1
+2,SATURDAY,908,Kaymakamlık,,,,1
+2,SATURDAY,909,Kaymakamlık,,,,1
+2,SATURDAY,910,Kaymakamlık,,,,1
+2,SATURDAY,911,Kaymakamlık,,,,1
+2,SATURDAY,912,Kaymakamlık,,,,1
+2,SATURDAY,913,Kaymakamlık,,,,1
+2,SATURDAY,914,Kaymakamlık,,,,1
+2,SATURDAY,915,Kaymakamlık,,,,1
+2,SATURDAY,916,Kaymakamlık,,,,1
+2,SATURDAY,917,Kaymakamlık,,,,1
+2,SATURDAY,918,Kaymakamlık,,,,1
+2,SATURDAY,919,Kaymakamlık,,,,1
+2,SATURDAY,920,Kaymakamlık,,,,1
+2,SATURDAY,921,Kaymakamlık,,,,1
+2,SATURDAY,922,Kaymakamlık,,,,1
+2,SATURDAY,923,Kaymakamlık,,,,1
+2,SATURDAY,924,Kaymakamlık,,,,1
+2,SATURDAY,925,Kaymakamlık,,,,1
+2,SATURDAY,926,Kaymakamlık,,,,1
+2,SATURDAY,927,Kaymakamlık,,,,1
+2,SATURDAY,928,Kaymakamlık,,,,1
+2,SATURDAY,929,Kaymakamlık,,,,1
+2,SATURDAY,930,Kaymakamlık,,,,1
+2,SATURDAY,931,Kaymakamlık,,,,1
+2,SATURDAY,932,Kaymakamlık,,,,1
+2,SATURDAY,933,Kaymakamlık,,,,1
+2,SATURDAY,934,Kaymakamlık,,,,1
+2,SATURDAY,935,Kaymakamlık,,,,1
+2,SATURDAY,936,Kaymakamlık,,,,1
+2,SATURDAY,937,Kaymakamlık,,,,1
+2,SATURDAY,938,Kaymakamlık,,,,1
+2,SATURDAY,939,Kaymakamlık,,,,1
+2,SATURDAY,940,Kaymakamlık,,,,1
+2,SATURDAY,941,Kaymakamlık,,,,1
+2,SATURDAY,942,Kaymakamlık,,,,1
+2,SATURDAY,943,Kaymakamlık,,,,1
+2,SATURDAY,944,Kaymakamlık,,,,1
+2,SATURDAY,945,Kaymakamlık,,,,1
+2,SATURDAY,946,Kaymakamlık,,,,1
+2,SATURDAY,947,Kaymakamlık,,,,1
+2,SATURDAY,948,Kaymakamlık,,,,1
+2,SATURDAY,949,Kaymakamlık,,,,1
+2,SATURDAY,950,Kaymakamlık,,,,1
+2,SATURDAY,951,Kaymakamlık,,,,1
+2,SATURDAY,952,Kaymakamlık,,,,1
+2,SATURDAY,953,Kaymakamlık,,,,1
+2,SATURDAY,954,Kaymakamlık,,,,1
+2,SATURDAY,955,Kaymakamlık,,,,1
+2,SATURDAY,956,Kaymakamlık,,,,1
+2,SATURDAY,957,Kaymakamlık,,,,1
+2,SATURDAY,958,Kaymakamlık,,,,1
+2,SATURDAY,959,Kaymakamlık,,,,1
+2,SATURDAY,960,Kaymakamlık,,,,1
+2,SATURDAY,961,Kaymakamlık,,,,1
+2,SATURDAY,962,Kaymakamlık,,,,1
+2,SATURDAY,963,Kaymakamlık,,,,1
+2,SATURDAY,964,Kaymakamlık,,,,1
+2,SATURDAY,965,Kaymakamlık,,,,1
+2,SATURDAY,966,Kaymakamlık,,,,1
+2,SATURDAY,967,Kaymakamlık,,,,1
+2,SATURDAY,968,Kaymakamlık,,,,1
+2,SATURDAY,969,Kaymakamlık,,,,1
+2,SATURDAY,970,Kaymakamlık,,,,1
+2,SATURDAY,971,Kaymakamlık,,,,1
+2,SATURDAY,972,Kaymakamlık,,,,1
+2,SATURDAY,973,Kaymakamlık,,,,1
+2,SATURDAY,974,Kaymakamlık,,,,1
+2,SATURDAY,975,Kaymakamlık,,,,1
+2,SATURDAY,976,Kaymakamlık,,,,1
+2,SATURDAY,977,Kaymakamlık,,,,1
+2,SATURDAY,978,Kaymakamlık,,,,1
+2,SATURDAY,979,Kaymakamlık,,,,1
+2,SATURDAY,980,Kaymakamlık,,,,1
+2,SATURDAY,981,Kaymakamlık,,,,1
+2,SATURDAY,982,Kaymakamlık,,,,1
+2,SATURDAY,983,Kaymakamlık,,,,1
+2,SATURDAY,984,Kaymakamlık,,,,1
+2,SATURDAY,985,Kaymakamlık,,,,1
+2,SATURDAY,986,Kaymakamlık,,,,1
+2,SATURDAY,987,Kaymakamlık,,,,1
+2,SATURDAY,988,Kaymakamlık,,,,1
+2,SATURDAY,989,Kaymakamlık,,,,1
+2,SATURDAY,990,Kaymakamlık,,,,1
+2,SATURDAY,991,Kaymakamlık,,,,1
+2,SATURDAY,992,Kaymakamlık,,,,1
+2,SATURDAY,993,Kaymakamlık,,,,1
+2,SATURDAY,994,Kaymakamlık,,,,1
+2,SATURDAY,995,Kaymakamlık,,,,1
+2,SATURDAY,996,Kaymakamlık,,,,1
+2,SATURDAY,997,Kaymakamlık,,,,1
+2,SATURDAY,998,Kaymakamlık,,,,1
+2,SATURDAY,999,Kaymakamlık,,,,1
+2,SATURDAY,1000,Kaymakamlık,,,,1
+2,SATURDAY,1001,Kaymakamlık,,,,1
+2,SATURDAY,1002,Kaymakamlık,,,,1
+2,SATURDAY,1003,Kaymakamlık,,,,1
+2,SATURDAY,1004,Kaymakamlık,,,,1
+2,SATURDAY,1005,Kaymakamlık,,,,1
+2,SATURDAY,1006,Kaymakamlık,,,,1
+2,SATURDAY,1007,Kaymakamlık,,,,1
+2,SATURDAY,1008,Kaymakamlık,,,,1
+2,SATURDAY,1009,Kaymakamlık,,,,1
+2,SATURDAY,1010,Kaymakamlık,,,,1
+2,SATURDAY,1011,Kaymakamlık,,,,1
+2,SATURDAY,1012,Kaymakamlık,,,,1
+2,SATURDAY,1013,Kaymakamlık,,,,1
+2,SATURDAY,1014,Kaymakamlık,,,,1
+2,SATURDAY,1015,Kaymakamlık,,,,1
+2,SATURDAY,1016,Kaymakamlık,,,,1
+2,SATURDAY,1017,Kaymakamlık,,,,1
+2,SATURDAY,1018,Kaymakamlık,,,,1
+2,SATURDAY,1019,Kaymakamlık,,,,1
+2,SATURDAY,1020,Kaymakamlık,,,,1
+2,SATURDAY,1021,Kaymakamlık,,,,1
+2,SATURDAY,1022,Kaymakamlık,,,,1
+2,SATURDAY,1023,Kaymakamlık,,,,1
+2,SATURDAY,1024,Kaymakamlık,,,,1
+2,SATURDAY,1025,Kaymakamlık,,,,1
+2,SATURDAY,1026,Kaymakamlık,,,,1
+2,SATURDAY,1027,Kaymakamlık,,,,1
+2,SATURDAY,1028,Kaymakamlık,,,,1
+2,SATURDAY,1029,Kaymakamlık,,,,1
+2,SATURDAY,1030,Kaymakamlık,,,,1
+2,SATURDAY,1031,Kaymakamlık,,,,1
+2,SATURDAY,1032,Kaymakamlık,,,,1
+2,SATURDAY,1033,Kaymakamlık,,,,1
+2,SATURDAY,1034,Kaymakamlık,,,,1
+2,SATURDAY,1035,Kaymakamlık,,,,1
+2,SATURDAY,1036,Kaymakamlık,,,,1
+2,SATURDAY,1037,Kaymakamlık,,,,1
+2,SATURDAY,1038,Kaymakamlık,,,,1
+2,SATURDAY,1039,Kaymakamlık,,,,1
+2,SATURDAY,1040,Kaymakamlık,,,,1
+2,SATURDAY,1041,Kaymakamlık,,,,1
+2,SATURDAY,1042,Kaymakamlık,,,,1
+2,SATURDAY,1043,Kaymakamlık,,,,1
+2,SATURDAY,1044,Kaymakamlık,,,,1
+2,SATURDAY,1045,Kaymakamlık,,,,1
+2,SATURDAY,1046,Kaymakamlık,,,,1
+2,SATURDAY,1047,Kaymakamlık,,,,1
+2,SATURDAY,1048,Kaymakamlık,,,,1
+2,SATURDAY,1049,Kaymakamlık,,,,1
+2,SATURDAY,1050,Kaymakamlık,,,,1
+2,SATURDAY,1051,Kaymakamlık,,,,1
+2,SATURDAY,1052,Kaymakamlık,,,,1
+2,SATURDAY,1053,Kaymakamlık,,,,1
+2,SATURDAY,1054,Kaymakamlık,,,,1
+2,SATURDAY,1055,Kaymakamlık,,,,1
+2,SATURDAY,1056,Kaymakamlık,,,,1
+2,SATURDAY,1057,Kaymakamlık,,,,1
+2,SATURDAY,1058,Kaymakamlık,,,,1
+2,SATURDAY,1059,Kaymakamlık,,,,1
+2,SATURDAY,1060,Kaymakamlık,,,,1
+2,SATURDAY,1061,Kaymakamlık,,,,1
+2,SATURDAY,1062,Kaymakamlık,,,,1
+2,SATURDAY,1063,Kaymakamlık,,,,1
+2,SATURDAY,1064,Kaymakamlık,,,,1
+2,SATURDAY,1065,Kaymakamlık,,,,1
+2,SATURDAY,1066,Kaymakamlık,,,,1
+2,SATURDAY,1067,Kaymakamlık,,,,1
+2,SATURDAY,1068,Kaymakamlık,,,,1
+2,SATURDAY,1069,Kaymakamlık,,,,1
+2,SATURDAY,1070,Kaymakamlık,,,,1
+2,SATURDAY,1071,Kaymakamlık,,,,1
+2,SATURDAY,1072,Kaymakamlık,,,,1
+2,SATURDAY,1073,Kaymakamlık,,,,1
+2,SATURDAY,1074,Kaymakamlık,,,,1
+2,SATURDAY,1075,Kaymakamlık,,,,1
+2,SATURDAY,1076,Kaymakamlık,,,,1
+2,SATURDAY,1077,Kaymakamlık,,,,1
+2,SATURDAY,1078,Kaymakamlık,,,,1
+2,SATURDAY,1079,Kaymakamlık,,,,1
+2,SATURDAY,1080,Kaymakamlık,,,,1
+2,SATURDAY,1081,Kaymakamlık,,,,1
+2,SATURDAY,1082,Kaymakamlık,,,,1
+2,SATURDAY,1083,Kaymakamlık,,,,1
+2,SATURDAY,1084,Kaymakamlık,,,,1
+2,SATURDAY,1085,Kaymakamlık,,,,1
+2,SUNDAY,1086,Kaymakamlık,,,,1
+2,SUNDAY,1087,Kaymakamlık,,,,1
+2,SUNDAY,1088,Kaymakamlık,,,,1
+2,SUNDAY,1089,Kaymakamlık,,,,1
+2,SUNDAY,1090,Kaymakamlık,,,,1
+2,SUNDAY,1091,Kaymakamlık,,,,1
+2,SUNDAY,1092,Kaymakamlık,,,,1
+2,SUNDAY,1093,Kaymakamlık,,,,1
+2,SUNDAY,1094,Kaymakamlık,,,,1
+2,SUNDAY,1095,Kaymakamlık,,,,1
+2,SUNDAY,1096,Kaymakamlık,,,,1
+2,SUNDAY,1097,Kaymakamlık,,,,1
+2,SUNDAY,1098,Kaymakamlık,,,,1
+2,SUNDAY,1099,Kaymakamlık,,,,1
+2,SUNDAY,1100,Kaymakamlık,,,,1
+2,SUNDAY,1101,Kaymakamlık,,,,1
+2,SUNDAY,1102,Kaymakamlık,,,,1
+2,SUNDAY,1103,Kaymakamlık,,,,1
+2,SUNDAY,1104,Kaymakamlık,,,,1
+2,SUNDAY,1105,Kaymakamlık,,,,1
+2,SUNDAY,1106,Kaymakamlık,,,,1
+2,SUNDAY,1107,Kaymakamlık,,,,1
+2,SUNDAY,1108,Kaymakamlık,,,,1
+2,SUNDAY,1109,Kaymakamlık,,,,1
+2,SUNDAY,1110,Kaymakamlık,,,,1
+2,SUNDAY,1111,Kaymakamlık,,,,1
+2,SUNDAY,1112,Kaymakamlık,,,,1
+2,SUNDAY,1113,Kaymakamlık,,,,1
+2,SUNDAY,1114,Kaymakamlık,,,,1
+2,SUNDAY,1115,Kaymakamlık,,,,1
+2,SUNDAY,1116,Kaymakamlık,,,,1
+2,SUNDAY,1117,Kaymakamlık,,,,1
+2,SUNDAY,1118,Kaymakamlık,,,,1
+2,SUNDAY,1119,Kaymakamlık,,,,1
+2,SUNDAY,1120,Kaymakamlık,,,,1
+2,SUNDAY,1121,Kaymakamlık,,,,1
+2,SUNDAY,1122,Kaymakamlık,,,,1
+2,SUNDAY,1123,Kaymakamlık,,,,1
+2,SUNDAY,1124,Kaymakamlık,,,,1
+2,SUNDAY,1125,Kaymakamlık,,,,1
+2,SUNDAY,1126,Kaymakamlık,,,,1
+2,SUNDAY,1127,Kaymakamlık,,,,1
+2,SUNDAY,1128,Kaymakamlık,,,,1
+2,SUNDAY,1129,Kaymakamlık,,,,1
+2,SUNDAY,1130,Kaymakamlık,,,,1
+2,SUNDAY,1131,Kaymakamlık,,,,1
+2,SUNDAY,1132,Kaymakamlık,,,,1
+2,SUNDAY,1133,Kaymakamlık,,,,1
+2,SUNDAY,1134,Kaymakamlık,,,,1
+2,SUNDAY,1135,Kaymakamlık,,,,1
+2,SUNDAY,1136,Kaymakamlık,,,,1
+2,SUNDAY,1137,Kaymakamlık,,,,1
+2,SUNDAY,1138,Kaymakamlık,,,,1
+2,SUNDAY,1139,Kaymakamlık,,,,1
+2,SUNDAY,1140,Kaymakamlık,,,,1
+2,SUNDAY,1141,Kaymakamlık,,,,1
+2,SUNDAY,1142,Kaymakamlık,,,,1
+2,SUNDAY,1143,Kaymakamlık,,,,1
+2,SUNDAY,1144,Kaymakamlık,,,,1
+2,SUNDAY,1145,Kaymakamlık,,,,1
+2,SUNDAY,1146,Kaymakamlık,,,,1
+2,SUNDAY,1147,Kaymakamlık,,,,1
+2,SUNDAY,1148,Kaymakamlık,,,,1
+2,SUNDAY,1149,Kaymakamlık,,,,1
+2,SUNDAY,1150,Kaymakamlık,,,,1
+2,SUNDAY,1151,Kaymakamlık,,,,1
+2,SUNDAY,1152,Kaymakamlık,,,,1
+2,SUNDAY,1153,Kaymakamlık,,,,1
+2,SUNDAY,1154,Kaymakamlık,,,,1
+2,SUNDAY,1155,Kaymakamlık,,,,1
+2,SUNDAY,1156,Kaymakamlık,,,,1
+2,SUNDAY,1157,Kaymakamlık,,,,1
+2,SUNDAY,1158,Kaymakamlık,,,,1
+2,SUNDAY,1159,Kaymakamlık,,,,1
+2,SUNDAY,1160,Kaymakamlık,,,,1
+2,SUNDAY,1161,Kaymakamlık,,,,1
+2,SUNDAY,1162,Kaymakamlık,,,,1
+2,SUNDAY,1163,Kaymakamlık,,,,1
+2,SUNDAY,1164,Kaymakamlık,,,,1
+2,SUNDAY,1165,Kaymakamlık,,,,1
+2,SUNDAY,1166,Kaymakamlık,,,,1
+2,SUNDAY,1167,Kaymakamlık,,,,1
+2,SUNDAY,1168,Kaymakamlık,,,,1
+2,SUNDAY,1169,Kaymakamlık,,,,1
+2,SUNDAY,1170,Kaymakamlık,,,,1
+2,SUNDAY,1171,Kaymakamlık,,,,1
+2,SUNDAY,1172,Kaymakamlık,,,,1
+2,SUNDAY,1173,Kaymakamlık,,,,1
+2,SUNDAY,1174,Kaymakamlık,,,,1
+2,SUNDAY,1175,Kaymakamlık,,,,1
+2,SUNDAY,1176,Kaymakamlık,,,,1
+2,SUNDAY,1177,Kaymakamlık,,,,1
+2,SUNDAY,1178,Kaymakamlık,,,,1
+2,SUNDAY,1179,Kaymakamlık,,,,1
+2,SUNDAY,1180,Kaymakamlık,,,,1
+2,SUNDAY,1181,Kaymakamlık,,,,1
+2,SUNDAY,1182,Kaymakamlık,,,,1
+2,SUNDAY,1183,Kaymakamlık,,,,1
+2,SUNDAY,1184,Kaymakamlık,,,,1
+2,SUNDAY,1185,Kaymakamlık,,,,1
+2,SUNDAY,1186,Kaymakamlık,,,,1
+2,SUNDAY,1187,Kaymakamlık,,,,1
+2,SUNDAY,1188,Kaymakamlık,,,,1
+2,SUNDAY,1189,Kaymakamlık,,,,1
+2,SUNDAY,1190,Kaymakamlık,,,,1
+2,SUNDAY,1191,Kaymakamlık,,,,1
+2,SUNDAY,1192,Kaymakamlık,,,,1
+2,SUNDAY,1193,Kaymakamlık,,,,1
+2,SUNDAY,1194,Kaymakamlık,,,,1
+2,SUNDAY,1195,Kaymakamlık,,,,1
+2,SUNDAY,1196,Kaymakamlık,,,,1
+2,SUNDAY,1197,Kaymakamlık,,,,1
+2,SUNDAY,1198,Kaymakamlık,,,,1
+2,SUNDAY,1199,Kaymakamlık,,,,1
+2,SUNDAY,1200,Kaymakamlık,,,,1
+2,SUNDAY,1201,Kaymakamlık,,,,1
+2,SUNDAY,1202,Kaymakamlık,,,,1
+2,SUNDAY,1203,Kaymakamlık,,,,1
+2,SUNDAY,1204,Kaymakamlık,,,,1
+2,SUNDAY,1205,Kaymakamlık,,,,1
+2,SUNDAY,1206,Kaymakamlık,,,,1
+2,SUNDAY,1207,Kaymakamlık,,,,1
+2,SUNDAY,1208,Kaymakamlık,,,,1
+2,SUNDAY,1209,Kaymakamlık,,,,1
+2,SUNDAY,1210,Kaymakamlık,,,,1
+2,SUNDAY,1211,Kaymakamlık,,,,1
+2,SUNDAY,1212,Kaymakamlık,,,,1
+2,SUNDAY,1213,Kaymakamlık,,,,1
+2,SUNDAY,1214,Kaymakamlık,,,,1
+2,SUNDAY,1215,Kaymakamlık,,,,1
+2,SUNDAY,1216,Kaymakamlık,,,,1
+2,SUNDAY,1217,Kaymakamlık,,,,1
+2,SUNDAY,1218,Kaymakamlık,,,,1
+2,SUNDAY,1219,Kaymakamlık,,,,1
+2,SUNDAY,1220,Kaymakamlık,,,,1
+2,SUNDAY,1221,Kaymakamlık,,,,1
+2,SUNDAY,1222,Kaymakamlık,,,,1
+2,SUNDAY,1223,Kaymakamlık,,,,1
+2,SUNDAY,1224,Kaymakamlık,,,,1
+2,SUNDAY,1225,Kaymakamlık,,,,1
+2,SUNDAY,1226,Kaymakamlık,,,,1
+2,SUNDAY,1227,Kaymakamlık,,,,1
+2,SUNDAY,1228,Kaymakamlık,,,,1
+2,SUNDAY,1229,Kaymakamlık,,,,1
+2,SUNDAY,1230,Kaymakamlık,,,,1
+2,SUNDAY,1231,Kaymakamlık,,,,1
+2,SUNDAY,1232,Kaymakamlık,,,,1
+2,SUNDAY,1233,Kaymakamlık,,,,1
+2,SUNDAY,1234,Kaymakamlık,,,,1
+2,SUNDAY,1235,Kaymakamlık,,,,1
+2,SUNDAY,1236,Kaymakamlık,,,,1
+2,SUNDAY,1237,Kaymakamlık,,,,1
+2,SUNDAY,1238,Kaymakamlık,,,,1
+2,SUNDAY,1239,Kaymakamlık,,,,1
+2,SUNDAY,1240,Kaymakamlık,,,,1
+2,SUNDAY,1241,Kaymakamlık,,,,1
+2,SUNDAY,1242,Kaymakamlık,,,,1
+2,SUNDAY,1243,Kaymakamlık,,,,1
+2,SUNDAY,1244,Kaymakamlık,,,,1
+2,SUNDAY,1245,Kaymakamlık,,,,1
+2,SUNDAY,1246,Kaymakamlık,,,,1
+2,SUNDAY,1247,Kaymakamlık,,,,1
+2,SUNDAY,1248,Kaymakamlık,,,,1
+1,FRIDAYANDSATURDAY,1249,Evka - 3,,,,1
+1,FRIDAYANDSATURDAY,1250,Evka - 3,,,,1
+1,FRIDAYANDSATURDAY,1251,Evka - 3,,,,1
+1,FRIDAYANDSATURDAY,1252,Evka - 3,,,,1
+1,FRIDAYANDSATURDAY,1253,Evka - 3,,,,1
+1,FRIDAYANDSATURDAY,1254,Evka - 3,,,,1
+2,FRIDAYANDSATURDAY,1255,Kaymakamlık,,,,1
+2,FRIDAYANDSATURDAY,1256,Kaymakamlık,,,,1
+2,FRIDAYANDSATURDAY,1257,Kaymakamlık,,,,1
+2,FRIDAYANDSATURDAY,1258,Kaymakamlık,,,,1
+2,FRIDAYANDSATURDAY,1259,Kaymakamlık,,,,1
+2,FRIDAYANDSATURDAY,1260,Kaymakamlık,,,,1

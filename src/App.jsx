@@ -11,14 +11,23 @@ import { useState, useEffect } from 'react';
 import Profil from './components/Profil';
 import Settings from './components/Settings';
 import TransitMap from './components/TransitMap';
-
-
+import InvitePreview from './components/InvitePreview';
 
 export default function App() {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('user');
     return saved ? JSON.parse(saved) : null;
   });
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  useEffect(() => {
+    const storedPlan = localStorage.getItem("selectedPlan");
+    if (storedPlan) {
+      const parsedPlan = JSON.parse(storedPlan);
+      setSelectedPlan(parsedPlan);
+    }
+  }, []);
+
 
 
 
@@ -45,6 +54,8 @@ export default function App() {
         />
         <Route path="/odeme" element={user ? <Odeme /> : <Navigate to="/login" />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/invite/:id" element={<InvitePreview />} />
+
 
         <Route path="/notfound" element={<NotFound />} />
         <Route

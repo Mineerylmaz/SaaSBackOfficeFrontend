@@ -48,7 +48,7 @@ const AddUserModal = ({ visible, onClose, email, setEmail, password, setPassword
 
 export default AddUserModal;
 
-// Stil örnekleri
+
 const overlayStyle = {
     position: 'fixed',
     top: 0, left: 0, right: 0, bottom: 0,

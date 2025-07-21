@@ -9,7 +9,10 @@ const Pricing = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
   const handleGetStarted = (plan) => {
+    console.log("Planın boyutu:", plan.max_file_size);
+
     const user = JSON.parse(localStorage.getItem('user'));
     localStorage.setItem('selectedPlan', JSON.stringify(plan));
 

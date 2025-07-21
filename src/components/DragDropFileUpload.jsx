@@ -6,22 +6,21 @@ const DragDropFileUpload = () => {
 
   const [files, setFiles] = useState([]);
 
-  // Dosyaları işleyen fonksiyon
+
   const handleFiles = useCallback((fileList) => {
-    // Yeni dosyalar: FileList -> Array
+
     const newFiles = Array.from(fileList);
 
-    // Varolan dosyalarla birleştir (aynı dosya tekrar olmasın diye filtreleme yapabiliriz)
-    // Ama şimdilik basitçe ekleyelim:
+
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   }, []);
 
-  // Input change handler
+
   const handleInputChange = (e) => {
     handleFiles(e.target.files);
   };
 
-  // Drag&drop event handlers
+
   const handleDrop = (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
@@ -34,18 +33,18 @@ const DragDropFileUpload = () => {
     e.preventDefault();
   };
 
-  // Toplam boyut MB
+
   const totalSizeMB = files.reduce((acc, file) => acc + file.size, 0) / (1024 * 1024);
 
-  // Dosya boyutu limiti kontrolü (her dosya ayrı ayrı kontrol de yapılabilir)
+
   const overLimitFiles = files.filter(file => (file.size / (1024 * 1024)) > plan.max_file_size);
 
-  // Dosya kaldırma
+
   const removeFile = (index) => {
     setFiles(files.filter((_, i) => i !== index));
   };
 
-  // Yükle butonu tıklama (sadece demo)
+
   const handleUpload = () => {
     if (files.length === 0) {
       Swal.fire("Dosya yok", "Lütfen önce dosya seçin veya sürükleyip bırakın.", "warning");
@@ -61,7 +60,7 @@ const DragDropFileUpload = () => {
     }
 
     Swal.fire("Başarılı!", "Tüm dosyalar kabul edildi.", "success");
-    // Burada gerçek upload işlemi yapılabilir
+
   };
 
   return (

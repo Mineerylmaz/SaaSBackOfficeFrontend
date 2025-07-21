@@ -65,36 +65,36 @@ const Login = ({ setUser }) => {
 
       if (res.ok) {
         const data = await res.json();
-
         const { token, id, email, role, plan } = data;
-        console.log('Gelen plan:', plan);
-
-
 
         if (token) {
           localStorage.setItem('token', token);
-          localStorage.setItem('user', JSON.stringify({ id, email, role }));
           localStorage.setItem('userId', id);
 
+          // 1. Plan tam mı kontrol et
+          let fullPlan = plan;
+          if (!plan?.price || !plan?.id) {
+            // 2. Plan eksik, tam plan listesini çek
+            const plansRes = await fetch('http://localhost:5000/api/plans');
+            if (plansRes.ok) {
+              const plansData = await plansRes.json();
+
+              // 3. Kullanıcının plan id veya name'ine göre planı bul
+              fullPlan = plansData.find(p => p.id === plan.id || p.name === plan.name) || plan;
+            }
+          }
+
+          // 4. LocalStorage'a tam planı koy
+          localStorage.setItem('selectedPlan', JSON.stringify(fullPlan));
 
 
+          setUser({ id, email, role, plan: fullPlan, token });
 
-          setUser({ id, email, role, plan });
-
-
-
-
-
-          const selectedPlanStr = localStorage.getItem('selectedPlan');
-          const selectedPlan = selectedPlanStr ? JSON.parse(selectedPlanStr) : null;
-
-          if (selectedPlan && selectedPlan.name) {
+          if (!fullPlan || !fullPlan.name) {
             navigate('/odeme');
           } else {
             navigate('/');
           }
-
-
         } else {
           Swal.fire({
             icon: 'error',
@@ -117,7 +117,8 @@ const Login = ({ setUser }) => {
         text: error.message,
       });
     }
-  }
+  };
+
 
 
 
