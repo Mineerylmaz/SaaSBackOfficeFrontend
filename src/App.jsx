@@ -12,7 +12,7 @@ import Profil from './components/Profil';
 import Settings from './components/Settings';
 import TransitMap from './components/TransitMap';
 import InvitePreview from './components/InvitePreview';
-
+import Editor from './components/Editor';
 export default function App() {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('user');
@@ -44,7 +44,21 @@ export default function App() {
 
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/transitmap" element={<TransitMap />} />
-        <Route path="/login" element={user ? <Navigate to="/odeme" /> : <Login setUser={setUser} />} />
+        <Route
+          path="/login"
+          element={
+            user
+              ? user?.plan?.name
+                ? user?.role === 'admin'
+                  ? <Navigate to="/adminrol" />
+                  : user?.role === 'editor'
+                    ? <Navigate to="/editor" />
+                    : <Navigate to="/" />
+                : <Navigate to="/odeme" />
+              : <Login setUser={setUser} />
+          }
+        />
+
 
         <Route path="/profil" element={<Profil user={user} />} />
 
@@ -53,14 +67,23 @@ export default function App() {
           element={user ? <Settings user={user} /> : <Navigate to="/login" />}
         />
         <Route path="/odeme" element={user ? <Odeme /> : <Navigate to="/login" />} />
+        <Route path="/register/:token" element={<Register setUser={setUser} />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
-        <Route path="/invite/:id" element={<InvitePreview />} />
+
+
+
+
+        <Route path="/invite/:token" element={<InvitePreview />} />
 
 
         <Route path="/notfound" element={<NotFound />} />
         <Route
           path="/admin"
           element={user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/editor"
+          element={user?.role === 'editor' ? <Editor /> : <Navigate to="/login" />}
         />
 
         <Route path="*" element={<Navigate to="/" />} />

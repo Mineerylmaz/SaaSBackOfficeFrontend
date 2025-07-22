@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { useLocation } from 'react-router-dom';
 const InvitePreview = () => {
-    const { id: token } = useParams();
+    const { token } = useParams();
+
     const [invite, setInvite] = useState(null);
     const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchInvite = async () => {
@@ -24,7 +26,7 @@ const InvitePreview = () => {
                     confirmButtonColor: "#d33",
                     allowOutsideClick: false,
                 }).then(() => {
-                    navigate("/"); // Hata olursa anasayfaya veya istediğin başka sayfaya yönlendir
+                    navigate("/");
                 });
             }
         };
@@ -32,45 +34,13 @@ const InvitePreview = () => {
     }, [token, navigate]);
 
     const handleAccept = async () => {
-        try {
-            const res = await fetch("http://localhost:5000/api/invites/accept", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token }),
-            });
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || "Hata oluştu");
-            }
-
-
-            await Swal.fire({
-                icon: "success",
-                title: "Davet kabul edildi",
-                text: "Giriş sayfasına yönlendiriliyorsunuz...",
-                timer: 2000,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                willClose: () => {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("userId");
-
-                    navigate('/login', { state: { invitedEmail: invite.email } });
-                },
-            });
-
-
-        } catch (err) {
-            Swal.fire({
-                icon: "error",
-                title: "Hata",
-                text: err.message,
-                confirmButtonColor: "#d33",
-            });
-        }
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("userId");
+        localStorage.setItem("inviteUserId", invite.id);
+        window.location.href = `/register/${invite.token}`;
     };
+
 
     if (!invite) {
         return (

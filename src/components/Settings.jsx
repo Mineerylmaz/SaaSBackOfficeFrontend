@@ -12,6 +12,8 @@ import DragDropFileUpload from './DragDropFileUpload';
 import Roller from './Roller';
 
 const Settings = ({ user }) => {
+    const token = localStorage.getItem('token');
+
     const [plan, setPlan] = useState(null);
     const [settings, setSettings] = useState({
         rt_urls: [],
@@ -42,7 +44,12 @@ const Settings = ({ user }) => {
 
 
     const fetchDeletedUrls = async () => {
-        const res = await fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.id}`);
+        const res = await fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
         const data = await res.json();
         setDeletedUrls(data);
     };
@@ -55,7 +62,11 @@ const Settings = ({ user }) => {
             return;
         }
 
-        fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`)
+        fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then(res => res.json())
             .then(data => {
                 console.log('Settings API response:', data);
@@ -112,14 +123,18 @@ const Settings = ({ user }) => {
     const handleSettingChange = (key, value) => {
         setSettings(prev => ({ ...prev, [key]: value }));
     };
-    useEffect(() => {
+    /*useEffect(() => {
         if (!user?.id) return;
 
-        fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.id}`)
+        fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then(res => res.json())
             .then(data => setDeletedUrls(data))
             .catch(err => console.error(err));
-    }, [user?.id]);
+    }, [user?.id]);*/
 
 
     const handleRtUrlChange = (index, field, value) => {
@@ -177,7 +192,9 @@ const Settings = ({ user }) => {
         setSaving(true);
         fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ settings }),
         })
             .then(() => {

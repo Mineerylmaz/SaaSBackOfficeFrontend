@@ -83,9 +83,11 @@ const Login = ({ setUser }) => {
               fullPlan = plansData.find(p => p.id === plan.id || p.name === plan.name) || plan;
             }
           }
+          localStorage.setItem('user', JSON.stringify({ id, email, role, plan: fullPlan, token }));
 
-          // 4. LocalStorage'a tam planı koy
+
           localStorage.setItem('selectedPlan', JSON.stringify(fullPlan));
+
 
 
           setUser({ id, email, role, plan: fullPlan, token });

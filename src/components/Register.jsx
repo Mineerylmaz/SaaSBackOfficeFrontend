@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 
 const Register = ({ setUser }) => {
+  const { token: routeToken } = useParams(); // 👈 DÜZENLENDİ
+  const location = useLocation();
+
+  const query = new URLSearchParams(location.search);
+  const queryInviteToken = query.get('id');
+
+  const token = routeToken || queryInviteToken;
   const navigate = useNavigate();
-  const { inviteToken } = useParams();
+
   const [inviteInfo, setInviteInfo] = useState(null);
   const [formData, setFormData] = useState({
     firstname: '',
@@ -14,8 +21,8 @@ const Register = ({ setUser }) => {
   });
 
   useEffect(() => {
-    if (inviteToken) {
-      fetch(`http://localhost:5000/api/invites/${inviteToken}`)
+    if (token) {
+      fetch(`http://localhost:5000/api/invites/${token}`)
         .then(res => res.json())
         .then(data => {
           if (!data.error) {
@@ -27,7 +34,7 @@ const Register = ({ setUser }) => {
         })
         .catch(() => setInviteInfo(null));
     }
-  }, [inviteToken]);
+  }, [token]);
 
   const handleChange = (e) => {
     if (inviteInfo && e.target.name === 'email') return;
@@ -44,7 +51,9 @@ const Register = ({ setUser }) => {
         email: formData.email,
         password: formData.password,
       };
-      if (inviteToken) bodyData.inviteToken = inviteToken;
+
+
+      if (routeToken) bodyData.inviteToken = routeToken;
 
       const res = await fetch('http://localhost:5000/api/register/add-user', {
         method: 'POST',
@@ -53,40 +62,28 @@ const Register = ({ setUser }) => {
       });
 
       if (res.ok) {
-        // Kayıt başarılı, otomatik giriş yap
-        const loginRes = await fetch('http://localhost:5000/api/login/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
+        const data = await res.json();
+
+        setUser({
+          id: data.userId,
+          role: data.role,
+          plan: data.selectedPlan,
+          token: data.token,
         });
 
-        if (loginRes.ok) {
-          const loginData = await loginRes.json();
+        localStorage.setItem('user', JSON.stringify({
+          id: data.userId,
+          role: data.role,
+          plan: data.selectedPlan,
+        }));
+        localStorage.setItem('token', data.token);
 
-          setUser({
-            id: loginData.id,
-            email: loginData.email,
-            role: loginData.role,
-            plan: loginData.plan,
-            token: loginData.token,
-          });
+        setFormData({ firstname: '', lastname: '', email: '', password: '' });
+        if (data.role === 'admin') navigate('/adminrol');
+        else if (data.role === 'editor') navigate('/editor');
+        else if (data.role === 'viewer') navigate('/viewer');
+        else navigate('/home');
 
-          localStorage.setItem('user', JSON.stringify({
-            id: loginData.id,
-            email: loginData.email,
-            role: loginData.role,
-            plan: loginData.plan,
-          }));
-          localStorage.setItem('token', loginData.token);
-
-          setFormData({ firstname: '', lastname: '', email: '', password: '' });
-          navigate('/home');
-        } else {
-          alert('Kayıt başarılı, ancak otomatik giriş yapılamadı.');
-        }
       } else {
         const data = await res.json();
         alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
@@ -94,7 +91,10 @@ const Register = ({ setUser }) => {
     } catch (error) {
       alert('Sunucu hatası: ' + error.message);
     }
+
+
   };
+
 
   return (
     <StyledWrapper>
@@ -104,8 +104,7 @@ const Register = ({ setUser }) => {
             <div
               style={{
                 backgroundColor: '#e3f2fd',
-                padding: '10px',
-                marginBottom: '15px',
+
                 borderRadius: '5px',
                 color: '#003366',
                 fontWeight: '600',
@@ -155,7 +154,7 @@ const Register = ({ setUser }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                readOnly={!!inviteInfo} // davetliyse kilitli
+                readOnly={!!inviteInfo}
               />
             </label>
             <label>
