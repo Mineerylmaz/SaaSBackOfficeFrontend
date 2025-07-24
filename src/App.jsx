@@ -16,14 +16,22 @@ import Editor from './components/Editor';
 
 
 export default function App() {
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem('token') || null;
+  });
+
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
 
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : null;
+    const savedUser = localStorage.getItem('user');
+    const savedToken = localStorage.getItem('token');
+    return savedUser && savedToken
+      ? { ...JSON.parse(savedUser), token: savedToken }
+      : null;
   });
+
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   useEffect(() => {
@@ -90,7 +98,7 @@ export default function App() {
           <Route path="/notfound" element={<NotFound />} />
           <Route
             path="/admin"
-            element={user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login" />}
+            element={user?.role === 'superadmin' ? <AdminPanel /> : <Navigate to="/login" />}
           />
           <Route
             path="/editor"

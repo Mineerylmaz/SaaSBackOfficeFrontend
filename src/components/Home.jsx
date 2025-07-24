@@ -67,18 +67,40 @@ const HeroSection = styled.section`
   background-color: ${({ darkMode }) => (darkMode ? "#0b1d3a" : "transparent")};
   color: #ffff 
   text-align: center;
+  @media (max-width: 768px) {
+    padding: 5rem 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 3rem 1rem;
+  }
 `;
 
 
 const HeroTitle = styled.h1`
   font-size: 3rem;
   margin-bottom: 1rem;
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
  
 `;
 
 const HeroSubtitle = styled.p`
   font-size: 1.25rem;
   margin-bottom: 2rem;
+  
+ @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
  
 `;
 
@@ -108,7 +130,11 @@ const HeroButton = styled.a`
 
 const StyledWrapper = styled.div`
  background-color: ${({ darkMode }) => (darkMode ? "#0b1d3a" : "#f7f9fc")};
-  min-height: 90vh;
+  height: 50vh;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+
 
   .road {
     position: relative;
@@ -117,6 +143,8 @@ const StyledWrapper = styled.div`
     background-color: gray;
     margin-top: 1rem;
     z-index: 10;
+     overflow-x: hidden;
+  min-width: 100%;
   }
 
 
@@ -152,7 +180,7 @@ const StyledWrapper = styled.div`
 }
 @keyframes mymove {
   0% { left: -100px; } 
-  70% { left: 70%; }  
+  70% { left: 70vw; }  
 }
 
 
@@ -339,100 +367,5 @@ const StyledWrapper = styled.div`
 
 }
   
-
-.cloud1{
-  width:100px;
-  height:100px;
-  margin:-90px;
-  position:absolute;
-  background: url(http://images.clipartpanda.com/clouds-background-png-cloud-edition.png);
-  background-size: 65% 45%;
-   background-repeat: no-repeat;
-  animation: cloudy 20s infinite normal;
-  -webkit-animation: cloudy 20s infinite normal linear;
-}
-
-@keyframes cloudy{
-    0% { left: -100px;}
-    100% {left: 1320px;}
- }
-
-@-webkit-keyframes cloudy {
-    0% { left: -100px;}
-    100% {left: 1320px;}
- }
-
-.cloud2{
-  opacity:0.7;
-   width:100px;
-  height:100px;
-  margin:-120px;
-  position:absolute;
-  background: url(http://images.clipartpanda.com/clouds-background-png-cloud-edition.png);
-  background-size: 65% 45%;
-   background-repeat: no-repeat;
-  animation: cloudy2 23s infinite reverse;
-  -webkit-animation: cloudy2 23s infinite reverse  ease-in;
-}
-
-@keyframes cloudy2{
-    0% { left: -100px;}
-    100% {left: 1300px;}
- }
-
-@-webkit-keyframes cloudy2 {
-    0% { left: -100px;}
-    100% {left: 1300px;}
- }
-  
-
-.cloud3{
-opacity:0.8;
-  width:100px;
-  height:100px;
-  margin:-80px;
-  position:absolute;
-  background: url(http://images.clipartpanda.com/clouds-background-png-cloud-edition.png);
-  background-size: 70% 48%;
-   background-repeat: no-repeat;
-  animation: cloudy3 40s infinite normal;
-  -webkit-animation: cloudy3 40s infinite normal linear;
-}
-
-@keyframes cloudy3{
-    0% { left: -100px;}
-    100% {left: 1320px;}
- }
-
-@-webkit-keyframes cloudy3 {
-    0% { left: -100px;}
-    100% {left: 1320px;}
- }
-
-.cloud4{
-      -webkit-transform: rotateY(180deg); 
-    transform: rotateY(180deg);
-  opacity:1;
-   width:100px;
-  height:100px;
-  margin:-80px;
-  position:absolute;
-  background: url(http://images.clipartpanda.com/clouds-background-png-cloud-edition.png);
-  background-size: 85% 70%;
-   background-repeat: no-repeat;
-  animation: cloudy4 38s infinite reverse;
-  -webkit-animation: cloudy4 38s infinite reverse linear;
-}
-
-@keyframes cloudy4{
-    0% { left: -100px;}
-    100% {left: 1300px;}
- }
-
-@-webkit-keyframes cloudy4 {
-    0% { left: -100px;}
-    100% {left: 1300px;}
- }
- 
 
 `

@@ -133,7 +133,7 @@ export default function Roller() {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Kullanıcı token bulunamadı!');
 
-            const response = await fetch('http://localhost:5000/api/invites/${token}', {
+            const response = await fetch(`http://localhost:5000/api/invites`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -13,8 +13,10 @@ import Roller from './Roller';
 
 const Settings = ({ user }) => {
 
-
     const token = localStorage.getItem('token');
+
+
+
 
     const [plan, setPlan] = useState(null);
     const [settings, setSettings] = useState({
@@ -46,7 +48,7 @@ const Settings = ({ user }) => {
 
 
     const fetchDeletedUrls = async () => {
-        const res = await fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.id}`, {
+        const res = await fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.token}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -226,8 +228,10 @@ const Settings = ({ user }) => {
         fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`, {
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${token}`
-            },
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+            ,
             body: JSON.stringify({ settings }),
         })
             .then(() => {

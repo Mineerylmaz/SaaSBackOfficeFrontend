@@ -18,6 +18,12 @@ const Register = ({ setUser }) => {
   const navigate = useNavigate();
 
   const [plan, setPlan] = useState(null);
+  useEffect(() => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    console.log("gerçekten tokenı sildin mi register??")
+  }, []);
+
 
   useEffect(() => {
     const storedPlan = localStorage.getItem("selectedPlan");
@@ -67,17 +73,26 @@ const Register = ({ setUser }) => {
     console.log('🟡 handleSubmit tetiklendi');
 
     try {
+      let planToSend = null;
+      if (plan && typeof plan === 'string') {
+        planToSend = { name: plan };
+      } else if (plan && typeof plan === 'object') {
+        planToSend = { name: plan.name || plan.value || plan.label };
+      }
+
+
+
       const bodyData = {
         firstname: formData.firstname,
         lastname: formData.lastname,
         email: formData.email,
         password: formData.password,
-        inviteToken: token || null,
+        inviteToken: token,
         role: inviteInfo?.role || 'user',
-        selectedPlan: plan,
+        plan: planToSend,
       };
 
-
+      console.log("📦 Gönderilecek veri:", bodyData);
 
       const res = await fetch('http://localhost:5000/api/register/add-user', {
         method: 'POST',
@@ -85,40 +100,51 @@ const Register = ({ setUser }) => {
         body: JSON.stringify(bodyData),
       });
 
-
-
-
       if (res.ok) {
         const data = await res.json();
-        console.log("Register dönüşü:", data);
+        console.log("✅ Register dönüşü:", data);
+
         setUser({
           id: data.user.id,
           role: data.user.role,
-          plan: data.user.plan,  // tam plan objesi
+          plan: data.user.plan,
           token: data.token,
+
         });
 
         localStorage.setItem('user', JSON.stringify({
           id: data.user.id,
           role: data.user.role,
-          plan: plan,
+          plan: data.user.plan,
+          email: data.user.email
         }));
         localStorage.setItem('token', data.token);
 
+        console.log("token eklediğinden emin misin register??")
         setFormData({ firstname: '', lastname: '', email: '', password: '' });
 
-        if (plan) {
+
+        if (data.user.plan && data.user.plan.name) {
+          console.log("➡️ Navigating to /odeme");
           navigate('/odeme');
         } else {
+          console.log("➡️ Navigating to /");
           navigate('/');
         }
-      }
 
+
+      } else {
+        const errData = await res.json();
+        console.error('🚫 Register hata:', errData);
+        alert(errData.error || 'Kayıt sırasında bir hata oluştu.');
+      }
     } catch (error) {
       console.error('Sunucu hatası:', error);
       alert('Sunucu hatası: ' + error.message);
     }
   };
+
+
 
   return (
     <StyledWrapper>
@@ -129,7 +155,7 @@ const Register = ({ setUser }) => {
               style={{
 
                 borderRadius: '5px',
-                color: '#003366',
+                color: '#ffff',
                 fontWeight: '600',
                 textAlign: 'center',
 
