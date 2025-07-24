@@ -1,198 +1,127 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { DataGrid } from '@mui/x-data-grid';
-
-const Profile = ({ user, settings }) => {
-  const rtColumns = [
-    {
-      field: 'url',
-      headerName: 'URL',
-      flex: 1,
-      renderCell: (params) => (
-        <a href={params.value} target="_blank" rel="noopener noreferrer">
-          {params.value}
-        </a>
-      ),
-    },
-    {
-      field: 'frequency',
-      headerName: 'Çağrı Sıklığı (sn)',
-      width: 150,
-    },
-  ];
-
-  const staticColumns = [...rtColumns];
-  const formatRows = (urls) => urls.map((item, idx) => ({ id: idx, ...item }));
-
+const Profile = ({ user }) => {
   return (
     <StyledWrapper>
-      <div className="profile-page">
-        <div className="profile-card">
-          <div className="cards__img"></div>
-          <div className="cards__avatar"></div>
-          <div className="cards__title">{user?.email}</div>
-        </div>
+      <div className="e-card playing">
+        <div className="image" />
+        <div className="wave" />
+        <div className="wave" />
+        <div className="wave" />
+        <div className="infotop">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="icon">
+            <path d="M12 2C9.79 2 8 3.79 8 6s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 3.5 12 3.5s2.5 1.12 2.5 2.5S13.38 8.5 12 8.5zm0 3c-3.03 0-5.5 2.47-5.5 5.5V20h11v-3c0-3.03-2.47-5.5-5.5-5.5zm0 1.5c2.21 0 4 1.79 4 4v1h-8v-1c0-2.21 1.79-4 4-4z" />
+          </svg>
 
-        <div className="rt-url-list">
-          <h2>Real Time (RT) URL Listesi</h2>
-          {settings?.rt_urls && settings.rt_urls.length > 0 ? (
-            <DataGrid
-              rows={formatRows(settings.rt_urls)}
-              columns={rtColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight={false}
-              style={{ height: '350px' }}
-            />
-          ) : (
-            <div className="empty-msg">Henüz RT URL eklenmemiş.</div>
-          )}
-        </div>
 
-        <div className="static-url-list">
-          <h2>Static URL Listesi</h2>
-          {settings?.static_urls && settings.static_urls.length > 0 ? (
-            <DataGrid
-              rows={formatRows(settings.static_urls)}
-              columns={staticColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight={false}
-              style={{ height: '350px' }}
-            />
-          ) : (
-            <div className="empty-msg">Henüz Static URL eklenmemiş.</div>
-          )}
+          <br />
+          <div className="name">{user?.email}</div>
         </div>
       </div>
     </StyledWrapper>
   );
-};
-
+}
 
 const StyledWrapper = styled.div`
-  .profile-page {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    max-width: 1200px;
-    margin: 0 auto;
-
-    @media (max-width: 768px) {
-      flex-direction: column;
-      max-width: 100%;
-      padding: 0 10px;
-      gap: 15px;
-    }
+height: 70vh; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 480px; 
+  @media (max-width: 768px) {
+    padding-left: 20px; 
+    padding-right: 20px; 
   }
-
-  .profile-card {
-    flex: 0 0 200px;
-    background: #000;
-    color: #fff;
-    border-radius: 20px;
-    padding: 20px;
+  
+  .e-card {
+    margin: 0; 
+    background: transparent;
+    box-shadow: 0px 8px 28px -9px rgba(0,0,0,0.45);
     position: relative;
-    height: 400px;
-
-    @media (max-width: 768px) {
-      flex: none;
-      width: 100%;
-      height: auto;
-      padding-bottom: 40px; /* Avatar ve başlık alanı için biraz boşluk */
-    }
+    width: 240px;
+    height: 330px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
   }
 
-  .cards__img {
-    height: 140px;
-    width: 100%;
-    background: #333;
-    border-radius: 20px 20px 0 0;
-
-    @media (max-width: 768px) {
-      height: 120px;
-    }
-  }
-
-  .cards__avatar {
+  .wave {
     position: absolute;
-    top: 110px;
-    left: calc(50% - 45px);
-    width: 90px;
-    height: 90px;
-    background: #000;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    @media (max-width: 768px) {
-      position: relative;
-      top: auto;
-      left: auto;
-      margin: -45px auto 10px auto; /* Üstten biraz yukarı çek ve ortala */
-      width: 70px;
-      height: 70px;
-    }
+    width: 540px;
+    height: 700px;
+    opacity: 0.6;
+    left: 0;
+    top: 0;
+    margin-left: -50%;
+    margin-top: -70%;
+    background: linear-gradient(744deg,#af40ff,#5b42f3 60%,#00ddeb);
   }
 
-  .cards__avatar svg {
-    width: 80px;
-    height: 80px;
-
-    @media (max-width: 768px) {
-      width: 60px;
-      height: 60px;
-    }
+  .icon {
+    width: 3em;
+    margin-top: -1em;
+    padding-bottom: 1em;
   }
 
-  .cards__title {
-    margin-top: 70px;
-    font-size: 16px;
-    font-weight: bold;
+  .infotop {
     text-align: center;
+    font-size: 20px;
+    position: absolute;
+    top: 5.6em;
+    left: 0;
+    right: 0;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+  }
 
-    @media (max-width: 768px) {
-      margin-top: 0;
-      font-size: 18px;
+  .name {
+    font-size: 14px;
+    font-weight: 100;
+    position: relative;
+    top: 1em;
+    text-transform: lowercase;
+  }
+
+  .wave:nth-child(2),
+  .wave:nth-child(3) {
+    top: 210px;
+  }
+
+  .playing .wave {
+    border-radius: 40%;
+    animation: wave 3000ms infinite linear;
+  }
+
+  .wave {
+    border-radius: 40%;
+    animation: wave 55s infinite linear;
+  }
+
+  .playing .wave:nth-child(2) {
+    animation-duration: 4000ms;
+  }
+
+  .wave:nth-child(2) {
+    animation-duration: 50s;
+  }
+
+  .playing .wave:nth-child(3) {
+    animation-duration: 5000ms;
+  }
+
+  .wave:nth-child(3) {
+    animation-duration: 45s;
+  }
+
+  @keyframes wave {
+    0% {
+      transform: rotate(0deg);
     }
-  }
 
-  .rt-url-list, .static-url-list {
-    flex: 1;
-    background: linear-gradient(
-      135deg,
-      var(--e-global-color-primary),
-      var(--e-global-color-secondary),
-      var(--e-global-color-65fcc69)
-    );
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    max-height: 400px;
-    overflow-y: auto;
-
-    @media (max-width: 768px) {
-      max-height: none;
-      width: 100%;
+    100% {
+      transform: rotate(360deg);
     }
-  }
-
-  h2 {
-    margin-bottom: 1rem;
-    color: var(--e-global-color-text);
-  }
-
-  .empty-msg {
-    color: #071f35;
-    font-style: italic;
-    padding: 10px 0;
-    text-align: center;
-  }
-`;
-
+  }`;
 
 export default Profile;

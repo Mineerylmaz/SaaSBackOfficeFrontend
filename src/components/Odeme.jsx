@@ -26,10 +26,13 @@ const Odeme = () => {
   };
   useEffect(() => {
     const userStr = localStorage.getItem('user');
+    console.log("LocalStorage user verisi:", userStr);
     const savedPlan = localStorage.getItem('selectedPlan');
+    console.log("LocalStorage plan verisi:", savedPlan);
 
     if (userStr) {
       const user = JSON.parse(userStr);
+      console.log("Parsed user:", user);
       setUserId(user.id);
 
       if (savedPlan) {

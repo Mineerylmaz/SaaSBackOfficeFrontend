@@ -44,6 +44,18 @@ const UrlResultsGrid = ({ userId }) => {
         return () => clearInterval(interval);
     }, [userId, startDateTime, endDateTime]);
 
+    const summaryRow = results.length > 0 ? {
+        id: 'summary',
+        name: 'Son Çağırılan Url ',
+        url: results[0].url,
+        responseTime: results[0].responseTime,
+        status: results[0].status,
+        errorMessage: results[0].errorMessage,
+        checkedAt: results[0].checkedAt,
+        isSummary: true,
+    } : null;
+
+    const displayRows = summaryRow ? [summaryRow, ...results] : results;
 
     const showLastResultStatus = () => {
         if (results.length === 0) {
@@ -126,15 +138,25 @@ const UrlResultsGrid = ({ userId }) => {
     ];
 
     return (
-        <div>
-            <div style={{ marginBottom: 12, display: 'flex', gap: 10, alignItems: 'center' }}>
-                <label>
+        <div style={{ width: '100%', maxWidth: '100%', padding: '0 16px', }}>
+            <div
+                style={{
+                    marginBottom: 12,
+                    display: 'flex',
+                    gap: 10,
+                    alignItems: 'center',
+                    flexWrap: 'wrap',   // SARMA İZNİ VER
+                    justifyContent: 'flex-start', // Butonlar sola yaslı olsun
+                }}
+            >
+                <label style={{ display: 'flex', flexDirection: 'column', flex: '1 1 200px', minWidth: 150 }}>
+
                     Başlangıç:
                     <input
                         style={{
-                            marginLeft: 'auto',
+                            width: '100%',
+                            marginTop: 4,
                             padding: '8px 16px',
-
                             borderRadius: '8px',
                             backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
                             color: 'white',
@@ -142,6 +164,7 @@ const UrlResultsGrid = ({ userId }) => {
                             fontWeight: '600',
                             boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
                             transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+                            boxSizing: 'border-box',
                         }}
                         type="datetime-local"
                         value={startDateTime}
@@ -149,13 +172,14 @@ const UrlResultsGrid = ({ userId }) => {
                         max={endDateTime || undefined}
                     />
                 </label>
-                <label>
+                <label style={{ display: 'flex', flexDirection: 'column', flex: '1 1 200px', minWidth: 150 }}>
+
                     Bitiş:
                     <input
                         style={{
-                            marginLeft: 'auto',
+                            width: '100%',
+                            marginTop: 4,
                             padding: '8px 16px',
-
                             borderRadius: '8px',
                             backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
                             color: 'white',
@@ -163,6 +187,7 @@ const UrlResultsGrid = ({ userId }) => {
                             fontWeight: '600',
                             boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
                             transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+                            boxSizing: 'border-box',
                         }}
                         type="datetime-local"
                         value={endDateTime}
@@ -170,28 +195,13 @@ const UrlResultsGrid = ({ userId }) => {
                         min={startDateTime || undefined}
                     />
                 </label>
-                <button onClick={fetchUrlResults} disabled={loading} style={{
-                    marginLeft: 'auto',
-                    padding: '8px 16px',
-
-                    borderRadius: '8px',
-                    backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
-                    color: 'white',
-                    border: 'none',
-                    fontWeight: '600',
-                    boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
-                    transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
-                }}>
-                    Filtrele
-                </button>
-
                 <button
-                    onClick={showLastResultStatus}
-                    disabled={loading || results.length === 0}
+                    onClick={fetchUrlResults}
+                    disabled={loading}
                     style={{
-                        marginLeft: 'auto',
+                        flex: '1 1 150px',
+                        minWidth: 120,
                         padding: '8px 16px',
-                        cursor: loading || results.length === 0 ? 'not-allowed' : 'pointer',
                         borderRadius: '8px',
                         backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
                         color: 'white',
@@ -199,37 +209,47 @@ const UrlResultsGrid = ({ userId }) => {
                         fontWeight: '600',
                         boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
                         transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+                        cursor: loading ? 'not-allowed' : 'pointer',
+                        boxSizing: 'border-box',
                     }}
-                    onMouseEnter={e => {
-                        if (!(loading || results.length === 0)) {
-                            e.target.style.backgroundColor = '#24496b';
-                            e.target.style.boxShadow = '0 6px 8px rgba(0,0,0,0.15)';
-                        }
-                    }}
-                    onMouseLeave={e => {
-                        if (!(loading || results.length === 0)) {
-                            e.target.style.backgroundColor = '#24496b';
-                            e.target.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-                        }
-                    }}
-                    title="En son çekilen URL sonucunu göster"
                 >
-                    En Son Sonucu Göster
+                    Filtrele
                 </button>
 
+
+
             </div>
-            <div style={{ width: '100%', height: 400, overflowX: 'auto', position: 'relative' }}>
+            <div
+                style={{
+                    width: '100%',
+                    height: 400,
+                    overflowX: 'auto',   // YATAY SCROLL
+                    overflowY: 'hidden',
+                    position: 'relative',
+                }}
+            >
                 <DataGrid
-                    rows={results}
                     columns={columns}
-                    pageSize={5}
+
                     getRowId={(row) => row.id}
-                    disableSelectionOnClick
+                    getRowClassName={(params) =>
+                        params.row.isSummary ? 'summary-row' : ''
+                    }
+                    disableRowSelectionOnClick
+                    sx={{
+                        minWidth: 'fit-content',
+                        overflowX: 'auto',
+                    }}
+                    rows={displayRows}
+
+                    pageSize={5}
+
+
                     autoHeight={false}
                     style={{
                         width: '100%',
                         height: '100%',
-                        minWidth: 900,
+
                         opacity: loading ? 0.6 : 1,
                         transition: 'opacity 0.3s ease',
                     }}

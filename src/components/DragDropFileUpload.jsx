@@ -64,7 +64,17 @@ const DragDropFileUpload = () => {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
+    <div
+      style={{
+        maxWidth: 600,
+        margin: "2rem auto",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        position: "relative",
+
+        width: "600px",
+      }}
+    >
+
       <h2>Dosya / Klasör Yükleme</h2>
       <p>Plan dosya limiti: <strong>{plan.max_file_size} MB</strong></p>
 
@@ -132,7 +142,7 @@ const DragDropFileUpload = () => {
       <button
         onClick={handleUpload}
         style={{
-          padding: "10px 20px",
+
           backgroundColor: "#007BFF",
           color: "white",
           border: "none",

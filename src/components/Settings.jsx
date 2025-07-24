@@ -12,6 +12,8 @@ import DragDropFileUpload from './DragDropFileUpload';
 import Roller from './Roller';
 
 const Settings = ({ user }) => {
+
+
     const token = localStorage.getItem('token');
 
     const [plan, setPlan] = useState(null);
@@ -118,6 +120,37 @@ const Settings = ({ user }) => {
             fetchResults();
         }
     }, [selectedMenu, user?.id]);
+    useEffect(() => {
+        if (!user?.id) {
+            setLoading(false);
+            return;
+        }
+
+        if (!token) {
+            console.error("Token yok, giriş yapmalısınız.");
+            setLoading(false);
+            return;
+        }
+
+        fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(res => {
+                if (res.status === 401) {
+                    throw new Error("Geçersiz token, lütfen tekrar giriş yapın.");
+                }
+                return res.json();
+            })
+            .then(data => {
+                // mevcut kodun
+            })
+            .catch(err => {
+                console.error(err.message);
+                setLoading(false);
+            });
+    }, [user?.id, token]);
 
 
     const handleSettingChange = (key, value) => {
@@ -221,169 +254,160 @@ const Settings = ({ user }) => {
 
     return (
         <Wrapper>
-            <Radio selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
+            <Sidebar>
+                <Radio selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
+            </Sidebar>
+            <ContentArea>
+                {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults') && (
+                    <HorizontalWrapper>
+                        <ContentWrapper fullWidth>
+                            {selectedMenu === 'rt' && (
+                                <AccordionWrapper>
+                                    <AccordionHeader onClick={() => setOpenRT(!openRT)}>
+                                        Real Time URL Listesi ({filteredRtUrls.length})
+                                    </AccordionHeader>
+                                    <AccordionContent open={openRT}>
+                                        {filteredRtUrls.map((item, idx) => (
+                                            <Row key={idx}>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Başlık"
+                                                    value={item.name || ''}
+                                                    onChange={e => handleRtUrlChange(idx, 'name', e.target.value)}
+                                                    style={{ flex: 2 }}
+                                                />
+                                                <Input
+                                                    type="text"
+                                                    placeholder="RT URL"
+                                                    value={item.url}
+                                                    onChange={e => handleRtUrlChange(idx, 'url', e.target.value)}
+                                                    style={{ flex: 3 }}
+                                                />
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Çağrı Sıklığı (sn)"
+                                                    value={item.frequency}
+                                                    onChange={e => handleRtUrlChange(idx, 'frequency', Number(e.target.value))}
+                                                    style={{ flex: 1 }}
+                                                />
+                                                <Silbuton onClick={() => removeRtUrl(idx)}>Sil</Silbuton>
+                                            </Row>
 
-            {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults') && (
-                <HorizontalWrapper>
-                    <ContentWrapper>
-                        {selectedMenu === 'rt' && (
-                            <AccordionWrapper>
-                                <AccordionHeader onClick={() => setOpenRT(!openRT)}>
-                                    Real Time URL Listesi ({filteredRtUrls.length})
-                                </AccordionHeader>
-                                <AccordionContent open={openRT}>
-                                    {filteredRtUrls.map((item, idx) => (
-                                        <Row key={idx}>
-                                            <Input
-                                                type="text"
-                                                placeholder="Başlık"
-                                                value={item.name || ''}
-                                                onChange={e => handleRtUrlChange(idx, 'name', e.target.value)}
-                                                style={{ flex: 2 }}
-                                            />
-                                            <Input
-                                                type="text"
-                                                placeholder="RT URL"
-                                                value={item.url}
-                                                onChange={e => handleRtUrlChange(idx, 'url', e.target.value)}
-                                                style={{ flex: 3 }}
-                                            />
-                                            <Input
-                                                type="number"
-                                                placeholder="Çağrı Sıklığı (sn)"
-                                                value={item.frequency}
-                                                onChange={e => handleRtUrlChange(idx, 'frequency', Number(e.target.value))}
-                                                style={{ flex: 1 }}
-                                            />
-                                            <Silbuton onClick={() => removeRtUrl(idx)}>Sil</Silbuton>
-                                        </Row>
+                                        ))}
+                                        <Button onClick={addRtUrl} isabled={filteredRtUrls.length >= (plan?.rt_url_limit || 0)}>
+                                            URL Ekle
+                                        </Button>
+                                    </AccordionContent>
+                                    <SaveButton onClick={saveSettings} disabled={saving}>
+                                        Ayarları Kaydet
+                                    </SaveButton>
+                                </AccordionWrapper>
+                            )}
 
-                                    ))}
-                                    <Button onClick={addRtUrl} isabled={filteredRtUrls.length >= (plan?.rt_url_limit || 0)}>
-                                        URL Ekle
-                                    </Button>
-                                </AccordionContent>
-                                <SaveButton onClick={saveSettings} disabled={saving}>
-                                    Ayarları Kaydet
-                                </SaveButton>
-                            </AccordionWrapper>
-                        )}
+                            {selectedMenu === 'static' && (
+                                <AccordionWrapper>
+                                    <AccordionHeader onClick={() => setOpenStatic(!openStatic)}>
+                                        Static URL Listesi ({filteredStaticUrls.length})
+                                    </AccordionHeader>
+                                    <AccordionContent open={openStatic}>
+                                        {filteredStaticUrls.map((item, idx) => (
+                                            <Row key={idx}>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Başlık"
+                                                    value={item.name || ''}
+                                                    onChange={e => handleStaticUrlChange(idx, 'name', e.target.value)}
+                                                    style={{ flex: 2 }}
+                                                />
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Static URL"
+                                                    value={item.url}
+                                                    onChange={e => handleStaticUrlChange(idx, 'url', e.target.value)}
+                                                    style={{ flex: 3 }}
+                                                />
 
-                        {selectedMenu === 'static' && (
-                            <AccordionWrapper>
-                                <AccordionHeader onClick={() => setOpenStatic(!openStatic)}>
-                                    Static URL Listesi ({filteredStaticUrls.length})
-                                </AccordionHeader>
-                                <AccordionContent open={openStatic}>
-                                    {filteredStaticUrls.map((item, idx) => (
-                                        <Row key={idx}>
-                                            <Input
-                                                type="text"
-                                                placeholder="Başlık"
-                                                value={item.name || ''}
-                                                onChange={e => handleStaticUrlChange(idx, 'name', e.target.value)}
-                                                style={{ flex: 2 }}
-                                            />
-                                            <Input
-                                                type="text"
-                                                placeholder="Static URL"
-                                                value={item.url}
-                                                onChange={e => handleStaticUrlChange(idx, 'url', e.target.value)}
-                                                style={{ flex: 3 }}
-                                            />
-
-                                            <Input
-                                                type="number"
-                                                placeholder="Çağrı Sıklığı (sn)"
-                                                value={item.frequency}
-                                                onChange={e => handleStaticUrlChange(idx, 'frequency', Number(e.target.value))}
-                                                style={{ flex: 1 }}
-                                            />
-                                            <Silbuton onClick={() => removeStaticUrl(idx)} />
-                                        </Row>
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Çağrı Sıklığı (sn)"
+                                                    value={item.frequency}
+                                                    onChange={e => handleStaticUrlChange(idx, 'frequency', Number(e.target.value))}
+                                                    style={{ flex: 1 }}
+                                                />
+                                                <Silbuton onClick={() => removeStaticUrl(idx)} />
+                                            </Row>
 
 
 
-                                    ))}
-                                    <Button
-                                        onClick={addStaticUrl}
-                                        disabled={filteredStaticUrls.length >= (plan?.static_url_limit || 0)}
-                                    >
-                                        URL Ekle
-                                    </Button>
-                                </AccordionContent>
-                                <SaveButton onClick={saveSettings} disabled={saving}>
-                                    Ayarları Kaydet
-                                </SaveButton>
-                            </AccordionWrapper>
-                        )}
+                                        ))}
+                                        <Button
+                                            onClick={addStaticUrl}
+                                            disabled={filteredStaticUrls.length >= (plan?.static_url_limit || 0)}
+                                        >
+                                            URL Ekle
+                                        </Button>
+                                    </AccordionContent>
+                                    <SaveButton onClick={saveSettings} disabled={saving}>
+                                        Ayarları Kaydet
+                                    </SaveButton>
+                                </AccordionWrapper>
+                            )}
 
-                        {selectedMenu === 'urlresults' && (
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    flex: 1,
-                                    width: '100%',
-                                    boxSizing: 'border-box',
-                                    overflow: 'hidden',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        flex: 1,
-                                        width: '100%',
-                                        overflowY: 'auto',
-                                        overflowX: 'hidden',
-                                    }}
-                                >
+                            {selectedMenu === 'urlresults' && (
+                                <div style={{ flex: '1 1 100%', width: '100%' }}>
+
                                     <UrlResultsGrid userId={user.id} />
                                 </div>
-                            </div>
+
+                            )}
+                        </ContentWrapper>
+
+                        {selectedMenu !== 'urlresults' && plan && (
+                            <PlanCard>
+                                <div className="card__heading">Plan</div>
+                                <div className="card__price">{plan.name}</div>
+                                <div className="card__bullets flow">
+                                    <div>
+                                        <strong>RT URL Limit:</strong> {plan.rt_url_limit}
+                                    </div>
+                                    <div>
+                                        <strong>Static URL Limit:</strong> {plan.static_url_limit}
+                                    </div>
+                                    <div>
+                                        <strong>Mevcut RT URL:</strong> {settings.rt_urls?.length || 0}
+                                    </div>
+                                    <div>
+                                        <strong>Mevcut Static URL:</strong> {settings.static_urls?.length || 0}
+                                    </div>
+                                </div>
+                            </PlanCard>
                         )}
-                    </ContentWrapper>
+                    </HorizontalWrapper>
+                )
+                }
 
-                    {plan && (
-                        <PlanCard>
-                            <div className="card__heading">Plan</div>
-                            <div className="card__price">{plan.name}</div>
-                            <div className="card__bullets flow">
-                                <div>
-                                    <strong>RT URL Limit:</strong> {plan.rt_url_limit}
-                                </div>
-                                <div>
-                                    <strong>Static URL Limit:</strong> {plan.static_url_limit}
-                                </div>
-                                <div>
-                                    <strong>Mevcut RT URL:</strong> {settings.rt_urls?.length || 0}
-                                </div>
-                                <div>
-                                    <strong>Mevcut Static URL:</strong> {settings.static_urls?.length || 0}
-                                </div>
-                            </div>
-                        </PlanCard>
-                    )}
-                </HorizontalWrapper>
-            )}
+                {
+                    selectedMenu === 'upload' && (
 
-            {selectedMenu === 'upload' && (
+                        <div>
+                            <DragDropFileUpload></DragDropFileUpload>
+                        </div>
+                    )
+                }
+                {
+                    selectedMenu === 'roller' && (
+                        <div>
+                            <Roller></Roller>
+                        </div>
 
-                <div>
-                    <DragDropFileUpload></DragDropFileUpload>
-                </div>
-            )}
-            {selectedMenu === 'roller' && (
-                <div>
-                    <Roller></Roller>
-                </div>
-
-            )}
+                    )
+                }
 
 
 
-            {selectedMenu === 'profile' && <Profile user={user} settings={settings} />}
-        </Wrapper>
+                {selectedMenu === 'profile' && <Profile user={user} settings={settings} />}
+            </ContentArea>
+        </Wrapper >
     );
 
 };
@@ -394,6 +418,12 @@ const Settings = ({ user }) => {
 
 export default Settings;
 
+const ContentArea = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
 
 
 
@@ -402,6 +432,7 @@ const AccordionWrapper = styled.div`
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 15px;
+  
 `;
 
 const AccordionHeader = styled.button`
@@ -431,6 +462,14 @@ const Row = styled.div`
   margin-bottom: 10px;
   width: 100%;
 `;
+const Sidebar = styled.div`
+  width: 220px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
 
 
 const SaveButton = styled.button`
@@ -454,14 +493,14 @@ const SaveButton = styled.button`
   }
 `;
 const Wrapper = styled.div`
-  max-width: 1000px;
+  width:100%;
   margin: 0 auto;
-  padding: 20px;
+
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
   box-sizing: border-box;
-
+padding: 20px 50px 20px 20px;
   @media (max-width: 768px) {
     flex-direction: column;
     max-width: 100%;
@@ -474,22 +513,26 @@ const HorizontalWrapper = styled.div`
   gap: 20px;
   align-items: flex-start;
   width: 100%;
-
+   
+justify-content: space-between;
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 10px;
+    justify-content: normal;
   }
 `;
-
 const ContentWrapper = styled.div`
-  flex: 1;
-  min-width: 350px;
+  min-width: ${({ fullWidth }) => (fullWidth ? 'auto' : '350px')};
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
+  flex: 1 1 auto;
 
   @media (max-width: 768px) {
     min-width: auto;
     width: 100%;
   }
 `;
+
+
 
 const PlanCard = styled.div`
   position: relative;

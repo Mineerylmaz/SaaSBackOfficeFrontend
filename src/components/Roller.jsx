@@ -18,17 +18,28 @@ const Silbuton = ({ onClick }) => (
     </button>
 );
 
+function useWindowWidth() {
+    const [width, setWidth] = useState(window.innerWidth);
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+    return width;
+}
+
 export default function Roller() {
     const [userPlanRoles, setUserPlanRoles] = useState([]);
     const [inviteEmail, setInviteEmail] = useState("");
     const [inviteRole, setInviteRole] = useState("");
+    const [darkMode, setDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const width = useWindowWidth();
+
     const handleSil = (email) => {
         const filtered = invites.filter(i => i.email !== email);
         setInvites(filtered);
         localStorage.setItem("invites", JSON.stringify(filtered));
     };
-
-
 
     async function fetchUserPlan() {
         const token = localStorage.getItem('token');
@@ -48,11 +59,9 @@ export default function Roller() {
             const plan = data.plan;
 
             if (plan) {
-
                 if (typeof plan.roles === "string") {
                     plan.roles = JSON.parse(plan.roles);
                 }
-
                 localStorage.setItem('selectedPlan', JSON.stringify(plan));
                 return plan;
             }
@@ -64,9 +73,6 @@ export default function Roller() {
         }
     }
 
-
-
-
     useEffect(() => {
         const loadPlan = async () => {
             const planFromStorage = localStorage.getItem('selectedPlan');
@@ -77,26 +83,19 @@ export default function Roller() {
                     return;
                 }
             }
-
             const freshPlan = await fetchUserPlan();
             if (freshPlan?.roles) {
                 setUserPlanRoles(freshPlan.roles);
             }
         };
-
         loadPlan();
     }, []);
 
     const userEmail = JSON.parse(localStorage.getItem("user"))?.email || "default";
-
     const [invites, setInvites] = useState(() => {
         const saved = localStorage.getItem(`invites-${userEmail}`);
         return saved ? JSON.parse(saved) : [];
     });
-
-
-
-
 
     useEffect(() => {
         const planStr = localStorage.getItem("selectedPlan");
@@ -105,56 +104,36 @@ export default function Roller() {
             if (plan && plan.roles) {
                 setUserPlanRoles(plan.roles);
             } else {
-                console.warn("Plan roles eksik:", plan);
-
                 setUserPlanRoles([]);
             }
         } else {
-
             setUserPlanRoles([]);
         }
     }, []);
 
-
     const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
-
 
     const handleInvite = async () => {
         if (!inviteEmail || !inviteRole) {
-            return Swal.fire({
-                icon: "error",
-                title: "Hata!",
-                text: "Email ve rol seçiniz!",
-                confirmButtonColor: "#d33"
-            });
+            return Swal.fire({ icon: "error", title: "Hata!", text: "Email ve rol seçiniz!", confirmButtonColor: "#d33" });
         }
 
         if (!validateEmail(inviteEmail)) {
-            return Swal.fire({
-                icon: "error",
-                title: "Geçersiz Email!",
-                text: "Lütfen geçerli bir email adresi giriniz!",
-                confirmButtonColor: "#d33"
-            });
+            return Swal.fire({ icon: "error", title: "Geçersiz Email!", text: "Lütfen geçerli bir email adresi giriniz!", confirmButtonColor: "#d33" });
         }
 
         const planLimit = userPlanRoles.find(r => r.role === inviteRole)?.count || 0;
         const currentCount = invites.filter(i => i.role === inviteRole).length;
 
         if (currentCount >= planLimit) {
-            return Swal.fire({
-                icon: "error",
-                title: "Limit Aşıldı!",
-                text: `Bu plana göre maksimum ${planLimit} ${inviteRole} davet edebilirsin!`,
-                confirmButtonColor: "#d33"
-            });
+            return Swal.fire({ icon: "error", title: "Limit Aşıldı!", text: `Bu plana göre maksimum ${planLimit} ${inviteRole} davet edebilirsin!`, confirmButtonColor: "#d33" });
         }
 
         try {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Kullanıcı token bulunamadı!');
 
-            const response = await fetch('http://localhost:5000/api/invites', {
+            const response = await fetch('http://localhost:5000/api/invites/${token}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -169,10 +148,7 @@ export default function Roller() {
             }
 
             const data = await response.json();
-
-
-            const inviteLink = `${window.location.origin}/invite/${data.token}`;
-
+            const inviteLink = `${window.location.origin}/register/${data.token}`;
 
             const newInvite = {
                 id: data.token,
@@ -185,27 +161,15 @@ export default function Roller() {
             setInvites(updatedInvites);
             localStorage.setItem(`invites-${userEmail}`, JSON.stringify(updatedInvites));
 
-            Swal.fire({
-                icon: "success",
-                title: "Davet Linki Oluşturuldu",
-                html: `Davet linki: <a href="${inviteLink}" target="_blank">${inviteLink}</a>`
-            });
-
+            Swal.fire({ icon: "success", title: "Davet Linki Oluşturuldu", html: `Davet linki: <a href="${inviteLink}" target="_blank">${inviteLink}</a>` });
             setInviteEmail("");
             setInviteRole("");
 
         } catch (error) {
             console.error(error);
-            Swal.fire({
-                icon: "error",
-                title: "Hata!",
-                text: error.message,
-                confirmButtonColor: "#d33"
-            });
+            Swal.fire({ icon: "error", title: "Hata!", text: error.message, confirmButtonColor: "#d33" });
         }
     };
-
-
 
     const groupedInvites = invites.reduce((acc, curr) => {
         if (!acc[curr.role]) acc[curr.role] = [];
@@ -213,162 +177,53 @@ export default function Roller() {
         return acc;
     }, {});
 
-    const roleIcons = {
-        viewer: "👁️",
-        editor: "✏️",
-        admin: "🛡️"
-    };
-
-    const roleColors = {
-        viewer: "#E0F7FA",
-        editor: "#FFF3E0",
-        admin: "#E8F5E9"
-    };
+    const roleIcons = { viewer: "👁️", editor: "✏️", admin: "🛡️" };
+    const roleColors = { viewer: darkMode ? "#1a1a1a" : "#E0F7FA", editor: darkMode ? "#2a1a00" : "#FFF3E0", admin: darkMode ? "#142a14" : "#E8F5E9" };
 
     return (
-        <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "40px" }}>
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "40px" }}>
-
-                <div style={{ flex: "1 1 300px", minWidth: "250px" }}>
-                    <h2>Plan Rolleri</h2>
-                    <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
-                        {userPlanRoles.map((r, i) => (
-                            <li key={i} style={{
-                                border: "1px solid #ddd",
-                                borderRadius: "6px",
-                                padding: "10px 14px",
-                                background: roleColors[r.role] || "#f9f9f9",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center"
-                            }}>
-                                <span style={{ fontWeight: "600" }}>
-                                    {roleIcons[r.role]} {r.role}
-                                </span>
-                                <span style={{
-                                    background: "#fff",
-                                    borderRadius: "999px",
-                                    padding: "4px 10px",
-                                    fontSize: "0.85rem",
-                                    border: "1px solid #ccc"
-                                }}>
-                                    {r.count} kişi
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+        <div style={{ padding: "20px", maxWidth: "1000px", margin: "0 auto" }}>
 
 
-                <div style={{
-                    flex: "1 1 300px",
-                    minWidth: "250px",
-                    border: "1px solid #ddd",
-                    borderRadius: "8px",
-                    padding: "20px",
-                    background: "#fafafa"
-                }}>
-                    <h3>Kullanıcı Davet Et</h3>
-                    <input
-                        type="email"
-                        placeholder="E-posta"
-                        value={inviteEmail}
-                        onChange={e => setInviteEmail(e.target.value)}
-                        style={{
-                            display: "block",
-                            marginBottom: "10px",
-                            width: "100%",
-                            padding: "10px",
-                            borderRadius: "6px",
-                            border: "1px solid #ccc"
-                        }}
-                    />
+            <div style={{ marginTop: "30px" }}>
+                <h3 style={{ color: darkMode ? "#fff" : "#000" }}>Kullanıcı Davet Et</h3>
+                <input type="email" placeholder="E-posta" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)}
+                    style={{ display: "block", marginBottom: "10px", width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #ccc", background: darkMode ? "#333" : "#fff", color: darkMode ? "#fff" : "#000" }} />
 
-                    <select
-                        value={inviteRole}
-                        onChange={e => setInviteRole(e.target.value)}
-                        style={{
-                            display: "block",
-                            marginBottom: "10px",
-                            width: "100%",
-                            padding: "10px",
-                            borderRadius: "6px",
-                            border: "1px solid #ccc"
-                        }}
-                    >
-                        <option value="">Rol Seç</option>
-                        {userPlanRoles.map((r, i) => (
-                            <option key={i} value={r.role}>{r.role}</option>
-                        ))}
-                    </select>
+                <select value={inviteRole} onChange={e => setInviteRole(e.target.value)}
+                    style={{ display: "block", marginBottom: "10px", width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #ccc", background: darkMode ? "#333" : "#fff", color: darkMode ? "#fff" : "#000" }}>
+                    <option value="">Rol Seç</option>
+                    {userPlanRoles.map((r, i) => (
+                        <option key={i} value={r.role}>{r.role}</option>
+                    ))}
+                </select>
 
-                    <button
-                        onClick={handleInvite}
-                        style={{
-                            display: "block",
-                            width: "100%",
-                            padding: "12px",
-                            borderRadius: "6px",
-                            border: "none",
-                            background: "#007bff",
-                            color: "#fff",
-                            cursor: "pointer"
-                        }}
-                    >
-                        Davet Et
-                    </button>
-                </div>
+                <button onClick={handleInvite} style={{ width: "100%", padding: "12px", borderRadius: "6px", border: "none", background: "#007bff", color: "#fff", cursor: "pointer" }}>Davet Et</button>
             </div>
+            <h2 style={{ color: darkMode ? "#fff" : "#000" }}>Plan Rolleri</h2>
+            <table style={{ width: "100%", borderCollapse: "collapse", background: darkMode ? "#1e1e1e" : "#fff", color: darkMode ? "#fff" : "#000", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden" }}>
+                <thead style={{ background: darkMode ? "#333" : "#f0f0f0" }}>
+                    <tr>
+                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Rol</th>
+                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Email</th>
+                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Durum</th>
+                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {invites.map((invite) => (
+                        <tr key={invite.id} style={{ background: darkMode ? "#2a2a2a" : "inherit" }}>
+                            <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{roleIcons[invite.role]} {invite.role}</td>
+                            <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{invite.email}</td>
+                            <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{invite.status === "pending" ? "🕒 Bekliyor" : "✅ Onaylı"}</td>
+                            <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}><Silbuton onClick={() => handleSil(invite.email)} /></td>
+                        </tr>
+                    ))}
+                    {invites.length === 0 && (
+                        <tr><td colSpan="4" style={{ padding: "10px", textAlign: "center" }}>Hiç davet yok.</td></tr>
+                    )}
+                </tbody>
+            </table>
 
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-                {["viewer", "editor", "admin"].map(role => (
-                    <div key={role} style={{
-                        flex: "1 1 300px",
-                        minWidth: "250px",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        padding: "10px"
-                    }}>
-                        <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span>{roleIcons[role]}</span> {role.toUpperCase()}
-                        </h3>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                            {(groupedInvites[role] || []).map((invite, i) => (
-                                <div key={i} style={{
-                                    border: "1px solid #ddd",
-                                    borderRadius: "6px",
-                                    padding: "8px 12px",
-                                    background: "#f9f9f9",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "10px",
-                                    justifyContent: "space-between"
-                                }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                        <span>{roleIcons[invite.role]}</span>
-                                        <div>
-                                            <strong>{invite.email}</strong>
-                                            <p style={{ margin: 0 }}>
-                                                {invite.status === "pending" ? (
-                                                    <span style={{ color: "orange" }}>🕒 Bekleniyor</span>
-                                                ) : (
-                                                    <span style={{ color: "green" }}>✅ Kabul Edildi</span>
-                                                )}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <Silbuton onClick={() => handleSil(invite.email)} />
-                                </div>
-                            ))}
-                            {(groupedInvites[role] || []).length === 0 && (
-                                <p style={{ color: "#111" }}>Henüz davet yok.</p>
-                            )}
-                        </div>
-                    </div>
-                ))}
-            </div>
         </div>
     );
 }

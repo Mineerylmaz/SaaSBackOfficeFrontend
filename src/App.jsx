@@ -11,9 +11,15 @@ import { useState, useEffect } from 'react';
 import Profil from './components/Profil';
 import Settings from './components/Settings';
 import TransitMap from './components/TransitMap';
-import InvitePreview from './components/InvitePreview';
+
 import Editor from './components/Editor';
+
+
 export default function App() {
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
+
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('user');
     return saved ? JSON.parse(saved) : null;
@@ -32,62 +38,72 @@ export default function App() {
 
 
   return (
-    <Router>
-      <Navbars user={user} setUser={setUser} />
-      <Routes>
 
-        <Route path="/" element={<Home />} />
-
-        <Route path="/home" element={<Home />} />
-
-        <Route path="/about" element={<NotFound />} />
-
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/transitmap" element={<TransitMap />} />
-        <Route
-          path="/login"
-          element={
-            user
-              ? user?.plan?.name
-                ? user?.role === 'admin'
-                  ? <Navigate to="/adminrol" />
-                  : user?.role === 'editor'
-                    ? <Navigate to="/editor" />
-                    : <Navigate to="/" />
-                : <Navigate to="/odeme" />
-              : <Login setUser={setUser} />
-          }
-        />
+    <>
 
 
-        <Route path="/profil" element={<Profil user={user} />} />
+      <Router>
+        <Navbars user={user} setUser={setUser} />
 
-        <Route
-          path="/ayarlar"
-          element={user ? <Settings user={user} /> : <Navigate to="/login" />}
-        />
-        <Route path="/odeme" element={user ? <Odeme /> : <Navigate to="/login" />} />
-        <Route path="/register/:token" element={<Register setUser={setUser} />} />
-        <Route path="/register" element={<Register setUser={setUser} />} />
+        <Routes>
+
+          <Route path="/" element={<Home />} />
 
 
 
+          <Route path="/about" element={<NotFound />} />
 
-        <Route path="/invite/:token" element={<InvitePreview />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/transitmap" element={<TransitMap />} />
+          <Route
+            path="/login"
+            element={
+              user
+                ? user?.plan?.name
+                  ? user?.role === 'admin'
+                    ? <Navigate to="/adminrol" />
+                    : user?.role === 'editor'
+                      ? <Navigate to="/editor" />
+                      : <Navigate to="/" />
+                  : <Navigate to="/odeme" />
+                : <Login setUser={setUser} />
+            }
+          />
 
 
-        <Route path="/notfound" element={<NotFound />} />
-        <Route
-          path="/admin"
-          element={user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/editor"
-          element={user?.role === 'editor' ? <Editor /> : <Navigate to="/login" />}
-        />
+          <Route path="/profil" element={<Profil user={user} />} />
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+          <Route
+            path="/ayarlar"
+            element={user ? <Settings user={user} /> : <Navigate to="/login" />}
+          />
+          <Route path="/odeme" element={user ? <Odeme /> : <Navigate to="/login" />} />
+
+
+
+          <Route path="/register/:token" element={<Register setUser={setUser} />} />
+          <Route path="/register" element={<Register setUser={setUser} />} />
+
+
+
+
+          <Route path="/notfound" element={<NotFound />} />
+          <Route
+            path="/admin"
+            element={user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/editor"
+            element={user?.role === 'editor' ? <Editor /> : <Navigate to="/login" />}
+          />
+
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+
+
+    </>
+
+
   );
 }
