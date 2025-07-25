@@ -67,21 +67,10 @@ const Register = ({ setUser }) => {
   };
 
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('🟡 handleSubmit tetiklendi');
 
     try {
-      let planToSend = null;
-      if (plan && typeof plan === 'string') {
-        planToSend = { name: plan };
-      } else if (plan && typeof plan === 'object') {
-        planToSend = { name: plan.name || plan.value || plan.label };
-      }
-
-
-
       const bodyData = {
         firstname: formData.firstname,
         lastname: formData.lastname,
@@ -89,10 +78,8 @@ const Register = ({ setUser }) => {
         password: formData.password,
         inviteToken: token,
         role: inviteInfo?.role || 'user',
-        plan: planToSend,
+        plan: plan ? { name: plan.name || plan.value || plan.label } : null,
       };
-
-      console.log("📦 Gönderilecek veri:", bodyData);
 
       const res = await fetch('http://localhost:5000/api/register/add-user', {
         method: 'POST',
@@ -102,47 +89,34 @@ const Register = ({ setUser }) => {
 
       if (res.ok) {
         const data = await res.json();
-        console.log("✅ Register dönüşü:", data);
 
-        setUser({
-          id: data.user.id,
-          role: data.user.role,
-          plan: data.user.plan,
-          token: data.token,
+        console.log("✅ Kayıt başarılı, login gibi token alındı:", data);
 
-        });
 
-        localStorage.setItem('user', JSON.stringify({
-          id: data.user.id,
-          role: data.user.role,
-          plan: data.user.plan,
-          email: data.user.email
-        }));
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+        setUser(data.user);
 
-        console.log("token eklediğinden emin misin register??")
         setFormData({ firstname: '', lastname: '', email: '', password: '' });
 
 
         if (data.user.plan && data.user.plan.name) {
-          console.log("➡️ Navigating to /odeme");
           navigate('/odeme');
         } else {
-          console.log("➡️ Navigating to /");
           navigate('/');
         }
 
-
       } else {
         const errData = await res.json();
-        console.error('🚫 Register hata:', errData);
         alert(errData.error || 'Kayıt sırasında bir hata oluştu.');
       }
+
     } catch (error) {
       console.error('Sunucu hatası:', error);
       alert('Sunucu hatası: ' + error.message);
     }
   };
+
 
 
 

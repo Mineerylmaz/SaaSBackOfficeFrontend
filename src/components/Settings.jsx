@@ -11,11 +11,14 @@ import DateFilter from './DateFilter';
 import DragDropFileUpload from './DragDropFileUpload';
 import Roller from './Roller';
 
+import { jwtDecode } from "jwt-decode";
 const Settings = ({ user }) => {
 
-    const token = localStorage.getItem('token');
 
 
+    const token = localStorage.getItem("token");
+    const decoded = token ? jwtDecode(token) : null;
+    const userRole = decoded?.role || "viewer";
 
 
     const [plan, setPlan] = useState(null);
@@ -36,6 +39,7 @@ const Settings = ({ user }) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [deletedUrls, setDeletedUrls] = useState([]);
+
 
 
     const filteredRtUrls = settings.rt_urls.filter(item =>
@@ -259,7 +263,10 @@ const Settings = ({ user }) => {
     return (
         <Wrapper>
             <Sidebar>
-                <Radio selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
+
+                <Radio selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} role={userRole} />
+
+
             </Sidebar>
             <ContentArea>
                 {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults') && (

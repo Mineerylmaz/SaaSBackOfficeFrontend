@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import Swal from "sweetalert2";
 
 const DragDropFileUpload = () => {
-  const plan = JSON.parse(localStorage.getItem("selectedPlan")) || { max_file_size: 10 };
+  const plan = JSON.parse(localStorage.getItem("selectedPlan")) || { max_file_size: 0 };
 
   const [files, setFiles] = useState([]);
 

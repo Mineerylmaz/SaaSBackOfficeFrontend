@@ -12,7 +12,7 @@ import Profil from './components/Profil';
 import Settings from './components/Settings';
 import TransitMap from './components/TransitMap';
 
-import Editor from './components/Editor';
+
 
 
 export default function App() {
@@ -100,10 +100,7 @@ export default function App() {
             path="/admin"
             element={user?.role === 'superadmin' ? <AdminPanel /> : <Navigate to="/login" />}
           />
-          <Route
-            path="/editor"
-            element={user?.role === 'editor' ? <Editor /> : <Navigate to="/login" />}
-          />
+
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

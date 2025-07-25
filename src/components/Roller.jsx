@@ -18,6 +18,8 @@ const Silbuton = ({ onClick }) => (
     </button>
 );
 
+
+
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
     useEffect(() => {
@@ -32,14 +34,56 @@ export default function Roller() {
     const [userPlanRoles, setUserPlanRoles] = useState([]);
     const [inviteEmail, setInviteEmail] = useState("");
     const [inviteRole, setInviteRole] = useState("");
+
     const [darkMode, setDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
     const width = useWindowWidth();
 
-    const handleSil = (email) => {
-        const filtered = invites.filter(i => i.email !== email);
-        setInvites(filtered);
-        localStorage.setItem("invites", JSON.stringify(filtered));
+
+
+
+    const handleSil = async (email) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            Swal.fire({ icon: "error", title: "Hata!", text: "Kullanıcı token bulunamadı!" });
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/invites/${encodeURIComponent(email)}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                let errorMessage = "Silme başarısız";
+                try {
+                    const responseText = await response.text();
+                    const err = JSON.parse(responseText);
+                    errorMessage = err.error || errorMessage;
+                } catch {
+
+                    console.error("Beklenmeyen yanıt:", await response.text());
+                }
+                throw new Error(errorMessage);
+            }
+
+
+            const filtered = invites.filter(i => i.email !== email);
+            setInvites(filtered);
+            localStorage.setItem(`invites-${userEmail}`, JSON.stringify(filtered));
+
+            Swal.fire({ icon: "success", title: "Davet Silindi!" });
+
+        } catch (error) {
+            console.error("Silme hatası:", error);
+            Swal.fire({ icon: "error", title: "Hata!", text: error.message });
+        }
     };
+
+
+
 
     async function fetchUserPlan() {
         const token = localStorage.getItem('token');
@@ -90,6 +134,29 @@ export default function Roller() {
         };
         loadPlan();
     }, []);
+    const [inviterInvites, setInviterInvites] = useState([]);
+
+    useEffect(() => {
+        // Kullanıcının kim tarafından davet edildiğini al (register sırasında backend’den set edilmiş olmalı)
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user?.invitedBy) return;
+
+        const fetchInviterInvites = async () => {
+            const token = localStorage.getItem("token");
+            try {
+                const res = await fetch(`http://localhost:5000/api/invites/by-inviter/${encodeURIComponent(user.invitedBy)}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error("Davet listesi alınamadı");
+                const data = await res.json();
+                setInviterInvites(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchInviterInvites();
+    }, []);
 
     const userEmail = JSON.parse(localStorage.getItem("user"))?.email || "default";
     const [invites, setInvites] = useState(() => {
@@ -139,7 +206,7 @@ export default function Roller() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ email: inviteEmail, role: inviteRole })
+                body: JSON.stringify({ email: inviteEmail, role: inviteRole, inviterEmail: userEmail })
             });
 
             if (!response.ok) {
