@@ -10,6 +10,24 @@ import Swal from 'sweetalert2';
 const Odeme = () => {
   const [plan, setPlan] = useState(null);
   const [userId, setUserId] = useState(null);
+  const calculateUpgradeCost = (currentPlan, newPlan, price) => {
+    const today = new Date().getDate();
+    const totalDays = 30;
+    const remainingDays = totalDays - today;
+
+    const currentPrice = price[currentPlan];
+    const newPrice = price[newPlan];
+
+    const priceDiff = newPrice - currentPrice;
+
+    if (priceDiff <= 0) return 0;
+
+    const dailyDiff = priceDiff / totalDays;
+    const cost = dailyDiff * remainingDays;
+
+    return Math.round(cost * 100) / 100;
+  };
+
   const saveUserPlan = async (userId, planName) => {
     try {
       const res = await fetch(`http://localhost:5000/api/adminpanel/update-user-plan/${userId}`, {
@@ -78,33 +96,65 @@ const Odeme = () => {
 
 
   const handlePayment = async () => {
-    console.log('userId:', userId);
-    console.log('plan:', plan);
-
     if (!userId || !plan?.name) {
       Swal.fire('Hata', 'Kullanıcı veya plan bilgisi eksik.', 'error');
       return;
     }
 
-    const paymentSuccess = true;
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return;
 
-    if (paymentSuccess) {
-      await updateUserPlanBackend(userId, plan.name);
+    const user = JSON.parse(userStr);
+    const currentPlan = user.plan?.name || user.plan;
+    const newPlan = plan.name;
 
+    const prices = { basic: 50, pro: 100, premium: 150 };
+    const extraCost = calculateUpgradeCost(currentPlan, newPlan, prices);
 
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
+    try {
+      const response = await fetch(`http://localhost:5000/api/adminpanel/change-user-plan/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ newPlan }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Plan güncellenemedi');
+      }
+
+      let infoMsg = '';
+      if (data.message.includes('Planınız yükseltildi ve hemen aktif oldu.')) {
+        infoMsg = `Planınız yükseltildi. `;
+
+        // Plan yükseltildiği için localStorage'ı güncelle
         user.plan = plan;
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('selectedPlan', JSON.stringify(plan));
 
+      } else if (data.message.includes('sonraki ay')) {
+        infoMsg = 'Plan değişikliği bir sonraki ay geçerli olacaktır.';
+
+        // Downgrade olduğunda localStorage’da plan değişimi yapma veya opsiyonel olarak nextPlan kaydet
+      } else if (data.message.includes('Aynı plandasınız')) {
+        infoMsg = 'Ödemeniz alındı.';
+
+        // Plan değişmediği için localStorage değişimi yapma
+      } else {
+        infoMsg = data.message;
       }
 
-      Swal.fire('Başarılı', `Ödeme alındı: ${plan.name}`, 'success');
-    }
+      Swal.fire("İşlem sonucu", infoMsg, "info");
 
+    } catch (error) {
+      Swal.fire('Hata', error.message, 'error');
+    }
   };
+
 
 
 

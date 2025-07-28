@@ -272,7 +272,7 @@ export default function Roller() {
                     <tr>
                         <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Rol</th>
                         <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Email</th>
-                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Durum</th>
+
                         <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>İşlem</th>
                     </tr>
                 </thead>
@@ -281,7 +281,7 @@ export default function Roller() {
                         <tr key={invite.id} style={{ background: darkMode ? "#2a2a2a" : "inherit" }}>
                             <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{roleIcons[invite.role]} {invite.role}</td>
                             <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{invite.email}</td>
-                            <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{invite.status === "pending" ? "🕒 Bekliyor" : "✅ Onaylı"}</td>
+
                             <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}><Silbuton onClick={() => handleSil(invite.email)} /></td>
                         </tr>
                     ))}

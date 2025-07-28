@@ -1,30 +1,25 @@
-import React from "react";
-import { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useEffect } from "react";
+
 const adminRoles = ["admin", "superadmin", "user"];
 const canViewMenu = (role, menuKey, adminOnly) => {
   if (adminOnly && !adminRoles.includes(role)) return false;
-
   if (adminRoles.includes(role)) return true;
-
   if (role === "viewer") {
     const hiddenForViewer = ["urlresults", "upload", "invite"];
     return !hiddenForViewer.includes(menuKey);
   }
-
   if (role === "editor") {
     const hiddenForEditor = ["invite"];
     return !hiddenForEditor.includes(menuKey);
   }
-
   return false;
 };
 
 const Nav = styled.nav`
   position: fixed;
   top: 0;
-  left: 0;
+  left: ${({ isOpen }) => (isOpen ? "0" : "-220px")};
   width: 220px;
   height: 100vh;
   background-color: #0d1117;
@@ -34,25 +29,17 @@ const Nav = styled.nav`
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #d1eaff;
   z-index: 100;
+  transition: left 0.3s ease;
 
-  @media (max-width: 768px) {
-    position: fixed;
-    top: 0;
-    left: ${({ isOpen }) => (isOpen ? "0" : "-220px")};
-    width: 220px;
-    height: 100vh;
-    padding: 20px;
-    background-color: #0d1117;
-    transition: left 0.3s ease;
-    box-shadow: ${({ isOpen }) =>
-    isOpen ? "2px 0 5px rgba(0,0,0,0.5)" : "none"};
+  @media (min-width: 769px) {
+    left: 0;
   }
 `;
 
 const Hamburger = styled.div`
   display: none;
   position: fixed;
-  top: 55px;
+  top: 15px;
   left: 15px;
   width: 30px;
   height: 22px;
@@ -65,6 +52,7 @@ const Hamburger = styled.div`
     height: 4px;
     background: #2f81f7;
     border-radius: 2px;
+    margin: 3px 0;
   }
 
   @media (max-width: 768px) {
@@ -89,7 +77,8 @@ const CloseButton = styled.button`
 const MenuItem = styled.button`
   background: none;
   border: none;
-  color: ${({ active }) => (active ? "#2f81f7" : "#94a3b8")};
+  color: ${({ active, darkMode }) =>
+    active ? "#2f81f7" : darkMode ? "#94a3b8" : "#000"};
   font-weight: ${({ active }) => (active ? "700" : "400")};
   font-size: 16px;
   cursor: pointer;
@@ -97,7 +86,8 @@ const MenuItem = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
-  border-left: ${({ active }) => (active ? "4px solid #2f81f7" : "4px solid transparent")};
+  border-left: ${({ active }) =>
+    active ? "4px solid #2f81f7" : "4px solid transparent"};
   border-radius: 0 8px 8px 0;
   transition: all 0.3s ease;
 
@@ -105,7 +95,6 @@ const MenuItem = styled.button`
     color: #2f81f7;
   }
 `;
-
 
 const Resizer = styled.div`
   position: absolute;
@@ -116,44 +105,27 @@ const Resizer = styled.div`
   cursor: ew-resize;
   z-index: 101;
 `;
-const Content = styled.div`
-  margin-left: ${({ sidebarWidth }) => sidebarWidth}px;
-  padding: 20px;
-  transition: margin-left 0.2s ease;
-`;
-
-
-
 
 const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
-  const [width, setWidth] = useState(220);
-  const isResizing = useRef(false);
-  const [sidebarWidth, setSidebarWidth] = useState(220);
   const [isOpen, setIsOpen] = useState(false);
-  const menuItems = [
-    { key: "profile", label: "Profil" },
-    { key: "static", label: "Static URL Ayarları" },
-    { key: "rt", label: "Real Time URL Ayarları" },
-    { key: "urlresults", label: "URL Sonuçları" },
-    { key: "upload", label: "Dosya Yükle" },
-    { key: "roller", label: "Roller", adminOnly: true },
-    { key: "notifications", label: "Bildirimler", adminOnly: true },
-  ];
+  const [sidebarWidth, setSidebarWidth] = useState(220);
+  const isResizing = useRef(false);
 
+  const [darkMode, setDarkMode] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
 
-
-
-
-
-  const onMouseDown = () => {
-    isResizing.current = true;
-  };
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e) => setDarkMode(e.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   useEffect(() => {
     function handleMouseMove(e) {
       if (isResizing.current) {
         let newWidth = e.clientX;
-        // Minimum ve maksimum genişlik sınırları
         if (newWidth < 100) newWidth = 100;
         if (newWidth > 400) newWidth = 400;
         setSidebarWidth(newWidth);
@@ -172,65 +144,49 @@ const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
-  function handleMouseDown() {
-    isResizing.current = true;
-  }
+
+  const menuItems = [
+    { key: "profile", label: "Profil" },
+    { key: "static", label: "Static URL Ayarları" },
+    { key: "rt", label: "Real Time URL Ayarları" },
+    { key: "urlresults", label: "URL Sonuçları" },
+    { key: "upload", label: "Dosya Yükle" },
+    { key: "roller", label: "Roller", adminOnly: true },
+    { key: "userTab", label: "Key İnput" },
+    { key: "notifications", label: "Bildirimler", adminOnly: true },
+  ];
+
   return (
-    <div style={{ width: sidebarWidth }} className="sidebar">
-      <div onMouseDown={handleMouseDown} className="resizer" />
+    <>
+      {/* Hamburger Menu Button */}
+      <Hamburger onClick={() => setIsOpen(true)}>
+        <div></div>
+        <div></div>
+        <div></div>
+      </Hamburger>
 
-      {menuItems.map((item) => {
-        if (!canViewMenu(role, item.key, item.adminOnly)) return null;
+      {/* Sidebar */}
+      <Nav style={{ width: sidebarWidth }} isOpen={isOpen}>
+        <Resizer onMouseDown={() => (isResizing.current = true)} />
+        <CloseButton onClick={() => setIsOpen(false)}>✕ Kapat</CloseButton>
 
-        return (
-          <MenuItem
-            key={item.key}
-            active={selectedMenu === item.key}
-            onClick={() => setSelectedMenu(item.key)}
-          >
-            <span style={{ marginRight: 8 }}>{item.icon}</span>
-            {item.label}
-          </MenuItem>
-        );
-      })}
-    </div>
+        {menuItems.map((item) => {
+          if (!canViewMenu(role, item.key, item.adminOnly)) return null;
+
+          return (
+            <MenuItem
+              darkMode={darkMode}
+              key={item.key}
+              active={selectedMenu === item.key}
+              onClick={() => setSelectedMenu(item.key)}
+            >
+              {item.label}
+            </MenuItem>
+          );
+        })}
+      </Nav>
+    </>
   );
 };
 
 export default Radio;
-
-
-
-
-
-
-const AdminCard = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 40px;
-`;
-
-const Avatar = styled.img`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  margin-right: 12px;
-  object-fit: cover;
-  border: 2px solid #227bbf;
-`;
-
-const AdminInfo = styled.div``;
-
-const AdminName = styled.h3`
-  margin: 0;
-  font-weight: 600;
-`;
-
-const AdminRole = styled.p`
-  margin: 0;
-  color: #227bbf;
-  font-size: 0.9em;
-`;
-
-
-

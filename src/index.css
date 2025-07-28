@@ -28,6 +28,11 @@ body.dark-mode .settings,
 body.dark-mode .userdatagrid,
 body.dark-mode .home,
 body.dark-mode .card,
+body.dark-mode .usertab,
+body.dark-mode .radio,
+
+
+
 body.dark-mode .carditem {
   background: #0b1d3a !important;
   color: #ffffff !important;

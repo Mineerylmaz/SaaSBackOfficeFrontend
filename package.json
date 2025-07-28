@@ -40,6 +40,7 @@
     "transformIgnorePatterns": [
       "node_modules/(?!react-leaflet|some-other-esm-package)/"
     ],
+    "testEnvironment": "jsdom",
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     }
@@ -65,10 +66,12 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.27.1",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.6.1",
+    "jest-environment-jsdom": "^29.6.1",
     "jest-fetch-mock": "^3.0.3",
     "msw": "^2.10.3",
     "node-fetch": "^3.3.2",

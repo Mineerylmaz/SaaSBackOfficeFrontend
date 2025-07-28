@@ -3,23 +3,14 @@ import Swal from "sweetalert2";
 
 const DragDropFileUpload = () => {
   const plan = JSON.parse(localStorage.getItem("selectedPlan")) || { max_file_size: 0 };
-
   const [files, setFiles] = useState([]);
 
-
   const handleFiles = useCallback((fileList) => {
-
     const newFiles = Array.from(fileList);
-
-
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   }, []);
 
-
-  const handleInputChange = (e) => {
-    handleFiles(e.target.files);
-  };
-
+  const handleInputChange = (e) => handleFiles(e.target.files);
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -29,21 +20,14 @@ const DragDropFileUpload = () => {
     }
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
+  const handleDragOver = (e) => e.preventDefault();
 
   const totalSizeMB = files.reduce((acc, file) => acc + file.size, 0) / (1024 * 1024);
-
-
   const overLimitFiles = files.filter(file => (file.size / (1024 * 1024)) > plan.max_file_size);
-
 
   const removeFile = (index) => {
     setFiles(files.filter((_, i) => i !== index));
   };
-
 
   const handleUpload = () => {
     if (files.length === 0) {
@@ -58,23 +42,20 @@ const DragDropFileUpload = () => {
       });
       return;
     }
-
     Swal.fire("Başarılı!", "Tüm dosyalar kabul edildi.", "success");
-
   };
 
   return (
     <div
       style={{
-        maxWidth: 600,
+        maxWidth: "700px",
+        width: "100%",
         margin: "2rem auto",
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        position: "relative",
-
-        width: "600px",
+        padding: "0 16px",
+        boxSizing: "border-box"
       }}
     >
-
       <h2>Dosya / Klasör Yükleme</h2>
       <p>Plan dosya limiti: <strong>{plan.max_file_size} MB</strong></p>
 
@@ -107,7 +88,14 @@ const DragDropFileUpload = () => {
       {files.length > 0 && (
         <div style={{ marginBottom: 20 }}>
           <h3>Seçilen Dosyalar ({files.length})</h3>
-          <ul style={{ maxHeight: 200, overflowY: "auto", border: "1px solid #ccc", padding: 10, borderRadius: 6, fontSize: 14 }}>
+          <ul style={{
+            maxHeight: 200,
+            overflowY: "auto",
+            border: "1px solid #ccc",
+            padding: 10,
+            borderRadius: 6,
+            fontSize: 14
+          }}>
             {files.map((file, index) => {
               const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
               const isOverLimit = sizeMB > plan.max_file_size;
@@ -127,7 +115,13 @@ const DragDropFileUpload = () => {
                   </span>
                   <button
                     onClick={() => removeFile(index)}
-                    style={{ background: "none", border: "none", color: "#d33", cursor: "pointer", fontWeight: "bold" }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#d33",
+                      cursor: "pointer",
+                      fontWeight: "bold"
+                    }}
                   >
                     X
                   </button>
@@ -142,14 +136,14 @@ const DragDropFileUpload = () => {
       <button
         onClick={handleUpload}
         style={{
-
           backgroundColor: "#007BFF",
           color: "white",
           border: "none",
           borderRadius: 6,
           cursor: "pointer",
           fontSize: 16,
-          width: "100%"
+          width: "100%",
+          padding: "10px"
         }}
       >
         Yükle

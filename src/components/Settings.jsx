@@ -12,8 +12,12 @@ import DragDropFileUpload from './DragDropFileUpload';
 import Roller from './Roller';
 
 import { jwtDecode } from "jwt-decode";
+import UserTab from './UserTab';
 const Settings = ({ user }) => {
-
+    const [keys, setKeys] = useState([
+        { key: 'durak', type: 'number' },
+        { key: 'planAdi', type: 'string' }
+    ]);
 
 
     const token = localStorage.getItem("token");
@@ -413,6 +417,10 @@ const Settings = ({ user }) => {
 
                     )
                 }
+                {selectedMenu === 'userTab' && (
+                    <UserTab />
+                )}
+
 
 
 

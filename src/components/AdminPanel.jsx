@@ -4,10 +4,17 @@ import AddUserModal from './AddUserModal';
 import Swal from 'sweetalert2';
 import UserDataGrid from './UserDataGrid';
 import Silbuton from './Silbuton';
-
-
+import SettingTab from './SettingTab';
+import '../styles/Panel.css'
 const AdminPanel = () => {
+    const [activetab, setActivetab] = useState('settings');
 
+    // keys ve setKeys burada tanımlanıyor
+    const [keys, setKeys] = useState([
+        // Başlangıçta örnek keyler olabilir
+        { key: 'durak', type: 'number' },
+        { key: 'planAdi', type: 'string' },
+    ]);
 
     const [showAddRoleForm, setShowAddRoleForm] = useState({}); // planIndex: bool
     const [newRolePerPlan, setNewRolePerPlan] = useState({});
@@ -120,7 +127,7 @@ const AdminPanel = () => {
 
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/register/list-users')
+        fetch('http://localhost:5000/api/adminpanel/list-users')
             .then(res => res.json())
             .then(data => {
                 setUsers(data);
@@ -343,6 +350,7 @@ const AdminPanel = () => {
             .catch(err => alert(err.message));
     };
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
 
 
@@ -357,7 +365,15 @@ const AdminPanel = () => {
                 fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
             }}
         >
-            <nav style={sidebarStyle}>
+            <nav
+                className={`sidebar ${sidebarOpen ? "open" : ""}`}
+                style={{
+                    width: "250px",
+                    backgroundColor: "#1e3a5f",
+                    padding: "20px",
+                    color: "#fff",
+                }}
+            >
                 <div style={adminCardStyle}>
                     <img src={admin.avatar} alt="avatar" style={avatarStyle} />
                     <div>
@@ -391,6 +407,23 @@ const AdminPanel = () => {
                     onClick={() => setActiveTab("settings")}
                 />
             </nav>
+            <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                style={{
+                    display: "none",
+                    position: "absolute",
+                    top: 20,
+                    left: 20,
+                    background: "transparent",
+                    border: "none",
+                    fontSize: 28,
+                    zIndex: 1000,
+                }}
+                className="hamburger-button"
+            >
+                &#9776;
+            </button>
+
 
             <main style={{ flexGrow: 1, padding: "2rem", overflowY: "auto" }}>
                 {(loadingUsers || loadingPricing) ? (
@@ -853,12 +886,12 @@ const AdminPanel = () => {
                         )}
 
 
-                        {activeTab === "settings" && (
-                            <div>
-                                <h1 style={{ color: "#071f35" }}>Ayarlar</h1>
-                                <p style={{ color: "#071f35" }}>Admin panel ayarları burada olabilir.</p>
-                            </div>
+                        {activeTab === 'settings' && (
+                            <SettingTab keys={keys} setKeys={setKeys} />
                         )}
+
+
+
                     </>
                 )}
             </main>
