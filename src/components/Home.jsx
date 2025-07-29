@@ -45,7 +45,9 @@ export default function Home({ darkMode }) {
               <div className='whell4'></div>
               <div className='fuel'></div>
               <div className='light'></div>
-              <div className='foggy'></div>
+              <div className='foggy' darkMode={darkMode}></div>
+
+
 
             </div>
           </div>
@@ -149,16 +151,7 @@ justify-content: space-between;
 
 
 
-/*.tree{
-	
-  z-index:1;
-  position:absolute;
-  width:150px;
-  height:150px;
-  background: url(http://th07.deviantart.net/fs71/150/f/2012/176/f/4/tree_yay_by_rhubarb_leaf-d54swby.png);
-  background-repeat: no-repeat;
-  margin:-50px 0 0 500px ;
- }*/
+
 
 .bus {
 
@@ -201,6 +194,9 @@ justify-content: space-between;
   left: 65px; 
 }
 
+.hidden {
+  display: none;
+}
 
 
 .whell2{
@@ -307,50 +303,9 @@ justify-content: space-between;
   transform:rotate(-18deg);  
 }
 
-.light{
-  z-index:1;
-  position:absolute;
-  display: inline-block;
-  width:4px;
-  height:7.8px;
-  background-color:black;
-  border-radius:80px;
-  margin:27px 90px;
-  border-radius: 0 90px 90px 0;
-  background:#f93100;
- 
-}
 
-.up1{
-  position:absolute;
-  display: inline-block;
-  width:50px;
-  height:2px;
-  background-color:white;
-  border-radius:4px 4px 0 0;
-  margin:-5px 0px 0px 19px;
-  background-position: center center;
-  }
 
-.up2{
-  position:absolute;
-  display: inline-block;
-  width:2px;
-  height:5px;
-  background-color:white;
-  margin:-5px 0px 0px 26px;
-  background-position: center center;
-  }
 
-.up3{
-  position:absolute;
-  display: inline-block;
-  width:2px;
-  height:5px;
-  background-color:white;
-  margin:-5px 0px 0px 60px;
-  background-position: center center;
-  }
 
 .foggy{
   width:4px;
@@ -363,6 +318,8 @@ justify-content: space-between;
   margin:90px 60px;
   position:absolute;
   margin:7px 68px;
+
+
 
 
 }

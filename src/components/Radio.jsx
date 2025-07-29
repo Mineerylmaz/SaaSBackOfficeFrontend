@@ -146,7 +146,6 @@ const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
   }, []);
 
   const menuItems = [
-    { key: "profile", label: "Profil" },
     { key: "static", label: "Static URL Ayarları" },
     { key: "rt", label: "Real Time URL Ayarları" },
     { key: "urlresults", label: "URL Sonuçları" },

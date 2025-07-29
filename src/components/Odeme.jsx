@@ -148,7 +148,7 @@ const Odeme = () => {
         infoMsg = data.message;
       }
 
-      Swal.fire("İşlem sonucu", infoMsg, "info");
+      Swal.fire("İşlem sonucu", infoMsg, "success");
 
     } catch (error) {
       Swal.fire('Hata', error.message, 'error');

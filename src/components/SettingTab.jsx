@@ -1,5 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import {
+    Box,
+    Button,
+    Modal,
+    TextField,
+    Typography,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    CircularProgress,
+} from '@mui/material';
+import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const API_URL = 'http://localhost:5000/api/setting-key';
+
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 320,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    borderRadius: 2,
+    p: 3,
+};
 
 const SettingTab = () => {
     const [keys, setKeys] = useState([]);
@@ -8,8 +36,6 @@ const SettingTab = () => {
     const [newDescription, setNewDescription] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    const API_URL = 'http://localhost:5000/api/setting-key';
 
     useEffect(() => {
         fetchKeys();
@@ -101,170 +127,120 @@ const SettingTab = () => {
         }
     };
 
-    const thStyle = { padding: '8px', border: '1px solid #ddd' };
-    const tdStyle = { padding: '8px', border: '1px solid #ddd' };
+    const columns = [
+        { field: 'key_name', headerName: 'Key', flex: 1, minWidth: 150 },
+        { field: 'type', headerName: 'Tip', flex: 1, minWidth: 100 },
+        {
+            field: 'description',
+            headerName: 'Açıklama',
+            flex: 1,
+            minWidth: 200,
+            renderCell: (params) => params.value || '-',
+        },
+        {
+            field: 'actions',
+            headerName: 'İşlem',
+            type: 'actions',
+            width: 100,
+            getActions: (params) => [
+                <GridActionsCellItem
+                    icon={<DeleteIcon color="error" />}
+                    label="Sil"
+                    onClick={() => handleDelete(params.id)}
+                />,
+            ],
+        },
+    ];
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-            <h2>Admin - Key ve Tip Ekle</h2>
+        <Box sx={{ p: 2, fontFamily: 'Arial, sans-serif' }}>
+            <Typography variant="h5" mb={2}>
+                Admin - Key ve Tip Ekle
+            </Typography>
 
-            <button
+            <Button
+                variant="contained"
+                color="primary"
                 onClick={() => setShowModal(true)}
-                style={{
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    border: 'none',
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    cursor: 'pointer',
-                    marginBottom: '15px',
-                }}
+                sx={{ mb: 2, minWidth: 40, minHeight: 40, borderRadius: '50%', fontSize: 24, fontWeight: 'bold' }}
                 title="Yeni Key Ekle"
             >
                 +
-            </button>
+            </Button>
 
             {loading ? (
-                <p>Yükleniyor...</p>
+                <Box display="flex" justifyContent="center" mt={4}>
+                    <CircularProgress />
+                </Box>
             ) : (
-                <table
-                    style={{
-                        width: '100%',
-                        borderCollapse: 'collapse',
-                        marginTop: '10px',
-                    }}
-                >
-                    <thead>
-                        <tr style={{ backgroundColor: '#007bff', color: 'white' }}>
-                            <th style={thStyle}>Key</th>
-                            <th style={thStyle}>Tip</th>
-                            <th style={thStyle}>Açıklama</th>
-                            <th style={thStyle}>İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {keys.length === 0 ? (
-                            <tr>
-                                <td colSpan={4} style={{ textAlign: 'center', padding: '10px' }}>
-                                    Tanımlı key yok.
-                                </td>
-                            </tr>
-                        ) : (
-                            keys.map(({ id, key_name, type, description }) => (
-                                <tr key={id}>
-                                    <td style={tdStyle}>{key_name}</td>
-                                    <td style={tdStyle}>{type}</td>
-                                    <td style={tdStyle}>{description || '-'}</td>
-                                    <td style={tdStyle}>
-                                        <button
-                                            onClick={() => handleDelete(id)}
-                                            style={{
-                                                backgroundColor: 'red',
-                                                color: 'white',
-                                                border: 'none',
-                                                padding: '6px 10px',
-                                                borderRadius: '4px',
-                                                cursor: 'pointer',
-                                            }}
-                                        >
-                                            Sil
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            )}
-
-            {showModal && (
-                <div
-                    onClick={() => setShowModal(false)}
-                    style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        zIndex: 9999,
-                    }}
-                >
-                    <div
-                        onClick={(e) => e.stopPropagation()}
-                        style={{
-                            backgroundColor: 'white',
-                            padding: '20px',
-                            borderRadius: '6px',
-                            width: '320px',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                <Box sx={{ height: 450, width: '100%' }}>
+                    <DataGrid
+                        rows={keys}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5, 10, 20]}
+                        disableSelectionOnClick
+                        getRowId={(row) => row.id}
+                        localeText={{
+                            noRowsLabel: 'Tanımlı key yok.',
                         }}
-                    >
-                        <h3>Yeni Key Ekle</h3>
-
-                        <input
-                            type="text"
-                            placeholder="Key adı"
-                            value={newKey}
-                            onChange={(e) => setNewKey(e.target.value)}
-                            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-                        />
-
-                        <select
-                            value={newType}
-                            onChange={(e) => setNewType(e.target.value)}
-                            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-                        >
-                            <option value="number">Number</option>
-                            <option value="string">String</option>
-                        </select>
-
-                        <input
-                            type="text"
-                            placeholder="Açıklama (description)"
-                            value={newDescription}
-                            onChange={(e) => setNewDescription(e.target.value)}
-                            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-                        />
-
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <button
-                                onClick={() => setShowModal(false)}
-                                style={{
-                                    marginRight: '10px',
-                                    padding: '8px 12px',
-                                    borderRadius: '4px',
-                                    border: '1px solid #ccc',
-                                    backgroundColor: 'white',
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                İptal
-                            </button>
-                            <button
-                                onClick={addKey}
-                                style={{
-                                    padding: '8px 12px',
-                                    borderRadius: '4px',
-                                    border: 'none',
-                                    backgroundColor: '#007bff',
-                                    color: 'white',
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                Ekle
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    />
+                </Box>
             )}
-        </div>
+
+            <Modal
+                open={showModal}
+                onClose={() => setShowModal(false)}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box sx={modalStyle} component="form" onSubmit={e => { e.preventDefault(); addKey(); }}>
+                    <Typography id="modal-title" variant="h6" mb={2}>
+                        Yeni Key Ekle
+                    </Typography>
+
+                    <TextField
+                        label="Key adı"
+                        value={newKey}
+                        onChange={(e) => setNewKey(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                        required
+                    />
+
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="type-label">Tip</InputLabel>
+                        <Select
+                            labelId="type-label"
+                            value={newType}
+                            label="Tip"
+                            onChange={(e) => setNewType(e.target.value)}
+                            required
+                        >
+                            <MenuItem value="number">Number</MenuItem>
+                            <MenuItem value="string">String</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <TextField
+                        label="Açıklama (description)"
+                        value={newDescription}
+                        onChange={(e) => setNewDescription(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>
+                        <Button onClick={() => setShowModal(false)} variant="outlined">
+                            İptal
+                        </Button>
+                        <Button type="submit" variant="contained">
+                            Ekle
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+        </Box>
     );
 };
 

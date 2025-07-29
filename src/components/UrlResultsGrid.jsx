@@ -151,7 +151,7 @@ const UrlResultsGrid = ({ userId }) => {
             >
                 <label style={{ display: 'flex', flexDirection: 'column', flex: '1 1 200px', minWidth: 150 }}>
 
-                    Başlangıç:
+
                     <input
                         style={{
                             width: '100%',
@@ -174,7 +174,7 @@ const UrlResultsGrid = ({ userId }) => {
                 </label>
                 <label style={{ display: 'flex', flexDirection: 'column', flex: '1 1 200px', minWidth: 150 }}>
 
-                    Bitiş:
+
                     <input
                         style={{
                             width: '100%',
@@ -195,9 +195,12 @@ const UrlResultsGrid = ({ userId }) => {
                         min={startDateTime || undefined}
                     />
                 </label>
+
+
                 <button
                     onClick={fetchUrlResults}
                     disabled={loading}
+
                     style={{
                         flex: '1 1 150px',
                         minWidth: 120,
@@ -215,6 +218,8 @@ const UrlResultsGrid = ({ userId }) => {
                 >
                     Filtrele
                 </button>
+
+
 
 
 

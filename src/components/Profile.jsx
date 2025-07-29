@@ -1,127 +1,188 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
+import { keyframes } from 'styled-components';
 const Profile = ({ user }) => {
+  const [activeTab, setActiveTab] = useState('profile');
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-mode", darkMode);
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
+
   return (
-    <StyledWrapper>
-      <div className="e-card playing">
-        <div className="image" />
-        <div className="wave" />
-        <div className="wave" />
-        <div className="wave" />
-        <div className="infotop">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="icon">
-            <path d="M12 2C9.79 2 8 3.79 8 6s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 3.5 12 3.5s2.5 1.12 2.5 2.5S13.38 8.5 12 8.5zm0 3c-3.03 0-5.5 2.47-5.5 5.5V20h11v-3c0-3.03-2.47-5.5-5.5-5.5zm0 1.5c2.21 0 4 1.79 4 4v1h-8v-1c0-2.21 1.79-4 4-4z" />
-          </svg>
+    <Wrapper>
+      <Sidebar>
+        <div className="user-card">
+          <img src={user.avatar || 'https://i.pravatar.cc/100'} alt="avatar" />
 
-
-          <br />
-          <div className="name">{user?.email}</div>
         </div>
-      </div>
-    </StyledWrapper>
+        <nav>
+          <button onClick={() => setActiveTab('profile')}>Profil Bilgileri</button>
+          <button onClick={() => setActiveTab('password')}>Şifre Değiştir</button>
+
+          <button onClick={() => setActiveTab('danger')}>Hesap İşlemleri</button>
+        </nav>
+      </Sidebar>
+      <Content>
+        {activeTab === 'profile' && (
+          <ProfileCard>
+            <h2>Profil Bilgileri</h2>
+            <InfoRow><Label>Email:</Label> <Value>{user.email}</Value></InfoRow>
+            <InfoRow><Label>Rol:</Label> <Value>{user.role}</Value></InfoRow>
+            <InfoRow><Label>Plan:</Label> <Value>{user?.plan?.name || 'Yok'}</Value></InfoRow>
+
+          </ProfileCard>
+        )}
+
+        {activeTab === 'password' && (
+          <section>
+            <h2>Şifre Değiştir</h2>
+            <form>
+              <input type="password" placeholder="Eski Şifre" />
+              <input type="password" placeholder="Yeni Şifre" />
+              <input type="password" placeholder="Yeni Şifre Tekrar" />
+              <button type="submit">Kaydet</button>
+            </form>
+          </section>
+        )}
+
+        {activeTab === 'danger' && (
+          <section>
+            <h2>Hesap İşlemleri</h2>
+            <button style={{ backgroundColor: 'red', color: 'white' }}>Hesabı Sil</button>
+          </section>
+        )}
+      </Content>
+    </Wrapper>
   );
-}
+};
+const fadeScale = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
 
-const StyledWrapper = styled.div`
-height: 70vh; 
+const ProfileCard = styled.section`
+  max-width: 500px;
+  margin: 0 auto;
+  background: ${({ theme }) => theme === 'dark' ? '#222' : '#fff'};
+  color: ${({ theme }) => theme === 'dark' ? '#eee' : '#333'};
+  border-radius: 15px;
+  padding: 30px 40px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  animation: ${fadeScale} 0.4s ease forwards;
+  transition: background 0.3s, color 0.3s;
+
+  h2 {
+    margin-bottom: 25px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+  }
+`;
+
+const InfoRow = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-left: 480px; 
-  @media (max-width: 768px) {
-    padding-left: 20px; 
-    padding-right: 20px; 
-  }
-  
-  .e-card {
-    margin: 0; 
-    background: transparent;
-    box-shadow: 0px 8px 28px -9px rgba(0,0,0,0.45);
-    position: relative;
-    width: 240px;
-    height: 330px;
-    border-radius: 16px;
-    overflow: hidden;
-  }
-  }
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid ${({ theme }) => theme === 'dark' ? '#444' : '#eee'};
+  font-size: 18px;
+`;
 
-  .wave {
-    position: absolute;
-    width: 540px;
-    height: 700px;
-    opacity: 0.6;
-    left: 0;
-    top: 0;
-    margin-left: -50%;
-    margin-top: -70%;
-    background: linear-gradient(744deg,#af40ff,#5b42f3 60%,#00ddeb);
-  }
+const Label = styled.span`
+  font-weight: 600;
+  color: ${({ theme }) => theme === 'dark' ? '#aaa' : '#555'};
+`;
 
-  .icon {
-    width: 3em;
-    margin-top: -1em;
-    padding-bottom: 1em;
-  }
+const Value = styled.span`
+  font-weight: 500;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+`;
+const Wrapper = styled.div`
+  display: flex;
+  height: 100vh;
+`;
 
-  .infotop {
+const Sidebar = styled.div`
+  width: 250px;
+  background: var(--sidebar-bg, #1e3a5f);
+  color: white;
+  padding: 20px;
+  .user-card {
     text-align: center;
-    font-size: 20px;
-    position: absolute;
-    top: 5.6em;
-    left: 0;
-    right: 0;
-    color: rgb(255, 255, 255);
-    font-weight: 600;
+    margin-bottom: 20px;
+    img {
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+    }
+    h4, p {
+      margin: 10px 0;
+    }
   }
-
-  .name {
-    font-size: 14px;
-    font-weight: 100;
-    position: relative;
-    top: 1em;
-    text-transform: lowercase;
+  nav button {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    &:hover {
+      background: #345678;
+    }
   }
+`;
 
-  .wave:nth-child(2),
-  .wave:nth-child(3) {
-    top: 210px;
-  }
+const Content = styled.div`
+  flex: 1;
+  padding: 30px;
+  section {
+    max-width: 500px;
+    margin: 0 auto;
 
-  .playing .wave {
-    border-radius: 40%;
-    animation: wave 3000ms infinite linear;
-  }
-
-  .wave {
-    border-radius: 40%;
-    animation: wave 55s infinite linear;
-  }
-
-  .playing .wave:nth-child(2) {
-    animation-duration: 4000ms;
-  }
-
-  .wave:nth-child(2) {
-    animation-duration: 50s;
-  }
-
-  .playing .wave:nth-child(3) {
-    animation-duration: 5000ms;
-  }
-
-  .wave:nth-child(3) {
-    animation-duration: 45s;
-  }
-
-  @keyframes wave {
-    0% {
-      transform: rotate(0deg);
+    h2 {
+      margin-bottom: 20px;
     }
 
-    100% {
-      transform: rotate(360deg);
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      input {
+        padding: 8px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 10px;
+        background-color: #1e3a5f;
+        color: white;
+        border: none;
+        cursor: pointer;
+        &:hover {
+          background-color: #345678;
+        }
+      }
     }
-  }`;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+`;
 
 export default Profile;

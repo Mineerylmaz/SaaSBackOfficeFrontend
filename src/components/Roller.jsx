@@ -40,6 +40,12 @@ export default function Roller() {
 
 
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    const selectedUser = JSON.parse(localStorage.getItem("selectedUser"));
+    const isSuperAdmin = user?.role === "superadmin";
+
+    const currentUserId = isSuperAdmin && selectedUser ? selectedUser.id : user?.id;
+    const currentUserEmail = isSuperAdmin && selectedUser ? selectedUser.email : user?.email;
 
     const handleSil = async (email) => {
         const token = localStorage.getItem("token");
@@ -91,11 +97,12 @@ export default function Roller() {
         if (!token || !userId) return null;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/userSettings/settings/${userId}`, {
+            const res = await fetch(`http://localhost:5000/api/userSettings/settings/${currentUserId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
 
             if (!res.ok) throw new Error('Plan alınamadı');
 
@@ -137,7 +144,7 @@ export default function Roller() {
     const [inviterInvites, setInviterInvites] = useState([]);
 
     useEffect(() => {
-        // Kullanıcının kim tarafından davet edildiğini al (register sırasında backend’den set edilmiş olmalı)
+
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user?.invitedBy) return;
 
@@ -160,9 +167,10 @@ export default function Roller() {
 
     const userEmail = JSON.parse(localStorage.getItem("user"))?.email || "default";
     const [invites, setInvites] = useState(() => {
-        const saved = localStorage.getItem(`invites-${userEmail}`);
+        const saved = localStorage.getItem(`invites-${currentUserEmail}`);
         return saved ? JSON.parse(saved) : [];
     });
+
 
     useEffect(() => {
         const planStr = localStorage.getItem("selectedPlan");
@@ -192,6 +200,7 @@ export default function Roller() {
         const planLimit = userPlanRoles.find(r => r.role === inviteRole)?.count || 0;
         const currentCount = invites.filter(i => i.role === inviteRole).length;
 
+
         if (currentCount >= planLimit) {
             return Swal.fire({ icon: "error", title: "Limit Aşıldı!", text: `Bu plana göre maksimum ${planLimit} ${inviteRole} davet edebilirsin!`, confirmButtonColor: "#d33" });
         }
@@ -206,7 +215,7 @@ export default function Roller() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ email: inviteEmail, role: inviteRole, inviterEmail: userEmail })
+                body: JSON.stringify({ email: inviteEmail, role: inviteRole, inviterEmail: currentUserEmail })
             });
 
             if (!response.ok) {

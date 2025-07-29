@@ -8,7 +8,7 @@ import Home from './components/Home';
 import NotFound from './components/NotFound';
 import Navbars from './components/Navbars';
 import { useState, useEffect } from 'react';
-import Profil from './components/Profil';
+import Profile from './components/Profile';
 import Settings from './components/Settings';
 import TransitMap from './components/TransitMap';
 
@@ -79,7 +79,8 @@ export default function App() {
           />
 
 
-          <Route path="/profil" element={<Profil user={user} />} />
+          <Route path="/profile" element={<Profile user={user} />} />
+
 
           <Route
             path="/ayarlar"

@@ -149,6 +149,7 @@ export default function UserDataGrid() {
     return (
         <div className='userdatagrid'>
             <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+
                 <Button
                     variant="contained"
                     color="error"
@@ -165,6 +166,60 @@ export default function UserDataGrid() {
                 >
                     Show Deleted Users
                 </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={selectedIds.length !== 1}
+                    onClick={async () => {
+                        const selectedUser = users.find((u) => u.id === selectedIds[0]);
+                        if (!selectedUser) return;
+
+                        const token = localStorage.getItem("token");
+                        if (!token) {
+                            return Swal.fire('Hata', 'Oturum süresi dolmuş, tekrar giriş yapın.', 'error');
+                        }
+
+                        try {
+                            const res = await fetch(`http://localhost:5000/api/userSettings/settings/${selectedUser.id}`, {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                    "Content-Type": "application/json",
+                                },
+                            });
+
+                            if (!res.ok) throw new Error("Plan bilgisi alınamadı");
+
+                            const data = await res.json();
+
+                            const enrichedUser = {
+                                ...selectedUser,
+                                plan: data.plan || null,
+                                settings: data.settings || {},
+                            };
+
+                            localStorage.setItem("selectedUser", JSON.stringify(enrichedUser));
+
+                            Swal.fire({
+                                icon: "success",
+                                title: "Kullanıcı Seçildi",
+                                text: `${selectedUser.email} ayarlarını görmek için ayarlara geçin.`,
+                            });
+                        } catch (err) {
+                            console.error("Plan bilgisi alınamadı:", err);
+                            Swal.fire({
+                                icon: "error",
+                                title: "Hata",
+                                text: "Plan bilgisi alınamadı",
+                            });
+                        }
+                    }}
+
+
+
+                >
+                    Seçili Kullanıcıyı Ayarla
+                </Button>
+
 
                 {showDeleted && (
                     <Button
@@ -198,6 +253,18 @@ export default function UserDataGrid() {
                             setSelectedIds([]);
                         }
                     }}
+                    onRowClick={(params) => {
+                        const clickedUser = users.find((u) => u.id === params.row.id);
+                        if (clickedUser) {
+                            localStorage.setItem('selectedUser', JSON.stringify(clickedUser));
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Kullanıcı Seçildi',
+                                text: `${clickedUser.email} ayarlarını görmek için ayarlara geçin.`,
+                            });
+                        }
+                    }}
+
                 />
 
             </Box>

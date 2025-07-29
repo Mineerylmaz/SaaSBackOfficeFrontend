@@ -3,8 +3,10 @@ import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Form from 'react-bootstrap/Form';
+import Profile from "./Profile";
 export default function Navbars({ user, setUser }) {
     const navigate = useNavigate();
+
     const [darkMode, setDarkMode] = useState(() => {
         return localStorage.getItem("darkMode") === "true";
     });
@@ -80,7 +82,11 @@ export default function Navbars({ user, setUser }) {
                                 <NavDropdown.Item disabled style={{ fontWeight: 'bold', cursor: 'default' }}>
                                     {user.email}
                                 </NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/profile">
+                                    Profil
+                                </NavDropdown.Item>
                                 <NavDropdown.Divider />
+
 
                                 <NavDropdown.Item as={Link} to="/ayarlar">Ayarlar</NavDropdown.Item>
                                 <NavDropdown.Divider />

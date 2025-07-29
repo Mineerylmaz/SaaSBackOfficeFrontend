@@ -78,7 +78,7 @@ const Register = ({ setUser }) => {
         password: formData.password,
         inviteToken: token,
         role: inviteInfo?.role || 'user',
-        plan: plan ? { name: plan.name || plan.value || plan.label } : null,
+        plan: plan || null,
       };
 
       const res = await fetch('http://localhost:5000/api/register/add-user', {
@@ -92,13 +92,25 @@ const Register = ({ setUser }) => {
 
         console.log("✅ Kayıt başarılı, login gibi token alındı:", data);
 
+        // 👉 Plan eksikse API'den tamamla
+        if (!data.user.plan?.price || !data.user.plan?.max_file_size) {
+          const resPlan = await fetch('http://localhost:5000/api/plans');
+          if (resPlan.ok) {
+            const plans = await resPlan.json();
+            const fullPlan = plans.find(p => p.name === data.user.plan.name);
+            if (fullPlan) {
+              data.user.plan = fullPlan;
+            }
+          }
+        }
 
+        // 👉 Güncellenmiş planla kaydet
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
+        localStorage.setItem("selectedPlan", JSON.stringify(data.user.plan));
         setUser(data.user);
 
         setFormData({ firstname: '', lastname: '', email: '', password: '' });
-
 
         if (data.user.plan && data.user.plan.name) {
           navigate('/odeme');

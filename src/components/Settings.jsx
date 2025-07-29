@@ -18,12 +18,16 @@ const Settings = ({ user }) => {
         { key: 'durak', type: 'number' },
         { key: 'planAdi', type: 'string' }
     ]);
+    const localSelectedUser = localStorage.getItem("selectedUser");
+    const selectedUser = localSelectedUser ? JSON.parse(localSelectedUser) : null;
+
+
 
 
     const token = localStorage.getItem("token");
     const decoded = token ? jwtDecode(token) : null;
     const userRole = decoded?.role || "viewer";
-
+    const currentUser = (userRole === 'superadmin' && selectedUser) ? selectedUser : user;
 
     const [plan, setPlan] = useState(null);
     const [settings, setSettings] = useState({
@@ -45,6 +49,7 @@ const Settings = ({ user }) => {
     const [deletedUrls, setDeletedUrls] = useState([]);
 
 
+    const isReadOnly = decoded?.id !== currentUser?.id;
 
     const filteredRtUrls = settings.rt_urls.filter(item =>
         !deletedUrls.some(d => d.url === item.url && d.type === 'rt')
@@ -56,7 +61,7 @@ const Settings = ({ user }) => {
 
 
     const fetchDeletedUrls = async () => {
-        const res = await fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.token}`, {
+        const res = await fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${currentUser.token}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -69,12 +74,12 @@ const Settings = ({ user }) => {
 
 
     useEffect(() => {
-        if (!user?.id) {
+        if (!currentUser?.id) {
             setLoading(false);
             return;
         }
 
-        fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`, {
+        fetch(`http://localhost:5000/api/userSettings/settings/${currentUser.id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -107,13 +112,13 @@ const Settings = ({ user }) => {
                 setLoading(false);
             })
             .catch(() => setLoading(false));
-    }, [user?.id]);
+    }, [currentUser?.id]);
 
 
     const fetchResults = () => {
-        if (!user?.id) return;
+        if (!currentUser?.id) return;
 
-        let url = `http://localhost:5000/api/userSettings/urlResults/${user.id}`;
+        let url = `http://localhost:5000/api/userSettings/urlResults/${currentUser.id}`;
         const params = [];
         if (startDate) params.push(`start=${encodeURIComponent(new Date(startDate).toISOString())}`);
         if (endDate) params.push(`end=${encodeURIComponent(new Date(endDate).toISOString())}`);
@@ -129,9 +134,9 @@ const Settings = ({ user }) => {
         if (selectedMenu === 'urlresults') {
             fetchResults();
         }
-    }, [selectedMenu, user?.id]);
+    }, [selectedMenu, currentUser?.id]);
     useEffect(() => {
-        if (!user?.id) {
+        if (!currentUser?.id) {
             setLoading(false);
             return;
         }
@@ -142,7 +147,7 @@ const Settings = ({ user }) => {
             return;
         }
 
-        fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`, {
+        fetch(`http://localhost:5000/api/userSettings/settings/${currentUser.id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -160,7 +165,7 @@ const Settings = ({ user }) => {
                 console.error(err.message);
                 setLoading(false);
             });
-    }, [user?.id, token]);
+    }, [currentUser?.id, token]);
 
 
     const handleSettingChange = (key, value) => {
@@ -233,7 +238,7 @@ const Settings = ({ user }) => {
     const [saving, setSaving] = useState(false);
     const saveSettings = () => {
         setSaving(true);
-        fetch(`http://localhost:5000/api/userSettings/settings/${user.id}`, {
+        fetch(`http://localhost:5000/api/userSettings/settings/${currentUser.id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -273,6 +278,23 @@ const Settings = ({ user }) => {
 
             </Sidebar>
             <ContentArea>
+                {isReadOnly && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <span style={{ color: 'gray' }}>
+                            Şu an {selectedUser.email} ayarlarını görüntülüyorsunuz.
+                        </span>
+                        <button
+                            variant="outlined"
+                            onClick={() => {
+                                localStorage.removeItem("selectedUser");
+                                window.location.reload();
+                            }}
+                        >
+                            Seçimi Temizle
+                        </button>
+                    </div>
+                )}
+
                 {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults') && (
                     <HorizontalWrapper>
                         <ContentWrapper fullWidth>
@@ -371,7 +393,7 @@ const Settings = ({ user }) => {
                             {selectedMenu === 'urlresults' && (
                                 <div style={{ flex: '1 1 100%', width: '100%' }}>
 
-                                    <UrlResultsGrid userId={user.id} />
+                                    <UrlResultsGrid userId={currentUser.id} />
                                 </div>
 
                             )}
@@ -405,7 +427,10 @@ const Settings = ({ user }) => {
                     selectedMenu === 'upload' && (
 
                         <div>
-                            <DragDropFileUpload></DragDropFileUpload>
+                            <DragDropFileUpload plan={plan} user={currentUser} />
+
+
+
                         </div>
                     )
                 }
@@ -418,7 +443,12 @@ const Settings = ({ user }) => {
                     )
                 }
                 {selectedMenu === 'userTab' && (
+
+
                     <UserTab />
+
+
+
                 )}
 
 

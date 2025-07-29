@@ -2,12 +2,31 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import styled from 'styled-components';
 const UserTab = () => {
+    const [selectedUser, setSelectedUser] = useState(() => {
+        return JSON.parse(localStorage.getItem("selectedUser"));
+    });
 
+    useEffect(() => {
+
+        const onStorageChange = () => {
+            setSelectedUser(JSON.parse(localStorage.getItem("selectedUser")));
+        };
+        window.addEventListener("storage", onStorageChange);
+        return () => window.removeEventListener("storage", onStorageChange);
+    }, []);
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const isSuperAdmin = user?.role === "superadmin";
+
+    const currentUserId = isSuperAdmin && selectedUser ? selectedUser.id : user?.id;
     const [keys, setKeys] = useState([]);
     const [values, setValues] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [currentKey, setCurrentKey] = useState(null);
     const [newValue, setNewValue] = useState("");
+
+
+
     useEffect(() => {
         fetch("http://localhost:5000/api/setting-key")
             .then((res) => res.json())
@@ -17,20 +36,17 @@ const UserTab = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
 
-        // setting-key'leri al
-        fetch("http://localhost:5000/api/setting-key")
-            .then((res) => res.json())
-            .then((data) => setKeys(data))
-            .catch((err) => console.error("Keyler çekilemedi:", err));
+        const url = isSuperAdmin && selectedUser
+            ? `http://localhost:5000/api/user_tab?user_id=${selectedUser.id}`
+            : "http://localhost:5000/api/user_tab";
 
-        // kullanıcıya özel değerleri token ile al
-        fetch("http://localhost:5000/api/user_tab", {
+        fetch(url, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         })
-            .then((res) => res.json())
-            .then((data) => {
+            .then(res => res.json())
+            .then(data => {
                 const initialValues = {};
                 data.forEach(item => {
                     initialValues[item.key_name] = item.value;
@@ -38,7 +54,8 @@ const UserTab = () => {
                 setValues(initialValues);
             })
             .catch(err => console.error("Kullanıcı değerleri çekilemedi:", err));
-    }, []);
+
+    }, [currentUserId]);
 
 
 
@@ -110,26 +127,30 @@ const UserTab = () => {
             value,
         }));
 
-        try {
-            const res = await fetch("http://localhost:5000/api/user_tab", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ settings: payload }),
+        fetch("http://localhost:5000/api/user_tab", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                settings: payload,
+                user_id: isSuperAdmin && selectedUser ? selectedUser.id : undefined,
+            }),
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    Swal.fire("Kaydedildi!", "Ayarlar başarıyla kaydedildi.", "success");
+                } else {
+                    alert("Kaydetme başarısız.");
+                }
+            })
+            .catch(error => {
+                alert("Sunucu hatası.");
+                console.error(error);
             });
 
-            const result = await res.json();
-            if (result.success) {
-                Swal.fire("Kaydedildi!", "Ayarlar başarıyla kaydedildi.", "success");
-            } else {
-                alert("Kaydetme başarısız.");
-            }
-        } catch (error) {
-            alert("Sunucu hatası.");
-            console.error(error);
-        }
     };
 
 
@@ -184,7 +205,7 @@ const UserTab = () => {
                                 }}
                                 title="Değer Gir / Düzenle"
                             >
-                                +
+                                Değer Gir / Düzenle
                             </button>
 
                         </tr>
@@ -211,7 +232,7 @@ const UserTab = () => {
                     onClick={() => setShowModal(false)}
                     style={{
                         position: "fixed",
-                        top: 0,
+                        top: "60%",  // Burayı 50%'den 60%'e yükselttik
                         left: 0,
                         right: 0,
                         bottom: 0,
@@ -220,6 +241,7 @@ const UserTab = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         zIndex: 9999,
+                        transform: "translateY(-50%)", // üstten aşağı kaydırma dengelemesi
                     }}
                 >
                     <div
@@ -232,7 +254,7 @@ const UserTab = () => {
                             boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                         }}
                     >
-                        <h3>{currentKey} için Değer Gir</h3>
+                        <h3 color="#000">{currentKey} için Değer Gir</h3>
                         <input
                             type={
                                 keys.find(k => k.key_name === currentKey)?.type === "number"
@@ -279,4 +301,3 @@ const UserTab = () => {
 };
 
 export default UserTab;
-

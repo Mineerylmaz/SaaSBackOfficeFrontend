@@ -1,16 +1,60 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Swal from "sweetalert2";
+import { jwtDecode } from 'jwt-decode';
 
-const DragDropFileUpload = () => {
-  const plan = JSON.parse(localStorage.getItem("selectedPlan")) || { max_file_size: 0 };
+
+const DragDropFileUpload = ({ plan }) => {
   const [files, setFiles] = useState([]);
+  const [maxFileSize, setMaxFileSize] = useState(plan?.max_file_size || 0);
+
+  // 1. user ve selectedUser bilgilerini al
+  const localUser = localStorage.getItem("user");
+  const localSelectedUser = localStorage.getItem("selectedUser");
+  const user = localUser ? JSON.parse(localUser) : null;
+  const selectedUser = localSelectedUser ? JSON.parse(localSelectedUser) : null;
+
+  const token = localStorage.getItem("token");
+  const decoded = token ? jwtDecode(token) : null;
+  const isSuperAdmin = decoded?.role === "superadmin";
+
+  const currentUser = isSuperAdmin && selectedUser ? selectedUser : user;
+
+  useEffect(() => {
+    setMaxFileSize(plan?.max_file_size || 0);
+  }, [plan]);
+
+  const getSelectedUserSettings = async (userId) => {
+    const response = await fetch(`http://localhost:5000/api/userSettings/settings/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    return data?.plan?.max_file_size || 0;
+  };
+
+  useEffect(() => {
+    const fetchLimit = async () => {
+      try {
+        if (currentUser?.id) {
+          const limit = isSuperAdmin && selectedUser
+            ? await getSelectedUserSettings(selectedUser.id)
+            : currentUser?.plan?.max_file_size || 0;
+          setMaxFileSize(limit);
+        }
+      } catch (err) {
+        console.error("Plan bilgisi alınamadı", err);
+      }
+    };
+    fetchLimit();
+  }, [currentUser?.id]);
+
+  const handleInputChange = (e) => handleFiles(e.target.files);
 
   const handleFiles = useCallback((fileList) => {
     const newFiles = Array.from(fileList);
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   }, []);
-
-  const handleInputChange = (e) => handleFiles(e.target.files);
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -23,7 +67,7 @@ const DragDropFileUpload = () => {
   const handleDragOver = (e) => e.preventDefault();
 
   const totalSizeMB = files.reduce((acc, file) => acc + file.size, 0) / (1024 * 1024);
-  const overLimitFiles = files.filter(file => (file.size / (1024 * 1024)) > plan.max_file_size);
+  const overLimitFiles = files.filter(file => (file.size / (1024 * 1024)) > maxFileSize);
 
   const removeFile = (index) => {
     setFiles(files.filter((_, i) => i !== index));
@@ -57,7 +101,7 @@ const DragDropFileUpload = () => {
       }}
     >
       <h2>Dosya / Klasör Yükleme</h2>
-      <p>Plan dosya limiti: <strong>{plan.max_file_size} MB</strong></p>
+      <p>Plan dosya limiti: <strong>{maxFileSize} MB</strong></p>
 
       <div
         onDrop={handleDrop}
@@ -98,7 +142,7 @@ const DragDropFileUpload = () => {
           }}>
             {files.map((file, index) => {
               const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-              const isOverLimit = sizeMB > plan.max_file_size;
+              const isOverLimit = sizeMB > maxFileSize;
               return (
                 <li
                   key={index}
