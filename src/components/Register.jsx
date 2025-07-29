@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const Register = ({ setUser }) => {
 
@@ -92,7 +93,7 @@ const Register = ({ setUser }) => {
 
         console.log("✅ Kayıt başarılı, login gibi token alındı:", data);
 
-        // 👉 Plan eksikse API'den tamamla
+
         if (!data.user.plan?.price || !data.user.plan?.max_file_size) {
           const resPlan = await fetch('http://localhost:5000/api/plans');
           if (resPlan.ok) {
@@ -120,7 +121,12 @@ const Register = ({ setUser }) => {
 
       } else {
         const errData = await res.json();
-        alert(errData.error || 'Kayıt sırasında bir hata oluştu.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Kayıtlı Kullanıcı!',
+          text: 'Zaten Kayıtlısınız!',
+          confirmButtonColor: '#3085d6',
+        });
       }
 
     } catch (error) {

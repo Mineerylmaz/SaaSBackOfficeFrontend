@@ -192,6 +192,14 @@ const Settings = ({ user }) => {
     };
 
     const addRtUrl = () => {
+        if (isReadOnly) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Yetkisiz Erişim',
+                text: 'Başka bir kullanıcının ayarlarını değiştiremezsiniz.',
+            });
+            return;
+        }
         if (settings.rt_urls.length >= (plan?.rt_url_limit || 0)) {
             Swal.fire({
                 icon: 'warning',
@@ -204,18 +212,37 @@ const Settings = ({ user }) => {
     };
 
     const removeRtUrl = (index) => {
+        if (isReadOnly) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Yetkisiz Erişim',
+                text: 'Başka bir kullanıcının ayarlarını değiştiremezsiniz.',
+            });
+            return;
+        }
         const newUrls = [...settings.rt_urls];
         newUrls.splice(index, 1);
         handleSettingChange('rt_urls', newUrls);
     };
 
     const handleStaticUrlChange = (index, field, value) => {
+
         const newUrls = [...settings.static_urls];
         newUrls[index] = { ...newUrls[index], [field]: value };
         handleSettingChange('static_urls', newUrls);
     };
 
+
     const addStaticUrl = () => {
+        if (isReadOnly) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Yetkisiz Erişim',
+                text: 'Başka bir kullanıcının ayarlarını değiştiremezsiniz.',
+            });
+            return;
+        }
+
         if (settings.static_urls.length >= (plan?.static_url_limit || 0)) {
             Swal.fire({
                 icon: 'warning',
@@ -224,10 +251,20 @@ const Settings = ({ user }) => {
             });
             return;
         }
+
         handleSettingChange('static_urls', [...settings.static_urls, { url: '', frequency: '' }]);
     };
 
+
     const removeStaticUrl = (index) => {
+        if (isReadOnly) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Yetkisiz Erişim',
+                text: 'Başka bir kullanıcının ayarlarını değiştiremezsiniz.',
+            });
+            return;
+        }
         const newUrls = [...settings.static_urls];
         newUrls.splice(index, 1);
         handleSettingChange('static_urls', newUrls);
@@ -281,7 +318,7 @@ const Settings = ({ user }) => {
                 {isReadOnly && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <span style={{ color: 'gray' }}>
-                            Şu an {selectedUser.email} ayarlarını görüntülüyorsunuz.
+                            Şu an {selectedUser?.email || "kullanıcı"} ayarlarını görüntülüyorsunuz.
                         </span>
                         <button
                             variant="outlined"
@@ -327,17 +364,38 @@ const Settings = ({ user }) => {
                                                     onChange={e => handleRtUrlChange(idx, 'frequency', Number(e.target.value))}
                                                     style={{ flex: 1 }}
                                                 />
-                                                <Silbuton onClick={() => removeRtUrl(idx)}>Sil</Silbuton>
+
+                                                <Silbuton onClick={() => removeRtUrl(idx)} disabled={isReadOnly} title={isReadOnly ? "Başka bir kullanıcının ayarlarını silemezsiniz." : "URL'yi sil"}  >
+                                                    Sil
+                                                </Silbuton>
+
                                             </Row>
 
                                         ))}
-                                        <Button onClick={addRtUrl} isabled={filteredRtUrls.length >= (plan?.rt_url_limit || 0)}>
+                                        <Button onClick={addRtUrl} disabled={isReadOnly || filteredRtUrls.length >= (plan?.rt_url_limit || 0)}
+                                            title={
+                                                isReadOnly
+                                                    ? "Başka bir kullanıcının ayarlarına URL ekleyemezsiniz."
+                                                    : filteredRtUrls.length >= (plan?.rt_url_limit || 0)
+                                                        ? `URL sınırına ulaşıldı (${plan?.rt_url_limit || 0} adet)`
+                                                        : "Yeni URL ekle"
+                                            }
+
+                                        >
                                             URL Ekle
                                         </Button>
+
                                     </AccordionContent>
-                                    <SaveButton onClick={saveSettings} disabled={saving}>
+                                    <SaveButton onClick={saveSettings} disabled={saving || isReadOnly} title={
+                                        isReadOnly
+                                            ? "Başka bir kullanıcının ayarlarını kaydedemezsiniz."
+                                            : saving
+                                                ? "Kaydediliyor..."
+                                                : "Ayarları kaydet"
+                                    }>
                                         Ayarları Kaydet
                                     </SaveButton>
+
                                 </AccordionWrapper>
                             )}
 
@@ -371,22 +429,41 @@ const Settings = ({ user }) => {
                                                     onChange={e => handleStaticUrlChange(idx, 'frequency', Number(e.target.value))}
                                                     style={{ flex: 1 }}
                                                 />
-                                                <Silbuton onClick={() => removeStaticUrl(idx)} />
+                                                <Silbuton onClick={() => removeStaticUrl(idx)} disabled={isReadOnly} title={isReadOnly ? "Başka bir kullanıcının ayarlarını silemezsiniz." : "URL'yi sil"}>
+                                                    Sil
+                                                </Silbuton>
                                             </Row>
 
 
 
                                         ))}
-                                        <Button
-                                            onClick={addStaticUrl}
-                                            disabled={filteredStaticUrls.length >= (plan?.static_url_limit || 0)}
+
+                                        <Button onClick={addStaticUrl}
+                                            disabled={isReadOnly || filteredStaticUrls.length >= (plan?.static_url_limit || 0)}
+                                            title={
+                                                isReadOnly
+                                                    ? "Başka bir kullanıcının ayarlarına static URL ekleyemezsiniz."
+                                                    : filteredStaticUrls.length >= (plan?.static_url_limit || 0)
+                                                        ? `Static URL sınırına ulaşıldı (${plan?.static_url_limit || 0} adet)`
+                                                        : "Yeni static URL ekle"
+                                            }
                                         >
                                             URL Ekle
                                         </Button>
+
+
+
                                     </AccordionContent>
-                                    <SaveButton onClick={saveSettings} disabled={saving}>
+                                    <SaveButton onClick={saveSettings} disabled={saving || isReadOnly} title={
+                                        isReadOnly
+                                            ? "Başka bir kullanıcının ayarlarını kaydedemezsiniz."
+                                            : saving
+                                                ? "Kaydediliyor..."
+                                                : "Ayarları kaydet"
+                                    }>
                                         Ayarları Kaydet
                                     </SaveButton>
+
                                 </AccordionWrapper>
                             )}
 

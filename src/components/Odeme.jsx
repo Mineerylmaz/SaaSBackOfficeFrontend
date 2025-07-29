@@ -129,21 +129,21 @@ const Odeme = () => {
 
       let infoMsg = '';
       if (data.message.includes('Planınız yükseltildi ve hemen aktif oldu.')) {
-        infoMsg = `Planınız yükseltildi. `;
+        infoMsg = `Planınız yükseltildi.`;
 
-        // Plan yükseltildiği için localStorage'ı güncelle
         user.plan = plan;
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('selectedPlan', JSON.stringify(plan));
 
       } else if (data.message.includes('sonraki ay')) {
-        infoMsg = 'Plan değişikliği bir sonraki ay geçerli olacaktır.';
+        const formattedDate = data.planChangeDate
+          ? new Date(data.planChangeDate).toLocaleDateString('tr-TR')
+          : 'önümüzdeki ay';
 
-        // Downgrade olduğunda localStorage’da plan değişimi yapma veya opsiyonel olarak nextPlan kaydet
+        infoMsg = `Plan değişikliği ${formattedDate} tarihinde geçerli olacaktır.`;
+
       } else if (data.message.includes('Aynı plandasınız')) {
         infoMsg = 'Ödemeniz alındı.';
-
-        // Plan değişmediği için localStorage değişimi yapma
       } else {
         infoMsg = data.message;
       }

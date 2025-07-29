@@ -4,10 +4,11 @@ import { jwtDecode } from 'jwt-decode';
 
 
 const DragDropFileUpload = ({ plan }) => {
+
   const [files, setFiles] = useState([]);
   const [maxFileSize, setMaxFileSize] = useState(plan?.max_file_size || 0);
 
-  // 1. user ve selectedUser bilgilerini al
+
   const localUser = localStorage.getItem("user");
   const localSelectedUser = localStorage.getItem("selectedUser");
   const user = localUser ? JSON.parse(localUser) : null;
@@ -15,10 +16,10 @@ const DragDropFileUpload = ({ plan }) => {
 
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) : null;
+
   const isSuperAdmin = decoded?.role === "superadmin";
-
   const currentUser = isSuperAdmin && selectedUser ? selectedUser : user;
-
+  const isSuperadminViewingOther = isSuperAdmin && selectedUser && selectedUser.id !== user?.id;
   useEffect(() => {
     setMaxFileSize(plan?.max_file_size || 0);
   }, [plan]);
@@ -74,6 +75,10 @@ const DragDropFileUpload = ({ plan }) => {
   };
 
   const handleUpload = () => {
+    if (isSuperadminViewingOther) {
+      Swal.fire("Yetkisiz", "Superadmin başka bir kullanıcı adına dosya yükleyemez.", "error");
+      return;
+    }
     if (files.length === 0) {
       Swal.fire("Dosya yok", "Lütfen önce dosya seçin veya sürükleyip bırakın.", "warning");
       return;
@@ -119,15 +124,27 @@ const DragDropFileUpload = ({ plan }) => {
       >
         Dosyaları buraya sürükleyin veya aşağıdan seçin
       </div>
-
       <input
         type="file"
         webkitdirectory="true"
         directory="true"
         multiple
         onChange={handleInputChange}
-        style={{ display: "block", marginBottom: 20 }}
+        disabled={isSuperadminViewingOther}
+        title={
+          isSuperadminViewingOther
+            ? "Superadmin başka bir kullanıcı adına dosya seçemez."
+            : "Dosya veya klasör seçin"
+        }
+        style={{
+          display: "block",
+          marginBottom: 20,
+          cursor: isSuperadminViewingOther ? "not-allowed" : "pointer",
+          opacity: isSuperadminViewingOther ? 0.6 : 1
+        }}
       />
+
+
 
       {files.length > 0 && (
         <div style={{ marginBottom: 20 }}>
@@ -179,19 +196,21 @@ const DragDropFileUpload = ({ plan }) => {
 
       <button
         onClick={handleUpload}
+        disabled={isSuperadminViewingOther}
         style={{
-          backgroundColor: "#007BFF",
+          backgroundColor: isSuperadminViewingOther ? "#ccc" : "#007BFF",
           color: "white",
           border: "none",
           borderRadius: 6,
-          cursor: "pointer",
+          cursor: isSuperadminViewingOther ? "not-allowed" : "pointer",
           fontSize: 16,
           width: "100%",
           padding: "10px"
         }}
       >
-        Yükle
+        {isSuperadminViewingOther ? "Yükleme Devre Dışı" : "Yükle"}
       </button>
+
     </div>
   );
 };

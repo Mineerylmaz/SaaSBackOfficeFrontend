@@ -189,6 +189,15 @@ export default function Roller() {
     const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
     const handleInvite = async () => {
+        if (isSuperAdmin && selectedUser) {
+            Swal.fire({
+                icon: "error",
+                title: "İzin Yok",
+                text: "Superadmin başka kullanıcı adına davet gönderemez.",
+                confirmButtonColor: "#d33"
+            });
+            return;
+        }
         if (!inviteEmail || !inviteRole) {
             return Swal.fire({ icon: "error", title: "Hata!", text: "Email ve rol seçiniz!", confirmButtonColor: "#d33" });
         }
@@ -273,7 +282,22 @@ export default function Roller() {
                     ))}
                 </select>
 
-                <button onClick={handleInvite} style={{ width: "100%", padding: "12px", borderRadius: "6px", border: "none", background: "#007bff", color: "#fff", cursor: "pointer" }}>Davet Et</button>
+                <button
+                    onClick={handleInvite}
+                    disabled={isSuperAdmin && selectedUser}
+                    style={{
+                        width: "100%",
+                        padding: "12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        background: isSuperAdmin && selectedUser ? "#ccc" : "#007bff",
+                        color: "#fff",
+                        cursor: isSuperAdmin && selectedUser ? "not-allowed" : "pointer"
+                    }}
+                >
+                    {isSuperAdmin && selectedUser ? "Davet Devre Dışı" : "Davet Et"}
+                </button>
+
             </div>
             <h2 style={{ color: darkMode ? "#fff" : "#000" }}>Plan Rolleri</h2>
             <table style={{ width: "100%", borderCollapse: "collapse", background: darkMode ? "#1e1e1e" : "#fff", color: darkMode ? "#fff" : "#000", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden" }}>

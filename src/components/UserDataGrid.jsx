@@ -203,7 +203,13 @@ export default function UserDataGrid() {
                                 icon: "success",
                                 title: "Kullanıcı Seçildi",
                                 text: `${selectedUser.email} ayarlarını görmek için ayarlara geçin.`,
+                                confirmButtonText: 'Ayarlara Git',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/ayarlar';
+                                }
                             });
+
                         } catch (err) {
                             console.error("Plan bilgisi alınamadı:", err);
                             Swal.fire({
@@ -261,6 +267,13 @@ export default function UserDataGrid() {
                                 icon: 'success',
                                 title: 'Kullanıcı Seçildi',
                                 text: `${clickedUser.email} ayarlarını görmek için ayarlara geçin.`,
+                                showCancelButton: true,
+                                confirmButtonText: 'Ayarlara Git',
+                                cancelButtonText: 'Kapat',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/ayarlar'; // veya react-router kullanıyorsan navigate()
+                                }
                             });
                         }
                     }}

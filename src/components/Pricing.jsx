@@ -163,12 +163,12 @@ const StyledWrapper = styled.div`
     box-shadow:
       inset 0 0 80px whitesmoke,
       inset 20px 0 80px #6EC1E4,
-      inset -20px 0 80px #0ff,
+    
       inset 20px 0 300px #f0f,
-      inset -20px 0 300px #0ff,
+      
       0 0 50px #fff,
       -10px 0 80px #f0f,
-      10px 0 80px #0ff;
+      
   }
   .card:hover > .cta {
     outline: none;

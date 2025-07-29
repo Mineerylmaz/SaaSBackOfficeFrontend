@@ -60,6 +60,11 @@ const UserTab = () => {
 
 
     const openModal = (key) => {
+        if (isSuperAdmin && selectedUser) {
+            Swal.fire("İzin Yok", "Superadmin başka kullanıcı adına değer giremez.", "error");
+            return;
+        }
+
         setCurrentKey(key);
         setNewValue(values[key] || "");
         setShowModal(true);
@@ -194,12 +199,13 @@ const UserTab = () => {
 
                             <button
                                 onClick={() => openModal(k.key_name)}
+                                disabled={isSuperAdmin && selectedUser}
                                 style={{
-                                    cursor: "pointer",
+                                    cursor: isSuperAdmin && selectedUser ? "not-allowed" : "pointer",
                                     padding: "4px 8px",
                                     borderRadius: 4,
                                     border: "none",
-                                    backgroundColor: "#28a745",
+                                    backgroundColor: isSuperAdmin && selectedUser ? "#ccc" : "#28a745",
                                     color: "white",
                                     margin: "20px"
                                 }}
@@ -208,6 +214,7 @@ const UserTab = () => {
                                 Değer Gir / Düzenle
                             </button>
 
+
                         </tr>
                     ))}
                 </tbody>
@@ -215,17 +222,19 @@ const UserTab = () => {
 
             <button
                 onClick={saveToServer}
+                disabled={isSuperAdmin && selectedUser}
                 style={{
-                    backgroundColor: "#007bff",
+                    backgroundColor: isSuperAdmin && selectedUser ? "#ccc" : "#007bff",
                     color: "white",
                     padding: "8px 16px",
                     border: "none",
                     borderRadius: 5,
-                    cursor: "pointer",
+                    cursor: isSuperAdmin && selectedUser ? "not-allowed" : "pointer",
                 }}
             >
                 Kaydet
             </button>
+
 
             {showModal && (
                 <div
