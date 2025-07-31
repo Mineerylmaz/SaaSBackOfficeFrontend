@@ -4,7 +4,6 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Fade from '@mui/material/Fade';
 
 export default function AccordionTransition({ title, children, defaultExpanded = false }) {
     const [expanded, setExpanded] = React.useState(defaultExpanded);
@@ -14,20 +13,26 @@ export default function AccordionTransition({ title, children, defaultExpanded =
     };
 
     return (
-        <Accordion
-            expanded={expanded}
-            onChange={handleExpansion}
-            slots={{ transition: Fade }}
-            slotProps={{ transition: { timeout: 400 } }}
-        >
+        <Accordion expanded={expanded} onChange={handleExpansion}>
             <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={<ExpandMoreIcon className="expand-icon" />}
             >
                 <Typography>{title}</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 {children}
             </AccordionDetails>
+
+            <style jsx global>{`
+       
+        .MuiAccordionSummary-expandIconWrapper.Mui-expanded {
+          transform: rotate(180deg);
+          transition: transform 0.3s ease;
+        }
+        .MuiAccordionSummary-expandIconWrapper {
+          transition: transform 0.3s ease;
+        }
+      `}</style>
         </Accordion>
     );
 }

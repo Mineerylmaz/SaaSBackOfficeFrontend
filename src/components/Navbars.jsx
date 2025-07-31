@@ -43,24 +43,13 @@ export default function Navbars({ user, setUser }) {
                                     onChange={() => setDarkMode(!darkMode)}
                                 />
                                 <span className="slider">
-                                    {darkMode ? "🌙" : "☀️"}
+                                    {darkMode ? "⋆⁺₊⋆ ☾" : "𓂃 ☼"}
                                 </span>
                             </label>
                         </div>
 
                         <Nav.Link as={Link} to="/home">
                             Home
-                        </Nav.Link>
-                        {!user && (
-                            <Nav.Link as={Link} to="/login">
-                                Login
-                            </Nav.Link>
-                        )}
-                        <Nav.Link as={Link} to="/transitmap">
-                            Map
-                        </Nav.Link>
-                        <Nav.Link as={Link} to="/pricing">
-                            Pricing
                         </Nav.Link>
                         <NavDropdown title="Biz Kimiz" id="basic-nav-dropdown">
                             <NavDropdown.Item as={Link} to="/about">
@@ -77,6 +66,19 @@ export default function Navbars({ user, setUser }) {
                                 İletişim
                             </NavDropdown.Item>
                         </NavDropdown>
+                        {user && (
+                            <Nav.Link as={Link} to="/transitmap">
+                                Map
+                            </Nav.Link>)}
+                        <Nav.Link as={Link} to="/pricing">
+                            Pricing
+                        </Nav.Link>
+
+                        {!user && (
+                            <Nav.Link as={Link} to="/login">
+                                Login
+                            </Nav.Link>
+                        )}
                         {user && (
                             <NavDropdown title="👤" id="profile-nav-dropdown" align="end">
                                 <NavDropdown.Item disabled style={{ fontWeight: 'bold', cursor: 'default' }}>

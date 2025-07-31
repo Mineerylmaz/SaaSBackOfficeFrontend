@@ -34,6 +34,37 @@ const UrlResultsGrid = ({ userId }) => {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        const intervalId = setInterval(async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                const res = await fetch(`http://localhost:5000/api/credits/status`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error('Kredi durumu alınamadı');
+
+                const data = await res.json();
+                console.log('Credit status:', data);
+
+                if (data.isLimited) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Kredi sınırına ulaşıldı',
+                        text: `Kullanılan: ${data.usedCredits} / ${data.creditLimit}. Daha fazla işlem yapılamaz.`,
+                    });
+                    clearInterval(intervalId); // Uyarı sonrası kontrolü durdurmak için
+                }
+            } catch (err) {
+                console.error('Kredi kontrolü başarısız:', err);
+            }
+        }, 10000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
 
     useEffect(() => {
         if (!userId) return;
@@ -44,18 +75,8 @@ const UrlResultsGrid = ({ userId }) => {
         return () => clearInterval(interval);
     }, [userId, startDateTime, endDateTime]);
 
-    const summaryRow = results.length > 0 ? {
-        id: 'summary',
-        name: 'Son Çağırılan Url ',
-        url: results[0].url,
-        responseTime: results[0].responseTime,
-        status: results[0].status,
-        errorMessage: results[0].errorMessage,
-        checkedAt: results[0].checkedAt,
-        isSummary: true,
-    } : null;
 
-    const displayRows = summaryRow ? [summaryRow, ...results] : results;
+    const displayRows = results;
 
     const showLastResultStatus = () => {
         if (results.length === 0) {
@@ -81,6 +102,7 @@ const UrlResultsGrid = ({ userId }) => {
             });
         }
     };
+    const truncate = (str, max = 50) => (str.length > max ? str.slice(0, max) + '...' : str);
 
     const columns = [
         {
@@ -108,22 +130,30 @@ const UrlResultsGrid = ({ userId }) => {
             field: 'status',
             headerName: 'Durum',
             width: 120,
-            renderCell: (params) => (
-                <span style={{ color: params.value === 'success' ? 'green' : 'red' }}>
-                    {params.value === 'success' ? 'Başarılı' : 'Hata'}
-                </span>
-            ),
-        },
+            renderCell: (params) => {
+                const isSuccess = params.value === 'success';
+                return (
+                    <span style={{ color: isSuccess ? 'green' : 'red', fontWeight: '600' }}>
+                        {isSuccess ? '✅ Başarılı' : '❌ Hata'}
+                    </span>
+                );
+            },
+        }
+        ,
         {
             field: 'errorMessage',
             headerName: 'Hata Detayı',
-            width: 100,
-            renderCell: (params) => (
-                <span style={{ color: 'red' }}>
-                    {params.row.status === 'error' ? params.value : ''}
-                </span>
-            ),
-        },
+            width: 150,
+            renderCell: (params) => {
+                if (params.row.status !== 'error') return '-';
+                return (
+                    <span style={{ color: 'red', fontWeight: '500' }}>
+                        {params.value || '-'}
+                    </span>
+                );
+            },
+        }
+        ,
         {
             field: 'checkedAt',
             headerName: 'Kontrol Zamanı',
@@ -145,8 +175,8 @@ const UrlResultsGrid = ({ userId }) => {
                     display: 'flex',
                     gap: 10,
                     alignItems: 'center',
-                    flexWrap: 'wrap',   // SARMA İZNİ VER
-                    justifyContent: 'flex-start', // Butonlar sola yaslı olsun
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-start',
                 }}
             >
                 <label style={{ display: 'flex', flexDirection: 'column', flex: '1 1 200px', minWidth: 150 }}>
@@ -224,6 +254,14 @@ const UrlResultsGrid = ({ userId }) => {
 
 
             </div>
+            {results.length > 0 && (
+                <div style={{ marginBottom: 12, padding: 10, backgroundColor: '#f0f8ff', borderRadius: 8, color: 'black', }}>
+                    <strong>Son Çağrılan URL:</strong> {truncate(results[0].url, 80)} <br />
+                    <strong>Durum:</strong> {results[0].status === 'success' ? '✅ Başarılı' : `❌ Hata: ${results[0].errorMessage || '-'}`} <br />
+                    <strong>Kontrol Zamanı:</strong> {new Date(results[0].checkedAt).toLocaleString()}
+                </div>
+            )}
+
             <div
                 style={{
                     width: '100%',
@@ -259,27 +297,8 @@ const UrlResultsGrid = ({ userId }) => {
                         transition: 'opacity 0.3s ease',
                     }}
                 />
-                {loading && (
-                    <div
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            backgroundColor: 'rgba(255,255,255,0.4)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            pointerEvents: 'none',
-                            fontWeight: 'bold',
-                            fontSize: '1.2em',
-                            color: '#444',
-                        }}
-                    >
-                        Yükleniyor...
-                    </div>
-                )}
+
+
             </div>
         </div>
     );

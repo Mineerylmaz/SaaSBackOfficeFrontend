@@ -1,2 +1,0 @@
-agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_email
-MTR,METRO İZMİR,https://www.izmirmetro.com.tr/,Europe/Istanbul,tr,+902324615445,info@izmirmetro.com.tr

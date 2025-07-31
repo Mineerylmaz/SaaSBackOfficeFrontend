@@ -98,7 +98,7 @@ const UserTab = () => {
   padding: 8px 12px;
   position: absolute;
   z-index: 100;
-  bottom: 125%; /* Tooltip yukarıda */
+  bottom: 125%; 
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -127,36 +127,53 @@ const UserTab = () => {
     const saveToServer = async () => {
         const token = localStorage.getItem("token");
 
+        // Sadece required olan alanlar için boş kontrolü
+        const missingKeys = keys.filter(k => {
+            const val = values[k.key_name];
+            return k.required && (val === undefined || val === null || val === "");
+        });
+
+        if (missingKeys.length > 0) {
+            const missingKeyNames = missingKeys.map(k => k.key_name).join(", ");
+            Swal.fire({
+                title: "Zorunlu Alanlar Boş!",
+                html: `Lütfen aşağıdaki zorunlu alanları doldurun:<br><b>${missingKeyNames}</b>`,
+                icon: "warning",
+                confirmButtonText: "Tamam",
+            });
+            return;
+        }
+
         const payload = Object.entries(values).map(([key_name, value]) => ({
             key_name,
             value,
         }));
 
-        fetch("http://localhost:5000/api/user_tab", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                settings: payload,
-                user_id: isSuperAdmin && selectedUser ? selectedUser.id : undefined,
-            }),
-        })
-            .then(res => res.json())
-            .then(result => {
-                if (result.success) {
-                    Swal.fire("Kaydedildi!", "Ayarlar başarıyla kaydedildi.", "success");
-                } else {
-                    alert("Kaydetme başarısız.");
-                }
-            })
-            .catch(error => {
-                alert("Sunucu hatası.");
-                console.error(error);
+        try {
+            const res = await fetch("http://localhost:5000/api/user_tab", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    settings: payload,
+                    user_id: isSuperAdmin && selectedUser ? selectedUser.id : undefined,
+                }),
             });
 
+            const result = await res.json();
+            if (result.success) {
+                Swal.fire("Kaydedildi!", "Ayarlar başarıyla kaydedildi.", "success");
+            } else {
+                Swal.fire("Hata!", "Kaydetme başarısız.", "error");
+            }
+        } catch (error) {
+            Swal.fire("Sunucu Hatası", "Sunucuya bağlanırken bir hata oluştu.", "error");
+            console.error(error);
+        }
     };
+
 
 
     return (
@@ -168,16 +185,19 @@ const UserTab = () => {
             <table
                 style={{
                     width: "100%",
-                    borderCollapse: "collapse",
+                    borderCollapse: "separate",
+
                     marginBottom: 20,
+                    borderSpacing: 0,
+                    borderRadius: "12px",
+                    overflow: "hidden",
                 }}
             >
                 <thead>
-                    <tr style={{ backgroundColor: "#007bff", color: "white" }}>
+                    <tr style={{ backgroundColor: "#446d92", color: "white" }}>
                         <th style={{ padding: 8, border: "1px solid #ddd" }}>Key</th>
                         <th style={{ padding: 8, border: "1px solid #ddd" }}>Tip</th>
                         <th style={{ padding: 8, border: "1px solid #ddd" }}>Değer</th>
-
                     </tr>
                 </thead>
                 <tbody>
@@ -191,40 +211,50 @@ const UserTab = () => {
                                     )}
                                 </TooltipContainer>
                             </td>
-
                             <td style={{ padding: 8, border: "1px solid #ddd" }}>{k.type}</td>
                             <td style={{ padding: 8, border: "1px solid #ddd" }}>
-                                {values[k.key_name] || "-"}
+                                <input
+                                    type={k.type === "number" ? "number" : "text"}
+                                    value={values[k.key_name] || ""}
+                                    disabled={isSuperAdmin && selectedUser}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        // Sadece sayıya izin ver (number tipinde)
+                                        if (k.type === "number" && isNaN(Number(val))) return;
+                                        setValues((prev) => ({
+                                            ...prev,
+                                            [k.key_name]: val,
+                                        }));
+                                    }}
+                                    style={{
+                                        width: "100%",
+                                        padding: "6px 8px",
+                                        borderRadius: 4,
+                                        border: "1px solid #ccc",
+                                        backgroundColor: "transparent",
+
+                                        color: "inherit",
+
+                                        padding: "6px 8px",
+
+                                    }}
+
+
+                                    placeholder="Değer girin"
+                                    title={isSuperAdmin && selectedUser ? "Superadmin başka kullanıcı için değer giremez" : ""}
+                                />
                             </td>
-
-                            <button
-                                onClick={() => openModal(k.key_name)}
-                                disabled={isSuperAdmin && selectedUser}
-                                style={{
-                                    cursor: isSuperAdmin && selectedUser ? "not-allowed" : "pointer",
-                                    padding: "4px 8px",
-                                    borderRadius: 4,
-                                    border: "none",
-                                    backgroundColor: isSuperAdmin && selectedUser ? "#ccc" : "#28a745",
-                                    color: "white",
-                                    margin: "20px"
-                                }}
-                                title="Değer Gir / Düzenle"
-                            >
-                                Değer Gir / Düzenle
-                            </button>
-
-
                         </tr>
                     ))}
                 </tbody>
             </table>
 
+
             <button
                 onClick={saveToServer}
                 disabled={isSuperAdmin && selectedUser}
                 style={{
-                    backgroundColor: isSuperAdmin && selectedUser ? "#ccc" : "#007bff",
+                    backgroundColor: isSuperAdmin && selectedUser ? "#ccc" : "#446d92",
                     color: "white",
                     padding: "8px 16px",
                     border: "none",

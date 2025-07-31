@@ -31,7 +31,9 @@ const Login = ({ setUser }) => {
       email: data.email,
       role: data.role,
       plan: data.plan,
-      token: data.token
+      token: data.token,
+      plan_start_date: data.plan_start_date,
+      plan_end_date: data.plan_end_date,
     }));
 
     setUser({
@@ -39,7 +41,9 @@ const Login = ({ setUser }) => {
       email: data.email,
       role: data.role,
       plan: data.plan,
-      token: data.token
+      token: data.token,
+      plan_start_date: data.plan_start_date,
+      plan_end_date: data.plan_end_date,
     });
   };
 
@@ -65,7 +69,7 @@ const Login = ({ setUser }) => {
 
       if (res.ok) {
         const data = await res.json();
-        const { token, id, email, role, plan } = data;
+        const { token, id, email, role, plan, plan_start_date, plan_end_date, avatar } = data;
 
         if (token) {
           localStorage.setItem('token', token);
@@ -83,14 +87,20 @@ const Login = ({ setUser }) => {
               fullPlan = plansData.find(p => p.id === plan.id || p.name === plan.name) || plan;
             }
           }
-          localStorage.setItem('user', JSON.stringify({ id, email, role, plan: fullPlan, token }));
+          localStorage.setItem('user', JSON.stringify({
+            id, email, role, plan: fullPlan, token, plan_start_date,
+            plan_end_date, avatar
+          }));
 
 
           localStorage.setItem('selectedPlan', JSON.stringify(fullPlan));
 
 
 
-          setUser({ id, email, role, plan: fullPlan, token });
+          setUser({
+            id, email, role, plan: fullPlan, token, plan_start_date,
+            plan_end_date, avatar
+          });
 
           if (!fullPlan || !fullPlan.name) {
             navigate('/odeme');

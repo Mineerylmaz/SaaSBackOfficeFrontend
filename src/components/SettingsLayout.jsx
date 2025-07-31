@@ -27,6 +27,19 @@ const SettingsLayout = ({ user }) => {
               <strong>Email:</strong> <span>{user.email}</span>
               <strong>Rol:</strong> <span>{user.role}</span>
               <strong>Plan:</strong> <span>{user?.plan?.name || 'Yok'}</span>
+
+              {user.plan_start_date && (
+                <>
+                  <strong>Başlangıç Tarihi:</strong>
+                  <span>{new Date(user.plan_start_date).toLocaleDateString()}</span>
+                </>
+              )}
+              {user.plan_end_date && (
+                <>
+                  <strong>Bitiş Tarihi:</strong>
+                  <span>{new Date(user.plan_end_date).toLocaleDateString()}</span>
+                </>
+              )}
             </ProfileCard>
           </section>
         )}

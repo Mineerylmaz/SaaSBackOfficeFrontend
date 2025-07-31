@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useSearchParams } from "react-router-dom";
 
 const adminRoles = ["admin", "superadmin", "user"];
 const canViewMenu = (role, menuKey, adminOnly) => {
@@ -110,6 +111,14 @@ const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(220);
   const isResizing = useRef(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const menu = searchParams.get("menu");
+    if (menu) {
+      setSelectedMenu(menu);
+    }
+  }, []);
+
 
   const [darkMode, setDarkMode] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -146,13 +155,11 @@ const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
   }, []);
 
   const menuItems = [
-    { key: "static", label: "Static URL Ayarları" },
-    { key: "rt", label: "Real Time URL Ayarları" },
+    { key: "ayarlar", label: "Ayarlar" },
     { key: "urlresults", label: "URL Sonuçları" },
-    { key: "upload", label: "Dosya Yükle" },
+
+    { key: "sonuc", label: "Sonuc" },
     { key: "roller", label: "Roller", adminOnly: true },
-    { key: "userTab", label: "Key İnput" },
-    { key: "notifications", label: "Bildirimler", adminOnly: true },
   ];
 
   return (
@@ -177,7 +184,11 @@ const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
               darkMode={darkMode}
               key={item.key}
               active={selectedMenu === item.key}
-              onClick={() => setSelectedMenu(item.key)}
+              onClick={() => {
+                setSelectedMenu(item.key);
+                setSearchParams({ menu: item.key });
+              }}
+
             >
               {item.label}
             </MenuItem>

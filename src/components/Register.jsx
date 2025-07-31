@@ -98,14 +98,22 @@ const Register = ({ setUser }) => {
           const resPlan = await fetch('http://localhost:5000/api/plans');
           if (resPlan.ok) {
             const plans = await resPlan.json();
-            const fullPlan = plans.find(p => p.name === data.user.plan.name);
-            if (fullPlan) {
-              data.user.plan = fullPlan;
+            // data.user.plan null olursa bunu kontrol etmeden erişmeye çalışmayalım
+            if (data.user.plan && data.user.plan.name) {
+              const fullPlan = plans.find(p => p.name === data.user.plan.name);
+              if (fullPlan) {
+                data.user.plan = fullPlan;
+              }
+            } else {
+
+              const defaultPlan = plans.find(p => p.name === 'basic');
+              if (defaultPlan) {
+                data.user.plan = defaultPlan;
+              }
             }
           }
         }
 
-        // 👉 Güncellenmiş planla kaydet
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
         localStorage.setItem("selectedPlan", JSON.stringify(data.user.plan));

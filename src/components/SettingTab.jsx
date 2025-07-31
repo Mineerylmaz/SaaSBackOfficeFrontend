@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { Checkbox, FormControlLabel } from '@mui/material';
+
 import {
     Box,
     Button,
@@ -36,6 +38,7 @@ const SettingTab = () => {
     const [newDescription, setNewDescription] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [newRequired, setNewRequired] = useState(false);
 
     useEffect(() => {
         fetchKeys();
@@ -79,7 +82,9 @@ const SettingTab = () => {
                     key_name: trimmedKey,
                     type: newType,
                     description: newDescription.trim(),
+                    required: newRequired
                 }),
+
             });
 
             const result = await res.json();
@@ -128,6 +133,8 @@ const SettingTab = () => {
     };
 
     const columns = [
+        { field: 'required', headerName: 'Zorunlu mu?', width: 120, renderCell: (params) => params.value ? 'Evet' : 'Hayır' },
+
         { field: 'key_name', headerName: 'Key', flex: 1, minWidth: 150 },
         { field: 'type', headerName: 'Tip', flex: 1, minWidth: 100 },
         {
@@ -198,6 +205,17 @@ const SettingTab = () => {
                     <Typography id="modal-title" variant="h6" mb={2}>
                         Yeni Key Ekle
                     </Typography>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={newRequired}
+                                onChange={(e) => setNewRequired(e.target.checked)}
+                            />
+                        }
+                        label="Zorunlu (required)"
+                        sx={{ mt: 1 }}
+                    />
+
 
                     <TextField
                         label="Key adı"

@@ -61,6 +61,7 @@ const Pricing = () => {
               <li>RT URL Limit: {plan.rt_url_limit || 0}</li>
               <li>Static URL Limit: {plan.static_url_limit || 0}</li>
               <li>Max File Size: {plan.max_file_size || 0} MB</li>
+              <li>Kredi sayısı:{plan.credits || 0}</li>
               <li>
                 Roller:{" "}
                 {plan.roles && plan.roles.length > 0
@@ -156,24 +157,15 @@ const StyledWrapper = styled.div`
     color: rgb(0, 0, 0);
   }
   .card:hover {
-    --lightness: 80%;
-    background: #6EC1E4;
-    color: #000;
-    outline: 1px solid rgb(255, #6EC1E4, 255);
-    box-shadow:
-      inset 0 0 80px whitesmoke,
-      inset 20px 0 80px #6EC1E4,
-    
-      inset 20px 0 300px #f0f,
-      
-      0 0 50px #fff,
-      -10px 0 80px #f0f,
-      
-  }
-  .card:hover > .cta {
-    outline: none;
-    background-color: ##6EC1E4;
-  }
+  background: #a0d8f7; /* Daha açık ve soft mavi */
+  color: #000;
+  outline: 1px solid rgba(110, 193, 228, 0.6); /* Daha yumuşak outline */
+  box-shadow:
+    inset 0 0 30px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(110, 193, 228, 0.7);
+  transition: all 0.3s ease;
+}
+
 `;
 
 export default Pricing;

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import Input from './Input';
 import Button from './Button';
@@ -13,6 +15,7 @@ import Roller from './Roller';
 
 import { jwtDecode } from "jwt-decode";
 import UserTab from './UserTab';
+import Sonuc from './Sonuc';
 const Settings = ({ user }) => {
     const [keys, setKeys] = useState([
         { key: 'durak', type: 'number' },
@@ -22,7 +25,11 @@ const Settings = ({ user }) => {
     const selectedUser = localSelectedUser ? JSON.parse(localSelectedUser) : null;
 
 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
 
+    const menuFromUrl = searchParams.get('menu') || 'ayarlar';
+    const [selectedMenu, setSelectedMenu] = useState(menuFromUrl);
 
     const token = localStorage.getItem("token");
     const decoded = token ? jwtDecode(token) : null;
@@ -39,7 +46,14 @@ const Settings = ({ user }) => {
     const [loading, setLoading] = useState(true);
     const [fakeFileSize, setFakeFileSize] = useState(0);
 
-    const [selectedMenu, setSelectedMenu] = useState('rt');
+    useEffect(() => {
+        setSelectedMenu(menuFromUrl);
+    }, [menuFromUrl]);
+    const handleMenuChange = (key) => {
+        setSelectedMenu(key);
+        setSearchParams({ menu: key });
+    };
+
     const [openRT, setOpenRT] = useState(true);
     const [openStatic, setOpenStatic] = useState(true);
 
@@ -52,7 +66,7 @@ const Settings = ({ user }) => {
     const isReadOnly = decoded?.id !== currentUser?.id;
 
     const filteredRtUrls = settings.rt_urls.filter(item =>
-        !deletedUrls.some(d => d.url === item.url && d.type === 'rt')
+        !deletedUrls.some(d => d.url === item.url && d.type === 'sonuc')
     );
 
     const filteredStaticUrls = settings.static_urls.filter(item =>
@@ -303,8 +317,30 @@ const Settings = ({ user }) => {
             .finally(() => setSaving(false));
     };
 
+
+
+    function exportToCurl(item) {
+        const params = new URLSearchParams(item.params || {}).toString();
+        const fullUrl = `${item.accessUrl}?${params}`;
+        const curl = `curl "${fullUrl}" -X GET`;
+        navigator.clipboard.writeText(curl);
+        alert('cURL komutu kopyalandı!');
+    }
+
     if (loading) return <p>Yükleniyor...</p>;
     if (!plan) return <p>Ödenmiş plan bulunamadı.</p>;
+    const countValidUrls = filteredStaticUrls.filter(item => item.url && item.url.trim() !== '').length;
+    const countrtUrls = filteredRtUrls.filter(item => item.url && item.url.trim() !== '').length;
+
+    if (plan.name === null) {
+
+        return (
+            <div>
+                <p>Ödeme yapılmadığı için bu sayfaya erişim yok.</p>
+                <button onClick={() => navigate('/pricing')}>Plan satın alın!</button>
+            </div>
+        );
+    }
 
     return (
         <Wrapper>
@@ -332,13 +368,13 @@ const Settings = ({ user }) => {
                     </div>
                 )}
 
-                {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults') && (
+                {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults' || selectedMenu === 'ayarlar') && (
                     <HorizontalWrapper>
                         <ContentWrapper fullWidth>
-                            {selectedMenu === 'rt' && (
+                            {selectedMenu === 'rt' || selectedMenu === 'ayarlar' && (
                                 <AccordionWrapper>
                                     <AccordionHeader onClick={() => setOpenRT(!openRT)}>
-                                        Real Time URL Listesi ({filteredRtUrls.length})
+                                        Real Time URL Listesi ({countrtUrls})
                                     </AccordionHeader>
                                     <AccordionContent open={openRT}>
                                         {filteredRtUrls.map((item, idx) => (
@@ -365,9 +401,11 @@ const Settings = ({ user }) => {
                                                     style={{ flex: 1 }}
                                                 />
 
+
                                                 <Silbuton onClick={() => removeRtUrl(idx)} disabled={isReadOnly} title={isReadOnly ? "Başka bir kullanıcının ayarlarını silemezsiniz." : "URL'yi sil"}  >
                                                     Sil
                                                 </Silbuton>
+
 
                                             </Row>
 
@@ -385,6 +423,8 @@ const Settings = ({ user }) => {
                                             URL Ekle
                                         </Button>
 
+
+
                                     </AccordionContent>
                                     <SaveButton onClick={saveSettings} disabled={saving || isReadOnly} title={
                                         isReadOnly
@@ -396,13 +436,19 @@ const Settings = ({ user }) => {
                                         Ayarları Kaydet
                                     </SaveButton>
 
+
                                 </AccordionWrapper>
+
+
                             )}
 
-                            {selectedMenu === 'static' && (
-                                <AccordionWrapper>
-                                    <AccordionHeader onClick={() => setOpenStatic(!openStatic)}>
-                                        Static URL Listesi ({filteredStaticUrls.length})
+
+
+                            {selectedMenu === 'static' || selectedMenu === 'ayarlar' && (
+                                <AccordionWrapper >
+                                    <AccordionHeader onClick={() => setOpenStatic(!openStatic)} >
+                                        Static URL Listesi ({countValidUrls})
+
                                     </AccordionHeader>
                                     <AccordionContent open={openStatic}>
                                         {filteredStaticUrls.map((item, idx) => (
@@ -488,17 +534,23 @@ const Settings = ({ user }) => {
                                         <strong>Static URL Limit:</strong> {plan.static_url_limit}
                                     </div>
                                     <div>
-                                        <strong>Mevcut RT URL:</strong> {settings.rt_urls?.length || 0}
+                                        <strong>Mevcut RT URL:</strong> {settings.rt_urls?.filter(item => item.url && item.url.trim() !== '').length || 0}
                                     </div>
                                     <div>
-                                        <strong>Mevcut Static URL:</strong> {settings.static_urls?.length || 0}
+                                        <strong>Mevcut Static URL:</strong> {settings.static_urls?.filter(item => item.url && item.url.trim() !== '').length || 0}
                                     </div>
                                 </div>
                             </PlanCard>
                         )}
+
                     </HorizontalWrapper>
                 )
                 }
+                {selectedMenu === 'sonuc' && (
+                    <div>
+                        <Sonuc></Sonuc>
+                    </div>
+                )}
 
                 {
                     selectedMenu === 'upload' && (
@@ -519,7 +571,7 @@ const Settings = ({ user }) => {
 
                     )
                 }
-                {selectedMenu === 'userTab' && (
+                {selectedMenu === 'userTab' || selectedMenu === 'ayarlar' && (
 
 
                     <UserTab />
@@ -531,7 +583,7 @@ const Settings = ({ user }) => {
 
 
 
-                {selectedMenu === 'profile' && <Profile user={user} settings={settings} />}
+
             </ContentArea>
         </Wrapper >
     );
@@ -570,6 +622,7 @@ const AccordionHeader = styled.button`
   text-align: left;
   font-weight: 600;
   cursor: pointer;
+  
 `;
 
 const AccordionContent = styled.div`

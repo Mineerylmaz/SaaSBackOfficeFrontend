@@ -6,10 +6,12 @@ import UserDataGrid from './UserDataGrid';
 import Silbuton from './Silbuton';
 import SettingTab from './SettingTab';
 import '../styles/Panel.css'
+import { useSearchParams } from "react-router-dom";
 const AdminPanel = () => {
-    const [activetab, setActivetab] = useState('settings');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialTab = searchParams.get("tab") || "dashboard";
+    const [activeTab, setActiveTab] = useState(initialTab);
 
-    // keys ve setKeys burada tanımlanıyor
     const [keys, setKeys] = useState([
         // Başlangıçta örnek keyler olabilir
         { key: 'durak', type: 'number' },
@@ -25,7 +27,7 @@ const AdminPanel = () => {
     const [newRoleCount, setNewRoleCount] = useState(0);
 
 
-    const [activeTab, setActiveTab] = useState('dashboard');
+
     const [users, setUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(true);
     const [pricing, setPricing] = useState([]);
@@ -47,6 +49,17 @@ const AdminPanel = () => {
     const [showNewPlanForm, setShowNewPlanForm] = React.useState(false);
 
     const [newPlanMaxFileSize, setNewPlanMaxFileSize] = useState(0);
+    useEffect(() => {
+        const tab = searchParams.get("tab");
+        if (tab && tab !== activeTab) {
+            setActiveTab(tab);
+        }
+    }, [searchParams]);
+
+    const handleTabChange = (tabKey) => {
+        setActiveTab(tabKey);
+        setSearchParams({ tab: tabKey });
+    };
 
     const admin = {
         name: 'Admin User',
@@ -217,13 +230,20 @@ const AdminPanel = () => {
                 .split('\n')
                 .map(f => f.trim())
                 .filter(f => f.length > 0);
-        } else {
+        }
+        else if (field === 'credits') {
+            newPricing[planIndex][field] = Number(value);
+        }
+
+
+        else {
             if (field === 'price') {
                 newPricing[planIndex][field] = Number(value);
             } else {
                 newPricing[planIndex][field] = value;
             }
         }
+
 
         setPricing(newPricing);
     };
@@ -328,7 +348,11 @@ const AdminPanel = () => {
 
         fetch('http://localhost:5000/api/pricing', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+
             body: JSON.stringify(pricing),
         })
             .then(res => {
@@ -386,19 +410,19 @@ const AdminPanel = () => {
                     icon={<FaUsers />}
                     text="Dashboard"
                     active={activeTab === "dashboard"}
-                    onClick={() => setActiveTab("dashboard")}
+                    onClick={() => handleTabChange("dashboard")}
                 />
                 <MenuItem
                     icon={<FaUsers />}
                     text="Kullanıcılar"
                     active={activeTab === "users"}
-                    onClick={() => setActiveTab("users")}
+                    onClick={() => handleTabChange("users")}
                 />
                 <MenuItem
                     icon={<FaFileInvoiceDollar />}
                     text="Fiyatları Kontrol Et"
                     active={activeTab === "pricing"}
-                    onClick={() => setActiveTab("pricing")}
+                    onClick={() => handleTabChange("pricing")}
                 />
                 <MenuItem
                     icon={<FaCogs />}
@@ -640,6 +664,29 @@ const AdminPanel = () => {
                                                         placeholder="MB"
                                                     />
                                                 </label>
+
+                                                <label
+                                                    style={{
+                                                        flex: "0 0 120px",
+                                                        color: "#071f35",
+                                                        fontWeight: "600",
+                                                    }}
+                                                >
+                                                    Kredi:
+                                                    <input
+                                                        type="number"
+                                                        value={plan.credits || 0}
+                                                        onChange={(e) =>
+                                                            handlePricingChange(index, "credits", Number(e.target.value))
+                                                        }
+                                                        style={{
+                                                            ...inputStyle,
+                                                            width: "100%",
+                                                            marginTop: "0.25rem",
+                                                        }}
+                                                    />
+                                                </label>
+
                                                 {plan.roles && plan.roles.map((r, i) => (
                                                     <div
                                                         key={i}
