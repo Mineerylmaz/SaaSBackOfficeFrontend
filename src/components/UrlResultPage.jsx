@@ -55,12 +55,11 @@ const UrlResultsPage = ({ userId }) => {
 
     return (
         <div>
-            <h1>URL Sonuçları</h1>
-            {loading ? (
-                <p>Yükleniyor...</p>
-            ) : (
-                <UrlResultsGrid results={results} />
-            )}
+
+
+
+            <UrlResultsGrid results={results} />
+
         </div>
     );
 };
