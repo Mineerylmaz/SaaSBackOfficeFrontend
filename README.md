@@ -1,5 +1,6 @@
-# SaaSBackOfficeFrontend
-Bu proje, SaaS Backoffice uygulamasının React ile geliştirilmiş frontend (kullanıcı arayüzü) kısmıdır. Kullanıcıların kayıt, giriş, abonelik planlarını görüntüleme ve ödeme sayfalarını kullanabildiği modern, responsive bir web arayüzüdür.
+# SaaS BackOffice Frontend
+
+Bu proje, SaaS Backoffice uygulamasının React ile geliştirilmiş frontend (kullanıcı arayüzü) kısmıdır. Kullanıcıların kayıt, giriş, abonelik planlarını görüntüleme ve ödeme sayfalarını kullanabildiği, modern ve responsive bir web arayüzüdür.
 
 ---
 
@@ -11,76 +12,48 @@ Bu proje, SaaS Backoffice uygulamasının React ile geliştirilmiş frontend (ku
 - [Çalıştırma](#çalıştırma)
 - [Yapı ve Dizin](#yapı-ve-dizin)
 - [Kullanım](#kullanım)
-
+- [Bağımlılıkları yükleyin](#Bağımlılıkları-yükleyin)
 
 ---
 
 ## Proje Hakkında
 
-React kullanarak geliştirilen bu frontend, kullanıcıların SaaS abonelik süreçlerini kolayca yönetmesini sağlar. Kayıt, giriş, abonelik planları ve ödeme sayfaları ile kullanıcı deneyimini iyileştirmeyi amaçlar.
+React kullanılarak geliştirilen bu frontend, kullanıcıların SaaS abonelik süreçlerini kolayca yönetmesini sağlar. Kayıt, giriş, abonelik planları ve ödeme sayfaları ile kullanıcı deneyimini iyileştirmeyi hedefler.
 
 ---
 
 ## Özellikler
 
-- Kullanıcı Kayıt ve Giriş Formları
-- JWT Token Bazlı Oturum Yönetimi
-- Abonelik Planları Listesi
-- Ödeme Sayfası 
-- Responsive Tasarım (Mobil & Desktop)
-- React Router ile Sayfa Yönetimi
-- Hata ve Yüklenme Yönetimi
-- LocalStorage kullanarak token ve kullanıcı bilgisini saklama
+- Kullanıcı Kayıt ve Giriş Formları  
+- JWT Token Bazlı Oturum Yönetimi  
+- Abonelik Planları Listesi  
+- Ödeme Sayfası  
+- Responsive Tasarım (Mobil & Desktop)  
+- React Router ile Sayfa Yönetimi  
+- Hata ve Yüklenme Yönetimi  
+- LocalStorage kullanarak token ve kullanıcı bilgisini saklama  
 
 ---
 
 ## Teknolojiler
 
-- React 18+
-- React Router DOM
-- Fetch API / Axios (API istekleri için)
-- CSS Modülleri 
-- React Hooks (useState, useEffect, useNavigate vs.)
+![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat&logo=react-router&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![CSS Modules](https://img.shields.io/badge/CSS_Modules-1572B6?style=flat&logo=css3&logoColor=white)
+![Fetch API](https://img.shields.io/badge/Fetch_API-005A9C?style=flat&logo=webassembly&logoColor=white)
 
 ---
 
 ## Kurulum
-1. Depoyu klonla ve frontend dizinine gir:
 
+1. Depoyu klonlayın ve frontend dizinine girin:
+
+bash
 git clone https://github.com/Mineerylmaz/SaaSBackOfficeFrontend.git
-cd SaaSBackOfficeFrontend
-
-
-2.Bağımlılıkları yükle
-
+cd SaaSBackOfficeFrontend;
+---
+## Bağımlılıkları yükleyin
 npm install
-
-## Çalıştırma
-Projeyi yerel geliştirme sunucusunda başlat:
-
-npm start
-Tarayıcıda otomatik olarak http://localhost:3000 açılır.
-
-## Yapı ve Dizin
-
-/src
-  /components         # React bileşenleri (Login, Register, Pricing, Payment, Navbar vs.)
-  /pages              # Sayfalar (Home, AdminPanel, NotFound vs.)
-  /utils              # Yardımcı fonksiyonlar (API istekleri, token yönetimi vb.)
-  App.js              # Uygulama ana bileşeni
-
-## Kullanım
-Kayıt Ol: Yeni kullanıcı oluşturmak için /register sayfasını kullanın.
-
-Giriş Yap: Mevcut kullanıcılar /login sayfasından giriş yapabilir.
-
-Abonelik Planları: Giriş yaptıktan sonra /pricing sayfasından planlar listelenir.
-
-Ödeme: Plan seçildikten sonra ödeme işlemi /payment sayfasında gerçekleştirilir.
-
-Oturum: JWT token localStorage'da saklanır ve API çağrılarında kullanılır.
-
-Çıkış: Kullanıcı çıkış yaptığında localStorage temizlenir.
-
 
 
