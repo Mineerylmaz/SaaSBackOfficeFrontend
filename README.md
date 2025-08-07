@@ -13,7 +13,7 @@ Bu proje, bir SaaS (Software as a Service) uygulamasının BackOffice arayüzü 
 ## Proje Hakkında
 Bu frontend projesi, SaaS uygulamasının kullanıcı panelini temsil eder. Kullanıcıların sisteme davetle kayıt olma, giriş yapma, abonelik planlarını görme, ödeme işlemleri yapma ve profil ayarlarını yönetme gibi işlemleri gerçekleştirmesine olanak tanır. Uygulama responsive (mobil uyumlu) olarak geliştirilmiştir ve karanlık / aydınlık tema desteği içerir.
 
-## ✨ Özellikler
+##  Özellikler
 ✅ Kullanıcı kayıt & giriş işlemleri (invite token desteği)
 
 ✅ JWT token ile oturum yönetimi
@@ -36,7 +36,7 @@ Bu frontend projesi, SaaS uygulamasının kullanıcı panelini temsil eder. Kull
 
 ✅ Gelişmiş loading, error, fetch yönetimi
 
-## 🛠️  Teknolojiler
+##   Teknolojiler
 Teknoloji	Açıklama
 React	Kullanıcı arayüzü kütüphanesi
 React Router DOM	Sayfa yönlendirme
@@ -45,7 +45,7 @@ SweetAlert2	Kullanıcı uyarı ve bildirimleri
 Fetch API	API istekleri
 LocalStorage	Oturum yönetimi için veri saklama
 
-## 🚀 Kurulum
+##  Kurulum
 Projeyi klonlayın:
 
 
@@ -64,7 +64,7 @@ Geliştirme modunda çalıştırmak için:
 npm run start
 Tarayıcınızda http://localhost:3000 adresine giderek uygulamayı görüntüleyebilirsiniz.
 
-## 📁 Dizin Yapısı
+##  Dizin Yapısı
 
 SaaSBackOfficeFrontend/
 ├── src/
@@ -77,7 +77,7 @@ SaaSBackOfficeFrontend/
 ├── public/
 ├── package.json
 └── README.md
-## 👨‍💻 Kullanım Senaryoları
+##  Kullanım Senaryoları
 Yeni kullanıcı daveti ile kayıt
 
 /register/:token sayfasına yönlendirilir
@@ -102,7 +102,7 @@ Satın alma işlemi için yönlendirme yapılır
 
 Başarılı işlem sonrası profil sayfasına yönlendirme yapılır
 
-## 📦 Bağımlılıklar
+## Bağımlılıklar
 
 "dependencies": {
   "react": "^18.x.x",
@@ -111,7 +111,7 @@ Başarılı işlem sonrası profil sayfasına yönlendirme yapılır
   "styled-components": "^5.x.x",
   "sweetalert2": "^11.x.x"
 }
-## ✍️ Katkı Sağlamak
+##  Katkı Sağlamak
 Katkıda bulunmak isterseniz:
 
 Fork'layın.
