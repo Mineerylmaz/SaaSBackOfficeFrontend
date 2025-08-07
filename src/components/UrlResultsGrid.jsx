@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Swal from 'sweetalert2';
-
+import styled from 'styled-components';
 const UrlResultsGrid = ({ userId }) => {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -11,7 +11,7 @@ const UrlResultsGrid = ({ userId }) => {
     const fetchUrlResults = async () => {
         setLoading(true);
         try {
-            let url = `http://localhost:5000/api/userSettings/urlResults/${userId}`;
+            let url = `http://localhost:32807/api/userSettings/urlResults/${userId}`;
             const params = [];
             if (startDateTime) params.push(`start=${encodeURIComponent(startDateTime)}`);
             if (endDateTime) params.push(`end=${encodeURIComponent(endDateTime)}`);
@@ -34,36 +34,7 @@ const UrlResultsGrid = ({ userId }) => {
             setLoading(false);
         }
     };
-    useEffect(() => {
-        const intervalId = setInterval(async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) return;
 
-                const res = await fetch(`http://localhost:5000/api/credits/status`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-
-                if (!res.ok) throw new Error('Kredi durumu alınamadı');
-
-                const data = await res.json();
-                console.log('Credit status:', data);
-
-                if (data.isLimited) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Kredi sınırına ulaşıldı',
-                        text: `Kullanılan: ${data.usedCredits} / ${data.creditLimit}. Daha fazla işlem yapılamaz.`,
-                    });
-                    clearInterval(intervalId); // Uyarı sonrası kontrolü durdurmak için
-                }
-            } catch (err) {
-                console.error('Kredi kontrolü başarısız:', err);
-            }
-        }, 10000);
-
-        return () => clearInterval(intervalId);
-    }, []);
 
 
     useEffect(() => {
@@ -168,33 +139,16 @@ const UrlResultsGrid = ({ userId }) => {
     ];
 
     return (
-        <div style={{ width: '100%', maxWidth: '100%', padding: '0 16px', }}>
-            <div
-                style={{
-                    marginBottom: 12,
-                    display: 'flex',
-                    gap: 10,
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
-                }}
-            >
-                <label style={{ display: 'flex', flexDirection: 'column', flex: '1 1 200px', minWidth: 150 }}>
+        <StyledWrapper>
 
+            <div className="filter-section">
 
+                <label>
                     <input
                         style={{
-                            width: '100%',
-                            marginTop: 4,
-                            padding: '8px 16px',
-                            borderRadius: '8px',
                             backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
                             color: 'white',
-                            border: 'none',
-                            fontWeight: '600',
                             boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
-                            transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
-                            boxSizing: 'border-box',
                         }}
                         type="datetime-local"
                         value={startDateTime}
@@ -202,22 +156,12 @@ const UrlResultsGrid = ({ userId }) => {
                         max={endDateTime || undefined}
                     />
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', flex: '1 1 200px', minWidth: 150 }}>
-
-
+                <label >
                     <input
                         style={{
-                            width: '100%',
-                            marginTop: 4,
-                            padding: '8px 16px',
-                            borderRadius: '8px',
                             backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
                             color: 'white',
-                            border: 'none',
-                            fontWeight: '600',
                             boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
-                            transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
-                            boxSizing: 'border-box',
                         }}
                         type="datetime-local"
                         value={endDateTime}
@@ -227,23 +171,16 @@ const UrlResultsGrid = ({ userId }) => {
                 </label>
 
 
+
                 <button
                     onClick={fetchUrlResults}
                     disabled={loading}
 
                     style={{
-                        flex: '1 1 150px',
-                        minWidth: 120,
-                        padding: '8px 16px',
-                        borderRadius: '8px',
                         backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
                         color: 'white',
-                        border: 'none',
-                        fontWeight: '600',
                         boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
-                        transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
                         cursor: loading ? 'not-allowed' : 'pointer',
-                        boxSizing: 'border-box',
                     }}
                 >
                     Filtrele
@@ -255,53 +192,108 @@ const UrlResultsGrid = ({ userId }) => {
 
             </div>
             {results.length > 0 && (
-                <div style={{ marginBottom: 12, padding: 10, backgroundColor: '#f0f8ff', borderRadius: 8, color: 'black', }}>
+                <div className="result-summary">
                     <strong>Son Çağrılan URL:</strong> {truncate(results[0].url, 80)} <br />
                     <strong>Durum:</strong> {results[0].status === 'success' ? '✅ Başarılı' : `❌ Hata: ${results[0].errorMessage || '-'}`} <br />
                     <strong>Kontrol Zamanı:</strong> {new Date(results[0].checkedAt).toLocaleString()}
                 </div>
             )}
 
-            <div
-                style={{
-                    width: '100%',
-                    height: 400,
-                    overflowX: 'auto',   // YATAY SCROLL
-                    overflowY: 'hidden',
-                    position: 'relative',
-                }}
-            >
+            <div className="data-grid-container">
                 <DataGrid
                     columns={columns}
-
+                    rows={results}
                     getRowId={(row) => row.id}
-                    getRowClassName={(params) =>
-                        params.row.isSummary ? 'summary-row' : ''
-                    }
+                    getRowClassName={(params) => (params.row.isSummary ? 'summary-row' : '')}
                     disableRowSelectionOnClick
-                    sx={{
-                        minWidth: 'fit-content',
-                        overflowX: 'auto',
+                    rowHeight={42}
+                    disableColumnMenu
+                    hideFooterSelectedRowCount
+                    initialState={{
+                        pagination: {
+                            paginationModel: { pageSize: 5 },
+                        },
                     }}
-                    rows={displayRows}
-
-                    pageSize={5}
-
-
-                    autoHeight={false}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-
-                        opacity: loading ? 0.6 : 1,
-                        transition: 'opacity 0.3s ease',
-                    }}
+                    pageSizeOptions={[5, 10, 25]}
+                    sx={{ minWidth: 'fit-content' }}
                 />
 
 
             </div>
-        </div>
+
+        </StyledWrapper>
     );
 };
+
+
+
+
+export const StyledWrapper = styled.div`
+  width: 100%;
+  max-width: 100%;
+  padding: 0 16px;
+
+  .filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .filter-section label {
+    flex: 1 1 200px;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-section input,
+  .filter-section button {
+    width: 100%;
+    margin-top: 4px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .filter-section button {
+    min-width: 120px;
+  }
+
+  .result-summary {
+  margin-bottom: 12px;
+  padding: 10px;
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  color: black;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+
+  .data-grid-container {
+    width: 100%;
+    min-height: 300px;
+    overflow-x: auto;
+  }
+
+  @media (max-width: 600px) {
+    .filter-section {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .filter-section label,
+    .filter-section button {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+  }
+`;
 
 export default UrlResultsGrid;

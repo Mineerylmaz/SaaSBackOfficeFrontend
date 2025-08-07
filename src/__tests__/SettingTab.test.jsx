@@ -135,7 +135,7 @@ describe('SettingTab Component', () => {
         fireEvent.click(screen.getByText('Ekle'));
 
         await waitFor(() => {
-            expect(fetch).toHaveBeenCalledWith('http://localhost:5000/api/setting-key', expect.objectContaining({
+            expect(fetch).toHaveBeenCalledWith('http://localhost:32807/api/setting-key', expect.objectContaining({
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

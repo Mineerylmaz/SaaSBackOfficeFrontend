@@ -25,7 +25,7 @@ const Pricing = () => {
   };
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/pricing')
+    fetch('http://localhost:32807/api/pricing')
       .then(res => {
         if (!res.ok) throw new Error('Fiyatlar alınamadı');
         return res.json();
@@ -62,6 +62,18 @@ const Pricing = () => {
               <li>Static URL Limit: {plan.static_url_limit || 0}</li>
               <li>Max File Size: {plan.max_file_size || 0} MB</li>
               <li>Kredi sayısı:{plan.credits || 0}</li>
+              <li>
+                Metotlar:{" "}
+                {Array.isArray(plan.metotlar) && plan.metotlar.length > 0
+                  ? plan.metotlar.map((m, i) => (
+                    <span key={i}>
+                      {m}{i < plan.metotlar.length - 1 ? ', ' : ''}
+                    </span>
+                  ))
+                  : 'Yok'}
+
+              </li>
+
               <li>
                 Roller:{" "}
                 {plan.roles && plan.roles.length > 0

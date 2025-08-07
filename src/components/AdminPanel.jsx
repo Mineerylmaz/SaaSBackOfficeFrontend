@@ -7,24 +7,33 @@ import Silbuton from './Silbuton';
 import SettingTab from './SettingTab';
 import '../styles/Panel.css'
 import { useSearchParams } from "react-router-dom";
+import styled from 'styled-components';
 const AdminPanel = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const initialTab = searchParams.get("tab") || "dashboard";
     const [activeTab, setActiveTab] = useState(initialTab);
 
     const [keys, setKeys] = useState([
-        // Başlangıçta örnek keyler olabilir
+
         { key: 'durak', type: 'number' },
         { key: 'planAdi', type: 'string' },
     ]);
 
-    const [showAddRoleForm, setShowAddRoleForm] = useState({}); // planIndex: bool
+    const [showAddRoleForm, setShowAddRoleForm] = useState({});
     const [newRolePerPlan, setNewRolePerPlan] = useState({});
-    const [newRoleCountPerPlan, setNewRoleCountPerPlan] = useState({});
+
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [selectedPlanForRoleAdd, setSelectedPlanForRoleAdd] = useState(null);
     const [newRole, setNewRole] = useState('');
     const [newRoleCount, setNewRoleCount] = useState(0);
+    const allMethods = [
+        { name: "getroutes", label: "Get Routes" },
+        { name: "getrouteinfonew", label: "Get Route Info New" },
+        { name: "getclosestbusV3", label: "Get Closest Bus V3" },
+
+    ];
+
+    const [newPlanMethods, setNewPlanMethods] = useState([]);
 
 
 
@@ -41,6 +50,7 @@ const AdminPanel = () => {
     const [newPlanRTLimit, setNewPlanRTLimit] = useState(0);
     const [newPlanStaticLimit, setNewPlanStaticLimit] = useState(0);
 
+    const [newPlanCredits, setNewPlanCredits] = useState(0);
 
     const [newPlanName, setNewPlanName] = useState('');
     const [newPlanPrice, setNewPlanPrice] = useState('');
@@ -67,20 +77,14 @@ const AdminPanel = () => {
         avatar: 'https://i.pravatar.cc/100'
     };
 
-    const toggleAddRoleForm = (index) => {
-        setShowAddRoleForm(prev => ({
-            ...prev,
-            [index]: !prev[index]
-        }));
-    };
 
 
     const handleRoleCountChange = (planIndex, roleIndex, count) => {
         setPricing(prev => {
-            // Kopya oluştur
+
             const updated = prev.map((plan, i) => {
                 if (i === planIndex) {
-                    // Rol listesinin kopyasını oluştur
+
                     const newRoles = plan.roles ? [...plan.roles] : [];
                     newRoles[roleIndex] = {
                         ...newRoles[roleIndex],
@@ -140,7 +144,7 @@ const AdminPanel = () => {
 
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/adminpanel/list-users')
+        fetch('http://localhost:32807/api/adminpanel/list-users')
             .then(res => res.json())
             .then(data => {
                 setUsers(data);
@@ -153,7 +157,7 @@ const AdminPanel = () => {
     }, []);
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/pricing')
+        fetch('http://localhost:32807/api/pricing')
             .then(res => res.json())
             .then(data => {
                 setPricing(data);
@@ -173,7 +177,7 @@ const AdminPanel = () => {
 
     const fetchUsers = () => {
         setLoadingUsers(true);
-        fetch('http://localhost:5000/api/adminpanel/list-users')
+        fetch('http://localhost:32807/api/adminpanel/list-users')
             .then(res => res.json())
             .then(data => {
                 console.log("Fetched users after delete:", data);
@@ -193,7 +197,7 @@ const AdminPanel = () => {
         e.preventDefault();
 
         try {
-            const res = await fetch('http://localhost:5000/api/adminpanel/add-user', {
+            const res = await fetch('http://localhost:32807/api/adminpanel/add-user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password, credits, role }),
@@ -248,26 +252,7 @@ const AdminPanel = () => {
         setPricing(newPricing);
     };
 
-    const handleNewFeatureChange = (planIndex, value) => {
-        setNewFeature(prev => ({ ...prev, [planIndex]: value }));
-    };
 
-    const addFeature = (planIndex) => {
-        const featureToAdd = (newFeature[planIndex] || '').trim();
-        if (!featureToAdd) return;
-
-        const newPricing = [...pricing];
-        newPricing[planIndex].features.push(featureToAdd);
-
-        setPricing(newPricing);
-        setNewFeature(prev => ({ ...prev, [planIndex]: '' }));
-    };
-
-    const removeFeature = (planIndex, featureIndex) => {
-        const newPricing = [...pricing];
-        newPricing[planIndex].features.splice(featureIndex, 1);
-        setPricing(newPricing);
-    };
 
     const addNewPlan = () => {
         if (!newPlanName.trim()) {
@@ -287,7 +272,9 @@ const AdminPanel = () => {
             rt_url_limit: Number(newPlanRTLimit),
             static_url_limit: Number(newPlanStaticLimit),
             max_file_size: Number(newPlanMaxFileSize) || 0,
-            roles: []
+            credits: newPlanCredits,
+            roles: [],
+            methods: newPlanMethods,
         };
 
 
@@ -326,27 +313,14 @@ const AdminPanel = () => {
         setNewRole('');
         setNewRoleCount(0);
     }
+    const availableMethods = ["getroutes", "getclosestbusV3", "getrouteinfonew"];
 
-    const updateUserRoles = async (userId, roles) => {
-        try {
-            const response = await fetch(`/api/users/update-user-roles/${userId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ roles }),
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Güncelleme başarısız');
-            alert('Roller başarıyla güncellendi');
-        } catch (error) {
-            alert('Hata: ' + error.message);
-        }
-    };
 
 
     const savePricing = () => {
         console.log('SAVE PRICING GÖNDERİLEN:', pricing);
 
-        fetch('http://localhost:5000/api/pricing', {
+        fetch('http://localhost:32807/api/pricing', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -385,7 +359,7 @@ const AdminPanel = () => {
             className="admin"
             style={{
                 display: "flex",
-                height: "100vh",
+                height: "auto",
                 fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
             }}
         >
@@ -396,6 +370,7 @@ const AdminPanel = () => {
                     backgroundColor: "#1e3a5f",
                     padding: "20px",
                     color: "#fff",
+                    top: 0,
                 }}
             >
                 <div style={adminCardStyle}>
@@ -436,7 +411,7 @@ const AdminPanel = () => {
                 style={{
                     display: "none",
                     position: "absolute",
-                    top: 20,
+                    top: 0,
                     left: 20,
                     background: "transparent",
                     border: "none",
@@ -687,6 +662,28 @@ const AdminPanel = () => {
                                                     />
                                                 </label>
 
+                                                <label style={{ color: "#071f35", fontWeight: "600", flex: "1 1 100%" }}>
+                                                    Erişim Linkleri:
+                                                    <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
+                                                        {availableMethods.map((method) => (
+                                                            <label key={method} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={plan.metotlar?.includes(method)}
+                                                                    onChange={(e) => {
+                                                                        const updated = e.target.checked
+                                                                            ? [...(plan.metotlar || []), method]
+                                                                            : (plan.metotlar || []).filter((m) => m !== method);
+                                                                        handlePricingChange(index, "metotlar", updated);
+                                                                    }}
+                                                                />
+                                                                {method}
+                                                            </label>
+                                                        ))}
+                                                    </div>
+                                                </label>
+
+
                                                 {plan.roles && plan.roles.map((r, i) => (
                                                     <div
                                                         key={i}
@@ -776,6 +773,7 @@ const AdminPanel = () => {
                                             </div>
                                         </div>
                                     )}
+
 
                                     {showNewPlanForm && (
                                         <div
@@ -879,6 +877,68 @@ const AdminPanel = () => {
                                                     placeholder="MB"
                                                 />
                                             </label>
+                                            <label
+                                                style={{
+                                                    flex: "0 0 120px",
+                                                    color: "#071f35",
+                                                    fontWeight: "600",
+                                                }}
+                                            >
+                                                Kredi:
+                                                <input
+                                                    type="number"
+                                                    value={newPlanCredits}
+                                                    onChange={(e) => setNewPlanCredits(Number(e.target.value))}
+                                                    style={{
+                                                        ...inputStyle,
+                                                        width: "100%",
+                                                        marginTop: "0.25rem",
+                                                    }}
+                                                />
+                                            </label>
+
+                                            <div style={{ marginBottom: "1rem" }}>
+                                                <label style={{
+                                                    color: "#071f35",
+                                                    fontWeight: "600",
+                                                    marginBottom: "0.5rem",
+                                                    display: "block"
+                                                }}>
+                                                    Yetkili Metotlar:
+                                                </label>
+
+                                                {allMethods.map((method) => (
+                                                    <label
+                                                        key={method.name}
+                                                        style={{
+                                                            display: "block",
+                                                            color: "#fff",
+                                                            marginBottom: "0.25rem",
+                                                            fontSize: "1rem"
+                                                        }}
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={newPlanMethods.includes(method.name)}
+                                                            onChange={(e) => {
+                                                                const selected = [...newPlanMethods];
+                                                                if (e.target.checked) {
+                                                                    selected.push(method.name);
+                                                                } else {
+                                                                    const index = selected.indexOf(method.name);
+                                                                    if (index > -1) selected.splice(index, 1);
+                                                                }
+                                                                setNewPlanMethods(selected);
+                                                            }}
+                                                        />
+                                                        {" "}{method.label}
+                                                    </label>
+                                                ))}
+                                            </div>
+
+
+
+
 
 
                                             <button
@@ -1026,23 +1086,35 @@ const textareaStyle = {
 };
 
 
-const chipStyle = {
-    background: '#3ec6ff',
-    color: '#0a1f44',
-    padding: '5px 10px',
-    borderRadius: '20px',
-    display: 'flex',
-    alignItems: 'center'
-};
 
-const toggleButtonStyle = {
-    backgroundColor: '#3ec6ff',
-    border: 'none',
-    color: '#fff',
-    borderRadius: '5px',
-    padding: '5px 10px',
-    cursor: 'pointer'
-};
+
+
+const MethodContainer = styled.div`
+  margin-bottom: 1rem;
+
+  label.title {
+    color: #071f35;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .method-item {
+    display: block;
+    color: #fff;
+    margin-bottom: 0.25rem;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      padding: 6px 0;
+    }
+  }
+`;
+
+
+
+
+
 const roleRowStyle = {
     display: "flex",
     alignItems: "center",
@@ -1074,21 +1146,7 @@ const roleCountInputStyle = {
     transition: "border-color 0.3s",
 };
 
-const roleCountInputFocus = {
-    borderColor: "#1e40af",
-};
 
-
-const addRoleFormStyle = {
-    display: "flex",
-    gap: "12px",
-    alignItems: "center",
-    marginTop: "16px",
-    backgroundColor: "#f0f7ff",
-    padding: "12px 16px",
-    borderRadius: "12px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-};
 
 const selectStyle = {
     padding: "8px 12px",
@@ -1117,9 +1175,7 @@ const addRoleButtonStyle = {
     transition: "background-color 0.3s",
 };
 
-const addRoleButtonHover = {
-    backgroundColor: "#35577d",
-};
+
 
 
 const saveButtonStyle = {
@@ -1182,16 +1238,7 @@ const DashboardCard = ({ icon, title, value }) => (
     </div>
 );
 
-const sidebarStyle = {
-    width: '240px',
-    backgroundColor: '#0f1f44',
-    color: '#cde6ff',
-    padding: '2rem 1rem',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-};
+
 
 const adminCardStyle = {
     display: 'flex',

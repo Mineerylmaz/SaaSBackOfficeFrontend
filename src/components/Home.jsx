@@ -3,11 +3,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbars from './Navbars';
 import styled from 'styled-components';
-
+import SplashCursor from './Cursor';
 
 export default function Home({ darkMode }) {
   return (
     <StyledWrapper darkMode={darkMode}>
+      <SplashCursor />
 
 
       <div className='home' darkMode={darkMode}>

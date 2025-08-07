@@ -74,17 +74,17 @@ const Profile = ({ user }) => {
     formData.append('avatar', file);
 
     try {
-      const res = await fetch('http://localhost:5000/upload', { // backend ile aynı URL olmalı
-        method: 'POST', // backend POST bekliyor
+      const res = await fetch('http://localhost:32807/upload', {
+        method: 'POST',
         body: formData,
       });
 
       if (res.ok) {
         const data = await res.json();
-        // data.fileUrl: "/uploads/avatar_123456.png"
-        setAvatar(`http://localhost:5000${data.fileUrl}`); // tam url yapıyoruz
-        // localStorage güncelle
-        const updatedUser = { ...user, avatar: `http://localhost:5000${data.fileUrl}` };
+
+        setAvatar(`http://localhost:32807${data.fileUrl}`);
+
+        const updatedUser = { ...user, avatar: `http://localhost:32807${data.fileUrl}` };
         localStorage.setItem('user', JSON.stringify(updatedUser));
       } else {
         console.error('Avatar yüklenemedi');
@@ -105,7 +105,7 @@ const Profile = ({ user }) => {
     });
     if (!result.isConfirmed) return;
     try {
-      const res = await fetch('http://localhost:5000/api/users/users/delete-account', {
+      const res = await fetch('http://localhost:32807/api/users/users/delete-account', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,12 +126,12 @@ const Profile = ({ user }) => {
 
 
   const handleAvatarChange = async (url) => {
-    // Boş avatar seçilmişse url boş string olabilir
+
     setAvatar(url || '');
 
     try {
-      // Güncelle backend'e boş avatar gönder
-      const res = await fetch('http://localhost:5000/api/users/avatar', {
+
+      const res = await fetch('http://localhost:32807/api/users/avatar', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ const Profile = ({ user }) => {
         <nav>
           <button onClick={() => handleTabChange('profile')}>Profil Bilgileri</button>
           <button onClick={() => handleTabChange('avatar')}>Profil Fotoğrafı</button>
-          <button onClick={() => handleTabChange('danger')}>Hesap İşlemleri</button>
+          <button onClick={() => handleTabChange('hesapsilme')}>Hesap İşlemleri</button>
 
         </nav>
       </Sidebar>
@@ -206,12 +206,13 @@ const Profile = ({ user }) => {
               accept="image/*"
               onChange={handleFileChange}
               style={{ display: 'none' }}
+              data-testid="avatar-input"
             />
 
             <AvatarGrid>
               {avatarOptions.map((url, idx) => {
                 if (url === null) {
-                  // Boş avatar seçeneği - burası label olacak input için
+
                   return (
                     <EmptyAvatarLabel
                       htmlFor="fileInput"
@@ -240,7 +241,7 @@ const Profile = ({ user }) => {
 
 
 
-        {activeTab === 'danger' && (
+        {activeTab === 'hesapsilme' && (
           <section>
             <h2>Hesap İşlemleri</h2>
             <button

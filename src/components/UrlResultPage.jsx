@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import UrlResultsGrid from './UrlResultsGrid'; // Senin verdiğin DataGrid bileşeni
+import UrlResultsGrid from './UrlResultsGrid';
 
 const UrlResultsPage = ({ userId }) => {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // API’den sonuçları çek
+
     const fetchUrlResults = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/userSettings/urlResults/${userId}`);
+            const res = await fetch(`http://localhost:32807/api/userSettings/urlResults/${userId}`);
             if (!res.ok) throw new Error('Sunucu hatası');
             const data = await res.json();
             setResults(data);
 
-            // SweetAlert ile kullanıcıya bildirim göster
+
             data.forEach(item => {
                 if (item.status === 'success') {
                     Swal.fire({

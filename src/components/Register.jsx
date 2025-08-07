@@ -46,7 +46,7 @@ const Register = ({ setUser }) => {
 
   useEffect(() => {
     if (token) {
-      fetch(`http://localhost:5000/api/invites/${token}`)
+      fetch(`http://localhost:32807/api/invites/${token}`)
         .then(res => res.json())
         .then(data => {
           if (!data.error) {
@@ -82,7 +82,7 @@ const Register = ({ setUser }) => {
         plan: plan || null,
       };
 
-      const res = await fetch('http://localhost:5000/api/register/add-user', {
+      const res = await fetch('http://localhost:32807/api/register/add-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bodyData),
@@ -91,14 +91,16 @@ const Register = ({ setUser }) => {
       if (res.ok) {
         const data = await res.json();
 
+
+
         console.log("✅ Kayıt başarılı, login gibi token alındı:", data);
 
 
         if (!data.user.plan?.price || !data.user.plan?.max_file_size) {
-          const resPlan = await fetch('http://localhost:5000/api/plans');
+          const resPlan = await fetch('http://localhost:32807/api/plans');
           if (resPlan.ok) {
             const plans = await resPlan.json();
-            // data.user.plan null olursa bunu kontrol etmeden erişmeye çalışmayalım
+
             if (data.user.plan && data.user.plan.name) {
               const fullPlan = plans.find(p => p.name === data.user.plan.name);
               if (fullPlan) {
@@ -116,6 +118,7 @@ const Register = ({ setUser }) => {
 
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
+        localStorage.setItem('userId', data.user.id);
         localStorage.setItem("selectedPlan", JSON.stringify(data.user.plan));
         setUser(data.user);
 
@@ -159,8 +162,8 @@ const Register = ({ setUser }) => {
                 fontWeight: '600',
                 textAlign: 'center',
 
-                maxHeight: '120px',   // max yükseklik ekledik
-                marginBottom: '20px', // form ile arasına boşluk
+                maxHeight: '120px',
+                marginBottom: '20px',
               }}
             >
               <p>Davet Edilerek Kayıt Oluyorsunuz!</p>

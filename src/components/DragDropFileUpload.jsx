@@ -25,7 +25,7 @@ const DragDropFileUpload = ({ plan }) => {
   }, [plan]);
 
   const getSelectedUserSettings = async (userId) => {
-    const response = await fetch(`http://localhost:5000/api/userSettings/settings/${userId}`, {
+    const response = await fetch(`http://localhost:32807/api/userSettings/settings/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

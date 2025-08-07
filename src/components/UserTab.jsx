@@ -28,7 +28,7 @@ const UserTab = () => {
 
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/setting-key")
+        fetch("http://localhost:32807/api/setting-key")
             .then((res) => res.json())
             .then((data) => setKeys(data))
             .catch((err) => console.error("Keyler çekilemedi:", err));
@@ -37,8 +37,8 @@ const UserTab = () => {
         const token = localStorage.getItem("token");
 
         const url = isSuperAdmin && selectedUser
-            ? `http://localhost:5000/api/user_tab?user_id=${selectedUser.id}`
-            : "http://localhost:5000/api/user_tab";
+            ? `http://localhost:32807/api/user_tab?user_id=${selectedUser.id}`
+            : "http://localhost:32807/api/user_tab";
 
         fetch(url, {
             headers: {
@@ -127,7 +127,7 @@ const UserTab = () => {
     const saveToServer = async () => {
         const token = localStorage.getItem("token");
 
-        // Sadece required olan alanlar için boş kontrolü
+
         const missingKeys = keys.filter(k => {
             const val = values[k.key_name];
             return k.required && (val === undefined || val === null || val === "");
@@ -150,7 +150,7 @@ const UserTab = () => {
         }));
 
         try {
-            const res = await fetch("http://localhost:5000/api/user_tab", {
+            const res = await fetch("http://localhost:32807/api/user_tab", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -271,7 +271,7 @@ const UserTab = () => {
                     onClick={() => setShowModal(false)}
                     style={{
                         position: "fixed",
-                        top: "60%",  // Burayı 50%'den 60%'e yükselttik
+                        top: "60%",
                         left: 0,
                         right: 0,
                         bottom: 0,
@@ -280,7 +280,7 @@ const UserTab = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         zIndex: 9999,
-                        transform: "translateY(-50%)", // üstten aşağı kaydırma dengelemesi
+                        transform: "translateY(-50%)",
                     }}
                 >
                     <div

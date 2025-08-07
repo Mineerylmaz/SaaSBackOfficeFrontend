@@ -30,7 +30,7 @@ const Odeme = () => {
 
   const saveUserPlan = async (userId, planName) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/adminpanel/update-user-plan/${userId}`, {
+      const res = await fetch(`http://localhost:32807/api/adminpanel/update-user-plan/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan: planName }),
@@ -69,7 +69,7 @@ const Odeme = () => {
     console.log('API çağrısı yapılıyor:', userId, planName);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/adminpanel/update-user-plan/${userId}`, {
+      const response = await fetch(`http://localhost:32807/api/adminpanel/update-user-plan/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan: planName }),
@@ -112,7 +112,7 @@ const Odeme = () => {
     const extraCost = calculateUpgradeCost(currentPlan, newPlan, prices);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/adminpanel/change-user-plan/${userId}`, {
+      const response = await fetch(`http://localhost:32807/api/adminpanel/change-user-plan/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

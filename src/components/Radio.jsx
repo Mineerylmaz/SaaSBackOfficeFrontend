@@ -19,8 +19,9 @@ const canViewMenu = (role, menuKey, adminOnly) => {
 
 const Nav = styled.nav`
   position: fixed;
-  top: 0;
+  top: 0px;
   left: ${({ isOpen }) => (isOpen ? "0" : "-220px")};
+  
   width: 220px;
   height: 100vh;
   background-color: #0d1117;

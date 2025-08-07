@@ -75,7 +75,7 @@ const Settings = ({ user }) => {
 
 
     const fetchDeletedUrls = async () => {
-        const res = await fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${currentUser.token}`, {
+        const res = await fetch(`http://localhost:32807/api/userSettings/settings/deleted-urls/${currentUser.token}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -93,7 +93,7 @@ const Settings = ({ user }) => {
             return;
         }
 
-        fetch(`http://localhost:5000/api/userSettings/settings/${currentUser.id}`, {
+        fetch(`http://localhost:32807/api/userSettings/settings/${currentUser.id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -132,7 +132,7 @@ const Settings = ({ user }) => {
     const fetchResults = () => {
         if (!currentUser?.id) return;
 
-        let url = `http://localhost:5000/api/userSettings/urlResults/${currentUser.id}`;
+        let url = `http://localhost:32807/api/userSettings/urlResults/${currentUser.id}`;
         const params = [];
         if (startDate) params.push(`start=${encodeURIComponent(new Date(startDate).toISOString())}`);
         if (endDate) params.push(`end=${encodeURIComponent(new Date(endDate).toISOString())}`);
@@ -161,7 +161,7 @@ const Settings = ({ user }) => {
             return;
         }
 
-        fetch(`http://localhost:5000/api/userSettings/settings/${currentUser.id}`, {
+        fetch(`http://localhost:32807/api/userSettings/settings/${currentUser.id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -173,7 +173,7 @@ const Settings = ({ user }) => {
                 return res.json();
             })
             .then(data => {
-                // mevcut kodun
+
             })
             .catch(err => {
                 console.error(err.message);
@@ -188,7 +188,7 @@ const Settings = ({ user }) => {
     /*useEffect(() => {
         if (!user?.id) return;
 
-        fetch(`http://localhost:5000/api/userSettings/settings/deleted-urls/${user.id}`, {
+        fetch(`http://localhost:32807/api/userSettings/settings/deleted-urls/${user.id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -289,7 +289,7 @@ const Settings = ({ user }) => {
     const [saving, setSaving] = useState(false);
     const saveSettings = () => {
         setSaving(true);
-        fetch(`http://localhost:5000/api/userSettings/settings/${currentUser.id}`, {
+        fetch(`http://localhost:32807/api/userSettings/settings/${currentUser.id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -514,7 +514,7 @@ const Settings = ({ user }) => {
                             )}
 
                             {selectedMenu === 'urlresults' && (
-                                <div style={{ flex: '1 1 100%', width: '100%' }}>
+                                <div >
 
                                     <UrlResultsGrid userId={currentUser.id} />
                                 </div>
@@ -596,6 +596,8 @@ const Settings = ({ user }) => {
 
 export default Settings;
 
+
+
 const ContentArea = styled.div`
   flex: 1;
   display: flex;
@@ -634,13 +636,21 @@ const AccordionContent = styled.div`
 `;
 
 const Row = styled.div`
-  
-  align-items: center;
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
 `;
+
+
 const Sidebar = styled.div`
   width: 220px;
   flex-shrink: 0;
@@ -786,7 +796,7 @@ const PlanCard = styled.div`
   }
 `;
 
-/* Profil kısmı için container */
+
 const ProfileWrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
@@ -798,7 +808,7 @@ const ProfileWrapper = styled.div`
   }
 `;
 
-/* URL sonuçları container */
+
 const UrlResultsContainer = styled.div`
   flex: 1;
   width: 100%;

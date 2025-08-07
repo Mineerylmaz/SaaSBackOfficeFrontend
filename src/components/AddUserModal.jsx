@@ -1,4 +1,4 @@
-// AddUserModal.jsx
+
 import React from 'react';
 
 const AddUserModal = ({ visible, onClose, email, setEmail, password, setPassword, credits, setCredits, role, setRole, handleAddUser }) => {

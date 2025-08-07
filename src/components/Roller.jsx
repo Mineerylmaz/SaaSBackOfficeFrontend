@@ -55,7 +55,7 @@ export default function Roller() {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/api/invites/${encodeURIComponent(email)}`, {
+            const response = await fetch(`http://localhost:32807/api/invites/${encodeURIComponent(email)}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -97,7 +97,7 @@ export default function Roller() {
         if (!token || !userId) return null;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/userSettings/settings/${currentUserId}`, {
+            const res = await fetch(`http://localhost:32807/api/userSettings/settings/${currentUserId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -151,7 +151,7 @@ export default function Roller() {
         const fetchInviterInvites = async () => {
             const token = localStorage.getItem("token");
             try {
-                const res = await fetch(`http://localhost:5000/api/invites/by-inviter/${encodeURIComponent(user.invitedBy)}`, {
+                const res = await fetch(`http://localhost:32807/api/invites/by-inviter/${encodeURIComponent(user.invitedBy)}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!res.ok) throw new Error("Davet listesi alınamadı");
@@ -218,7 +218,7 @@ export default function Roller() {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Kullanıcı token bulunamadı!');
 
-            const response = await fetch(`http://localhost:5000/api/invites`, {
+            const response = await fetch(`http://localhost:32807/api/invites`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

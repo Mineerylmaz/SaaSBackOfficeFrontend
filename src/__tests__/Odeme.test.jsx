@@ -60,7 +60,7 @@ describe('Odeme bileşeni', () => {
 
         await waitFor(() => {
             expect(fetch).toHaveBeenCalledWith(
-                'http://localhost:5000/api/adminpanel/update-user-plan/123',
+                'http://localhost:32807/api/adminpanel/update-user-plan/123',
                 expect.objectContaining({
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },

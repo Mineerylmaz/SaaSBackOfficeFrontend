@@ -42,7 +42,7 @@ export default function UserDataGrid() {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/adminpanel/list-users');
+            const response = await fetch('http://localhost:32807/api/adminpanel/list-users');
             const data = await response.json();
             setUsers(data);
         } catch (error) {
@@ -54,7 +54,7 @@ export default function UserDataGrid() {
 
     const updateUserPlan = async (userId, newPlan) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/adminpanel/update-user-plan/${userId}`, {
+            const response = await fetch(`http://localhost:32807/api/adminpanel/update-user-plan/${userId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ plan: newPlan }),
@@ -87,7 +87,7 @@ export default function UserDataGrid() {
                 try {
                     await Promise.all(
                         selectedIds.map(async (id) => {
-                            const response = await fetch(`http://localhost:5000/api/adminpanel/delete-user/${id}`, {
+                            const response = await fetch(`http://localhost:32807/api/adminpanel/delete-user/${id}`, {
                                 method: 'DELETE',
                                 headers: { 'Content-Type': 'application/json' }
                             });
@@ -109,7 +109,7 @@ export default function UserDataGrid() {
 
     const fetchDeletedUsers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/adminpanel/deleted-users');
+            const response = await fetch('http://localhost:32807/api/adminpanel/deleted-users');
             const data = await response.json();
             setDeletedUsers(data);
             setShowDeleted(true);
@@ -180,7 +180,7 @@ export default function UserDataGrid() {
                         }
 
                         try {
-                            const res = await fetch(`http://localhost:5000/api/userSettings/settings/${selectedUser.id}`, {
+                            const res = await fetch(`http://localhost:32807/api/userSettings/settings/${selectedUser.id}`, {
                                 headers: {
                                     Authorization: `Bearer ${token}`,
                                     "Content-Type": "application/json",
@@ -272,7 +272,7 @@ export default function UserDataGrid() {
                                 cancelButtonText: 'Kapat',
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    window.location.href = '/ayarlar'; // veya react-router kullanıyorsan navigate()
+                                    window.location.href = '/ayarlar';
                                 }
                             });
                         }

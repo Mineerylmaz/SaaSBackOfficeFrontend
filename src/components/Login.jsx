@@ -11,7 +11,7 @@ const Login = ({ setUser }) => {
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState('');
   const handleLogin = async () => {
-    const res = await fetch('http://localhost:5000/api/login/login', {
+    const res = await fetch('http://localhost:32807/api/login/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ const Login = ({ setUser }) => {
     e.preventDefault();
 
     try {
-      const res = await fetch('http://localhost:5000/api/login/login', {
+      const res = await fetch('http://localhost:32807/api/login/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,15 +75,15 @@ const Login = ({ setUser }) => {
           localStorage.setItem('token', token);
           localStorage.setItem('userId', id);
 
-          // 1. Plan tam mı kontrol et
+
           let fullPlan = plan;
           if (!plan?.price || !plan?.id) {
-            // 2. Plan eksik, tam plan listesini çek
-            const plansRes = await fetch('http://localhost:5000/api/plans');
+
+            const plansRes = await fetch('http://localhost:32807/api/plans');
             if (plansRes.ok) {
               const plansData = await plansRes.json();
 
-              // 3. Kullanıcının plan id veya name'ine göre planı bul
+
               fullPlan = plansData.find(p => p.id === plan.id || p.name === plan.name) || plan;
             }
           }
@@ -339,7 +339,7 @@ const StyledWrapper = styled.div`
     input:-webkit-autofill {
     box-shadow: 0 0 0px 1000px #cce7ff inset; 
     -webkit-text-fill-color: #000; 
-    transition: background-color 5000s ease-in-out 0s; 
+    transition: background-color 32807s ease-in-out 0s; 
   }
 
 

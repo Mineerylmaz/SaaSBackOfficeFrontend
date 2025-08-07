@@ -34,7 +34,7 @@ describe('UserDataGrid', () => {
         render(<UserDataGrid />);
 
         await waitFor(() => {
-            expect(fetch).toHaveBeenCalledWith('http://localhost:5000/api/adminpanel/list-users');
+            expect(fetch).toHaveBeenCalledWith('http://localhost:32807/api/adminpanel/list-users');
         });
 
         // E-posta hücreleri render edildi mi?
@@ -77,7 +77,7 @@ describe('UserDataGrid', () => {
         fireEvent.click(showDeletedButton);
 
         await waitFor(() => {
-            expect(fetch).toHaveBeenCalledWith('http://localhost:5000/api/adminpanel/deleted-users');
+            expect(fetch).toHaveBeenCalledWith('http://localhost:32807/api/adminpanel/deleted-users');
         });
 
         expect(await screen.findByText('deleted@test.com')).toBeInTheDocument();
@@ -111,7 +111,7 @@ describe('UserDataGrid', () => {
         fireEvent.click(hideDeletedButton);
 
         await waitFor(() => {
-            expect(fetch).toHaveBeenCalledWith('http://localhost:5000/api/adminpanel/list-users');
+            expect(fetch).toHaveBeenCalledWith('http://localhost:32807/api/adminpanel/list-users');
         });
 
         expect(await screen.findByText('user1@test.com')).toBeInTheDocument();

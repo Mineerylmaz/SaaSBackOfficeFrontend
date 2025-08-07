@@ -10,7 +10,9 @@ import Navbars from './components/Navbars';
 import { useState, useEffect } from 'react';
 import Profile from './components/Profile';
 import Settings from './components/Settings';
-import TransitMap from './components/TransitMap';
+
+
+
 
 
 
@@ -50,6 +52,7 @@ export default function App() {
     <>
 
 
+
       <Router>
         <Navbars user={user} setUser={setUser} />
 
@@ -62,7 +65,7 @@ export default function App() {
           <Route path="/about" element={<NotFound />} />
 
           <Route path="/pricing" element={<Pricing />} />
-          <Route path="/transitmap" element={<TransitMap />} />
+
           <Route
             path="/login"
             element={

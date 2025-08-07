@@ -66,10 +66,7 @@ export default function Navbars({ user, setUser }) {
                                 İletişim
                             </NavDropdown.Item>
                         </NavDropdown>
-                        {user && (
-                            <Nav.Link as={Link} to="/transitmap">
-                                Map
-                            </Nav.Link>)}
+
                         <Nav.Link as={Link} to="/pricing">
                             Pricing
                         </Nav.Link>

@@ -17,7 +17,7 @@ import {
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const API_URL = 'http://localhost:5000/api/setting-key';
+const API_URL = 'http://localhost:32807/api/setting-key';
 
 const modalStyle = {
     position: 'absolute',
