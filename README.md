@@ -37,13 +37,17 @@ Bu frontend projesi, SaaS uygulamasının kullanıcı panelini temsil eder. Kull
 ✅ Gelişmiş loading, error, fetch yönetimi
 
 ##   Teknolojiler
-Teknoloji	Açıklama
-React	Kullanıcı arayüzü kütüphanesi
-React Router DOM	Sayfa yönlendirme
-Styled Components	CSS-in-JS stil yönetimi
-SweetAlert2	Kullanıcı uyarı ve bildirimleri
-Fetch API	API istekleri
-LocalStorage	Oturum yönetimi için veri saklama
+
+
+| Logo | Teknoloji | Açıklama |
+|------|-----------|----------|
+| ![React](https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg) | **React** | Kullanıcı arayüzü oluşturmaya yarayan JavaScript kütüphanesidir. Bileşen (component) tabanlı yapı sunar. |
+| ![React Router DOM](https://reactrouter.com/_brand/react-router-logo.svg) | **React Router DOM** | SPA (Single Page Application) yapılarında sayfalar arası yönlendirme sağlar. |
+| ![Styled Components](https://styled-components.com/logo.png) | **Styled Components** | React bileşenleri içinde stil yazmanı sağlayan CSS-in-JS kütüphanesidir. |
+| ![SweetAlert2](https://sweetalert2.github.io/images/SweetAlert2.png) | **SweetAlert2** | Güzel görünümlü ve etkileşimli alert kutuları (popup) oluşturmak için kullanılır. |
+| ![Fetch API](https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png) | **Fetch API** | JavaScript'in tarayıcıda yerleşik olarak sunduğu, HTTP istekleri yapmak için kullanılan yapıdır. |
+| ![LocalStorage](https://cdn-icons-png.flaticon.com/512/1040/1040230.png) | **LocalStorage** | Tarayıcıda kalıcı veri saklamak için kullanılır. Oturum veya kullanıcı verisi gibi bilgiler burada tutulabilir. |
+
 
 ##  Kurulum
 Projeyi klonlayın:
