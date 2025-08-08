@@ -5,7 +5,6 @@ Bu proje, bir SaaS (Software as a Service) uygulamasının BackOffice arayüzü 
 - [Özellikler](#özellikler)
 - [Teknolojiler](#teknolojiler)
 - [Kurulum](#kurulum)
-- [Çalıştırma](#çalıştırma)
 - [Dizin Yapısı](#dizin-yapısı)
 - [Kullanım Senaryoları](#Kullanım-senaryoları)
 - [Bağımlılıklar](#bağımlılıklar)
