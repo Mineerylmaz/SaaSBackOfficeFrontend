@@ -39,14 +39,11 @@ Bu frontend projesi, SaaS uygulamasının kullanıcı panelini temsil eder. Kull
 ##   Teknolojiler
 
 
-| Logo | Teknoloji | Açıklama |
-|------|-----------|----------|
-| ![React](https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg) | **React** | Kullanıcı arayüzü oluşturmaya yarayan JavaScript kütüphanesidir. Bileşen (component) tabanlı yapı sunar. |
-| ![React Router DOM](https://reactrouter.com/_brand/react-router-logo.svg) | **React Router DOM** | SPA (Single Page Application) yapılarında sayfalar arası yönlendirme sağlar. |
-| ![Styled Components](https://styled-components.com/logo.png) | **Styled Components** | React bileşenleri içinde stil yazmanı sağlayan CSS-in-JS kütüphanesidir. |
-| ![SweetAlert2](https://sweetalert2.github.io/images/SweetAlert2.png) | **SweetAlert2** | Güzel görünümlü ve etkileşimli alert kutuları (popup) oluşturmak için kullanılır. |
-| ![Fetch API](https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png) | **Fetch API** | JavaScript'in tarayıcıda yerleşik olarak sunduğu, HTTP istekleri yapmak için kullanılan yapıdır. |
-| ![LocalStorage](https://cdn-icons-png.flaticon.com/512/1040/1040230.png) | **LocalStorage** | Tarayıcıda kalıcı veri saklamak için kullanılır. Oturum veya kullanıcı verisi gibi bilgiler burada tutulabilir. |
+![React](https://img.shields.io/badge/React-FFB6C1?style=flat&logo=react&logoColor=black)
+![JavaScript](https://img.shields.io/badge/JavaScript-FEC8D8?style=flat&logo=javascript&logoColor=black)
+![Styled Components](https://img.shields.io/badge/Styled--Components-FADADD?style=flat&logo=styled-components&logoColor=black)
+![SweetAlert2](https://img.shields.io/badge/SweetAlert2-F8C3CD?style=flat&logo=sweetalert2&logoColor=black)
+
 
 
 ##  Kurulum
