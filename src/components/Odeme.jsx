@@ -105,7 +105,7 @@ const Odeme = () => {
     if (!userStr) return;
 
     const user = JSON.parse(userStr);
-    const currentPlan = user.plan?.name || user.plan;
+    const currentPlan = user.plan?.name || user.plan || 'none';
     const newPlan = plan.name;
 
     const prices = { basic: 50, pro: 100, premium: 150 };
@@ -128,12 +128,19 @@ const Odeme = () => {
       }
 
       let infoMsg = '';
+
+      if (currentPlan === newPlan && currentPlan !== 'none') {
+        Swal.fire('Bilgi', 'Zaten aynı planda bulunuyorsunuz.', 'info');
+        return;
+      }
+
       if (data.message.includes('Planınız yükseltildi ve hemen aktif oldu.')) {
         infoMsg = `Planınız yükseltildi.`;
 
+
         user.plan = plan;
         localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('selectedPlan', JSON.stringify(plan));
+
 
       } else if (data.message.includes('sonraki ay')) {
         const formattedDate = data.planChangeDate
@@ -142,8 +149,8 @@ const Odeme = () => {
 
         infoMsg = `Plan değişikliği ${formattedDate} tarihinde geçerli olacaktır.`;
 
-      } else if (data.message.includes('Aynı plandasınız')) {
-        infoMsg = 'Ödemeniz alındı.';
+
+
       } else {
         infoMsg = data.message;
       }
@@ -244,21 +251,15 @@ const StyledWrapper = styled.div`
     margin-top: var(--flow-space, 1.25em);
   }
 
-  .cards:hover {
-    --lightness: 80%;
-    background: #6EC1E4;
-    color: #000;
-    outline: 1px solid rgb(255, #6EC1E4, 255);
-    box-shadow:
-      inset 0 0 80px whitesmoke,
-      inset 20px 0 80px #6EC1E4,
-      inset -20px 0 80px #0ff,
-      inset 20px 0 300px #f0f,
-      inset -20px 0 300px #0ff,
-      0 0 50px #fff,
-      -10px 0 80px #f0f,
-      10px 0 80px #0ff;
-  }
+.cards:hover {
+  background: #a0d8f7; /* Daha açık ve soft mavi */
+  color: #000;
+  outline: 1px solid rgba(110, 193, 228, 0.6); /* Daha yumuşak outline */
+  box-shadow:
+    inset 0 0 30px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(110, 193, 228, 0.7);
+  transition: all 0.3s ease;
+}
 `;
 
 

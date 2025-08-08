@@ -1,0 +1,5 @@
+nav button.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+    border-left: 4px solid white;
+}

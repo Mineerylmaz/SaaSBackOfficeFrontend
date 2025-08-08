@@ -139,7 +139,7 @@ const Login = ({ setUser }) => {
       <div className="card">
         <div className="card2">
           <form className="form" onSubmit={handleSubmit}>
-            <p id="heading">Login</p>
+            <p id="heading">Giriş Yap</p>
             <div className="field">
               <input
                 autoComplete="email"
@@ -161,7 +161,7 @@ const Login = ({ setUser }) => {
                 type="password"
                 autoComplete="current-password"
                 className="input-field"
-                placeholder="Password"
+                placeholder="Şifre"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -170,14 +170,14 @@ const Login = ({ setUser }) => {
             </div>
             <div className="btn">
               <button type="submit" className="button1">
-                Login
+                Giriş Yap
               </button>
               <Link to="/register" className="button2">
-                Register
+                Kayıt Ol
               </Link>
             </div>
             <Link to="/notfound" className="button3">
-              Forgot Password
+              Şifremi Unuttum
             </Link>
           </form>
         </div>
@@ -260,9 +260,7 @@ const StyledWrapper = styled.div`
       text-decoration: none; 
     text-align:center;
     display: inline-block;
-      padding: 0.5em;
-      padding-left: 2.3em;
-      padding-right: 2.3em;
+     
       border-radius: 5px;
       border: none;
       outline: none;

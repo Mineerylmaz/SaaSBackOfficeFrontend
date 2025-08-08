@@ -12,15 +12,15 @@ import UrlResultsGrid from './UrlResultsGrid';
 import DateFilter from './DateFilter';
 import DragDropFileUpload from './DragDropFileUpload';
 import Roller from './Roller';
+import { Button as MuiButton } from '@mui/material';
+import RemainingCredits from './RemainingCredits';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { jwtDecode } from "jwt-decode";
 import UserTab from './UserTab';
 import Sonuc from './Sonuc';
 const Settings = ({ user }) => {
-    const [keys, setKeys] = useState([
-        { key: 'durak', type: 'number' },
-        { key: 'planAdi', type: 'string' }
-    ]);
+
     const localSelectedUser = localStorage.getItem("selectedUser");
     const selectedUser = localSelectedUser ? JSON.parse(localSelectedUser) : null;
 
@@ -36,6 +36,10 @@ const Settings = ({ user }) => {
     const userRole = decoded?.role || "viewer";
     const currentUser = (userRole === 'superadmin' && selectedUser) ? selectedUser : user;
 
+
+    const isSuperAdmin = user?.role === "superadmin";
+    const [keys, setKeys] = useState([]);
+    const [values, setValues] = useState({});
     const [plan, setPlan] = useState(null);
     const [settings, setSettings] = useState({
         rt_urls: [],
@@ -89,7 +93,7 @@ const Settings = ({ user }) => {
 
     useEffect(() => {
         if (!currentUser?.id) {
-            setLoading(false);
+
             return;
         }
 
@@ -100,7 +104,6 @@ const Settings = ({ user }) => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log('Settings API response:', data);
                 const defaultSettings = {
                     rt_urls: [],
                     static_urls: [],
@@ -108,12 +111,14 @@ const Settings = ({ user }) => {
                     notifications: false,
                 };
 
+                const settingsData = data.settings || {};
                 const newSettings = {
                     ...defaultSettings,
-                    ...data.settings,
-                    rt_urls: Array.isArray(data.settings?.rt_urls) ? data.settings.rt_urls : [],
-                    static_urls: Array.isArray(data.settings?.static_urls) ? data.settings.static_urls : [],
+                    ...settingsData,
+                    rt_urls: Array.isArray(settingsData.rt_urls) ? settingsData.rt_urls : [],
+                    static_urls: Array.isArray(settingsData.static_urls) ? settingsData.static_urls : [],
                 };
+
 
                 setSettings(newSettings);
 
@@ -123,10 +128,27 @@ const Settings = ({ user }) => {
                     setPlan(null);
                 }
 
+                const existingUserSettings = JSON.parse(localStorage.getItem("userSettings")) || {};
+                const customInputValues = JSON.parse(localStorage.getItem('customInputValues')) || {}
+                const updatedUserSettings = {
+                    ...existingUserSettings,
+                    customInputValues: {
+                        ...existingUserSettings.customInputValues,
+                        ...customInputValues,
+                    },
+                    settings: {
+                        ...existingUserSettings.settings,
+                    },
+                };
+
+                localStorage.setItem("userSettings", JSON.stringify(updatedUserSettings));
+
+
                 setLoading(false);
             })
             .catch(() => setLoading(false));
     }, [currentUser?.id]);
+
 
 
     const fetchResults = () => {
@@ -319,6 +341,7 @@ const Settings = ({ user }) => {
 
 
 
+
     function exportToCurl(item) {
         const params = new URLSearchParams(item.params || {}).toString();
         const fullUrl = `${item.accessUrl}?${params}`;
@@ -333,14 +356,43 @@ const Settings = ({ user }) => {
     const countrtUrls = filteredRtUrls.filter(item => item.url && item.url.trim() !== '').length;
 
     if (plan.name === null) {
-
         return (
-            <div>
-                <p>Ödeme yapılmadığı için bu sayfaya erişim yok.</p>
-                <button onClick={() => navigate('/pricing')}>Plan satın alın!</button>
+            <div style={{
+                height: '70vh',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+                gap: '1.5rem',
+                fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                color: '#333'
+            }}>
+                <p style={{ fontSize: '1.2rem' }}>
+                    Ödeme yapılmadığı için bu sayfaya erişim yok.
+                </p>
+                <button
+                    onClick={() => navigate('/pricing')}
+                    style={{
+                        backgroundColor: '#2563eb', // canlı mavi
+                        color: 'white',
+                        border: 'none',
+                        padding: '12px 28px',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontWeight: '600',
+                        fontSize: '1rem',
+                        transition: 'background-color 0.3s ease',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e40af'}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2563eb'}
+                >
+                    Plan satın alın!
+                </button>
             </div>
         );
     }
+
 
     return (
         <Wrapper>
@@ -352,21 +404,33 @@ const Settings = ({ user }) => {
             </Sidebar>
             <ContentArea>
                 {isReadOnly && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: '1rem',
+                        }}
+                    >
                         <span style={{ color: 'gray' }}>
                             Şu an {selectedUser?.email || "kullanıcı"} ayarlarını görüntülüyorsunuz.
                         </span>
-                        <button
+
+                        <MuiButton
                             variant="outlined"
+                            color="secondary"
+                            startIcon={<ArrowBackIcon />}
                             onClick={() => {
                                 localStorage.removeItem("selectedUser");
-                                window.location.reload();
+                                navigate('/admin');
                             }}
                         >
-                            Seçimi Temizle
-                        </button>
+                            Admin Paneline Geri Dön
+                        </MuiButton>
+
                     </div>
                 )}
+
 
                 {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults' || selectedMenu === 'ayarlar') && (
                     <HorizontalWrapper>
@@ -426,15 +490,7 @@ const Settings = ({ user }) => {
 
 
                                     </AccordionContent>
-                                    <SaveButton onClick={saveSettings} disabled={saving || isReadOnly} title={
-                                        isReadOnly
-                                            ? "Başka bir kullanıcının ayarlarını kaydedemezsiniz."
-                                            : saving
-                                                ? "Kaydediliyor..."
-                                                : "Ayarları kaydet"
-                                    }>
-                                        Ayarları Kaydet
-                                    </SaveButton>
+
 
 
                                 </AccordionWrapper>
@@ -510,6 +566,10 @@ const Settings = ({ user }) => {
                                         Ayarları Kaydet
                                     </SaveButton>
 
+
+
+
+
                                 </AccordionWrapper>
                             )}
 
@@ -520,6 +580,7 @@ const Settings = ({ user }) => {
                                 </div>
 
                             )}
+
                         </ContentWrapper>
 
                         {selectedMenu !== 'urlresults' && plan && (
@@ -538,6 +599,17 @@ const Settings = ({ user }) => {
                                     </div>
                                     <div>
                                         <strong>Mevcut Static URL:</strong> {settings.static_urls?.filter(item => item.url && item.url.trim() !== '').length || 0}
+                                    </div>
+                                    <div>
+                                        <storng>
+                                            Kalan Kredi:
+                                        </storng>
+                                        <RemainingCredits
+                                            userId={userRole === 'superadmin' ? selectedUser?.id : currentUser.id}
+                                            role={userRole}
+                                        />
+
+
                                     </div>
                                 </div>
                             </PlanCard>
@@ -564,7 +636,7 @@ const Settings = ({ user }) => {
                     )
                 }
                 {
-                    selectedMenu === 'roller' && (
+                    selectedMenu === 'kullanıcılar' && (
                         <div>
                             <Roller></Roller>
                         </div>
@@ -585,6 +657,7 @@ const Settings = ({ user }) => {
 
 
             </ContentArea>
+
         </Wrapper >
     );
 

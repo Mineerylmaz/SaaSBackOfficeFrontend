@@ -72,6 +72,20 @@ const Register = ({ setUser }) => {
     e.preventDefault();
 
     try {
+
+      const selectedPlanStr = localStorage.getItem("selectedPlan");
+      let selectedPlan = null;
+      if (selectedPlanStr) {
+        try {
+          selectedPlan = JSON.parse(selectedPlanStr);
+        } catch {
+          selectedPlan = null;
+        }
+      }
+
+
+      const planToSend = inviteInfo ? selectedPlan : null;
+
       const bodyData = {
         firstname: formData.firstname,
         lastname: formData.lastname,
@@ -79,8 +93,11 @@ const Register = ({ setUser }) => {
         password: formData.password,
         inviteToken: token,
         role: inviteInfo?.role || 'user',
-        plan: plan || null,
+        plan: planToSend,
       };
+
+
+
 
       const res = await fetch('http://localhost:32807/api/register/add-user', {
         method: 'POST',
@@ -93,7 +110,7 @@ const Register = ({ setUser }) => {
 
 
 
-        console.log("✅ Kayıt başarılı, login gibi token alındı:", data);
+
 
 
         if (!data.user.plan?.price || !data.user.plan?.max_file_size) {
@@ -116,19 +133,30 @@ const Register = ({ setUser }) => {
           }
         }
 
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", data.token);
-        localStorage.setItem('userId', data.user.id);
-        localStorage.setItem("selectedPlan", JSON.stringify(data.user.plan));
+
         setUser(data.user);
 
         setFormData({ firstname: '', lastname: '', email: '', password: '' });
 
-        if (data.user.plan && data.user.plan.name) {
+
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+        localStorage.setItem('userId', data.user.id);
+
+
+        const storedPlan = localStorage.getItem('selectedPlan');
+        if (storedPlan) {
+          localStorage.setItem('selectedPlan', storedPlan);
+        }
+
+
+        if (!inviteInfo && localStorage.getItem('selectedPlan')) {
           navigate('/odeme');
         } else {
           navigate('/');
         }
+
+
 
       } else {
         const errData = await res.json();
@@ -162,7 +190,7 @@ const Register = ({ setUser }) => {
                 fontWeight: '600',
                 textAlign: 'center',
 
-                maxHeight: '120px',
+
                 marginBottom: '20px',
               }}
             >
@@ -175,8 +203,8 @@ const Register = ({ setUser }) => {
 
 
           <form className="form" onSubmit={handleSubmit}>
-            <p className="title">Register </p>
-            <p className="message">Signup now and get full access to our app. </p>
+            <p className="title">Kayıt Ol </p>
+
             <div className="flex">
               <label>
                 <input
@@ -227,7 +255,7 @@ const Register = ({ setUser }) => {
 
             <button className="submit" type="submit">Submit</button>
             <p className="signin">
-              Already have an account? <Link to="/login">Sign In</Link>
+              Zaten kayıtlı mısınız? <Link to="/login">Giriş yap</Link>
             </p>
           </form>
         </div>
@@ -237,8 +265,8 @@ const Register = ({ setUser }) => {
 };
 
 const StyledWrapper = styled.div`
-    height: 100vh;
-    width: 100vw;
+    height: auto;
+    width: auto;
     display: flex;
     justify-content: center;
     align-items: center;

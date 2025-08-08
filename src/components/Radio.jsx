@@ -160,7 +160,7 @@ const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
     { key: "urlresults", label: "URL Sonuçları" },
 
     { key: "sonuc", label: "Sonuc" },
-    { key: "roller", label: "Roller", adminOnly: true },
+    { key: "kullanıcılar", label: "Kullanıcılar", adminOnly: true },
   ];
 
   return (

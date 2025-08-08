@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Swal from 'sweetalert2';
 import { useSearchParams } from "react-router-dom";
-
+import '../styles/Profile.css';
 const Profile = ({ user }) => {
 
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
@@ -167,11 +167,26 @@ const Profile = ({ user }) => {
           <p>{user.email}</p>
         </div>
         <nav>
-          <button onClick={() => handleTabChange('profile')}>Profil Bilgileri</button>
-          <button onClick={() => handleTabChange('avatar')}>Profil Fotoğrafı</button>
-          <button onClick={() => handleTabChange('hesapsilme')}>Hesap İşlemleri</button>
-
+          <button
+            onClick={() => handleTabChange('profile')}
+            className={activeTab === 'profile' ? 'active' : ''}
+          >
+            Profil Bilgileri
+          </button>
+          <button
+            onClick={() => handleTabChange('avatar')}
+            className={activeTab === 'avatar' ? 'active' : ''}
+          >
+            Profil Fotoğrafı
+          </button>
+          <button
+            onClick={() => handleTabChange('hesapsilme')}
+            className={activeTab === 'hesapsilme' ? 'active' : ''}
+          >
+            Hesap İşlemleri
+          </button>
         </nav>
+
       </Sidebar>
       <Content>
         {activeTab === 'profile' && (

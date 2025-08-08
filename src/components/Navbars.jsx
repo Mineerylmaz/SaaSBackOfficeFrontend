@@ -48,8 +48,10 @@ export default function Navbars({ user, setUser }) {
                             </label>
                         </div>
 
+
+
                         <Nav.Link as={Link} to="/home">
-                            Home
+                            Anasayfa
                         </Nav.Link>
                         <NavDropdown title="Biz Kimiz" id="basic-nav-dropdown">
                             <NavDropdown.Item as={Link} to="/about">
@@ -68,12 +70,12 @@ export default function Navbars({ user, setUser }) {
                         </NavDropdown>
 
                         <Nav.Link as={Link} to="/pricing">
-                            Pricing
+                            Planlar
                         </Nav.Link>
 
                         {!user && (
                             <Nav.Link as={Link} to="/login">
-                                Login
+                                Giriş Yap
                             </Nav.Link>
                         )}
                         {user && (
@@ -91,6 +93,11 @@ export default function Navbars({ user, setUser }) {
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item onClick={handleLogout}>Çıkış Yap</NavDropdown.Item>
                             </NavDropdown>
+                        )}
+                        {user && user.role === "superadmin" && (
+                            <Nav.Link as={Link} to="/admin">
+                                Admin Paneli
+                            </Nav.Link>
                         )}
 
                     </Nav>

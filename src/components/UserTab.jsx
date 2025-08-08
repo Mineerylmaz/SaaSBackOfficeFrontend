@@ -130,8 +130,9 @@ const UserTab = () => {
 
         const missingKeys = keys.filter(k => {
             const val = values[k.key_name];
-            return k.required && (val === undefined || val === null || val === "");
+            return k.required && (!val || val.trim() === "");
         });
+
 
         if (missingKeys.length > 0) {
             const missingKeyNames = missingKeys.map(k => k.key_name).join(", ");
@@ -165,7 +166,20 @@ const UserTab = () => {
             const result = await res.json();
             if (result.success) {
                 Swal.fire("Kaydedildi!", "Ayarlar başarıyla kaydedildi.", "success");
-            } else {
+
+
+                const existingcustomInputValues = JSON.parse(localStorage.getItem("customInputValues")) || {};
+
+                const updatedcustomInputValues = {
+                    ...existingcustomInputValues,
+                    ...values,
+                };
+
+
+                localStorage.setItem("customInputValues", JSON.stringify(updatedcustomInputValues));
+            }
+
+            else {
                 Swal.fire("Hata!", "Kaydetme başarısız.", "error");
             }
         } catch (error) {
@@ -190,7 +204,7 @@ const UserTab = () => {
                     marginBottom: 20,
                     borderSpacing: 0,
                     borderRadius: "12px",
-                    overflow: "hidden",
+
                 }}
             >
                 <thead>
@@ -205,7 +219,10 @@ const UserTab = () => {
                         <tr key={k.key_name}>
                             <td style={{ padding: 8, border: "1px solid #ddd" }}>
                                 <TooltipContainer>
-                                    {k.key_name}
+                                    <span>
+                                        {k.key_name}{k.required && <span style={{ color: 'red' }}> *</span>}
+                                    </span>
+
                                     {k.description && (
                                         <TooltipText>{k.description}</TooltipText>
                                     )}

@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { color } from '@chakra-ui/react';
 
 const API_URL = 'http://localhost:32807/api/setting-key';
 
@@ -134,14 +135,14 @@ const SettingTab = () => {
 
     const columns = [
         { field: 'required', headerName: 'Zorunlu mu?', width: 120, renderCell: (params) => params.value ? 'Evet' : 'Hayır' },
-
-        { field: 'key_name', headerName: 'Key', flex: 1, minWidth: 150 },
-        { field: 'type', headerName: 'Tip', flex: 1, minWidth: 100 },
+        { field: 'key_name', headerName: 'Key', flex: 1, minWidth: 150, editable: true },
+        { field: 'type', headerName: 'Tip', flex: 1, minWidth: 100, editable: true },
         {
             field: 'description',
             headerName: 'Açıklama',
             flex: 1,
             minWidth: 200,
+            editable: true,
             renderCell: (params) => params.value || '-',
         },
         {
@@ -158,6 +159,30 @@ const SettingTab = () => {
             ],
         },
     ];
+    const handleRowUpdate = async (updatedRow, oldRow) => {
+        try {
+            const res = await fetch(`${API_URL}/${updatedRow.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedRow),
+            });
+
+            if (!res.ok) {
+                throw new Error('Güncelleme başarısız');
+            }
+
+            const data = await res.json();
+            Swal.fire('Başarılı', 'Veri güncellendi', 'success');
+            return data;
+        } catch (err) {
+            console.error(err);
+            Swal.fire('Hata', 'Güncelleme sırasında bir sorun oluştu', 'error');
+            return oldRow;
+        }
+    };
+
 
     return (
         <Box sx={{ p: 2, fontFamily: 'Arial, sans-serif' }}>
@@ -188,10 +213,13 @@ const SettingTab = () => {
                         rowsPerPageOptions={[5, 10, 20]}
                         disableSelectionOnClick
                         getRowId={(row) => row.id}
+                        processRowUpdate={handleRowUpdate}
+                        experimentalFeatures={{ newEditingApi: true }}
                         localeText={{
                             noRowsLabel: 'Tanımlı key yok.',
                         }}
                     />
+
                 </Box>
             )}
 
@@ -202,7 +230,7 @@ const SettingTab = () => {
                 aria-describedby="modal-description"
             >
                 <Box sx={modalStyle} component="form" onSubmit={e => { e.preventDefault(); addKey(); }}>
-                    <Typography id="modal-title" variant="h6" mb={2}>
+                    <Typography id="modal-title" variant="h6" mb={2} color='black'>
                         Yeni Key Ekle
                     </Typography>
                     <FormControlLabel
@@ -213,8 +241,12 @@ const SettingTab = () => {
                             />
                         }
                         label="Zorunlu (required)"
-                        sx={{ mt: 1 }}
+                        sx={{
+                            mt: 1,
+                            color: 'black'
+                        }}
                     />
+
 
 
                     <TextField

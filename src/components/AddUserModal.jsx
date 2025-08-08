@@ -63,6 +63,7 @@ const modalStyle = {
     padding: '20px',
     borderRadius: '8px',
     width: '300px',
+    color: '#000'
 };
 const inputStyle = {
     display: 'block',

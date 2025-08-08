@@ -47,7 +47,7 @@ const Pricing = () => {
   return (
     <StyledWrapper>
 
-      <h2 className="main__heading">Pricing & Plans</h2>
+      <h2 className="main__heading">Planlar</h2>
       <div className="cards">
         {plans.map((plan, index) => (
           <div key={plan.id || index} className="card" style={{ '--hue': 165 + index * 20 }}>

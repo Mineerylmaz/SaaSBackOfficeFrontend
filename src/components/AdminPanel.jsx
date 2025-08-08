@@ -12,6 +12,7 @@ const AdminPanel = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const initialTab = searchParams.get("tab") || "dashboard";
     const [activeTab, setActiveTab] = useState(initialTab);
+    const [totalRemainingCredits, setTotalRemainingCredits] = useState(0);
 
     const [keys, setKeys] = useState([
 
@@ -170,7 +171,29 @@ const AdminPanel = () => {
     }, []);
 
     const totalUsers = users.length;
-    const totalCredits = users.reduce((sum, user) => sum + (user.credits || 0), 0);
+    useEffect(() => {
+        const fetchUsersAndCalculateTotal = async () => {
+            try {
+                const response = await fetch('http://localhost:32807/api/adminpanel/list-users');
+                const data = await response.json();
+                setUsers(data);
+
+                // Kalan kredilerin toplamı
+                const totalCredits = data.reduce(
+                    (sum, user) => sum + (user.remainingCredits ?? 0),
+                    0
+                );
+
+                setTotalRemainingCredits(totalCredits);
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Error', 'Failed to fetch users', 'error');
+            }
+        };
+
+        fetchUsersAndCalculateTotal();
+    }, []);
+
 
 
 
@@ -441,7 +464,7 @@ const AdminPanel = () => {
                                     <DashboardCard
                                         icon={<FaDollarSign color="#227BBF" />}
                                         title="Toplam Kredi"
-                                        value={totalCredits}
+                                        value={totalRemainingCredits}
                                     />
                                 </div>
                             </>
@@ -1039,7 +1062,7 @@ const UserTable = ({ users, onDelete }) => (
                     <td style={tableCell}>{formatDate(user.last_login)}</td>
                     <td style={tableCell}>{formatDate(user.created_at)}</td>
                     <div>
-                        <b>Roller:</b>
+                        <b>Kullanıcılar:</b>
                         {user.roles && user.roles.length > 0 ? (
                             user.roles.map((r, i) => (
                                 <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>

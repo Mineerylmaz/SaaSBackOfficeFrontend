@@ -6,9 +6,10 @@ import styled from 'styled-components';
 import SplashCursor from './Cursor';
 
 export default function Home({ darkMode }) {
+  const isLoggedIn = Boolean(localStorage.getItem('token'));
   return (
     <StyledWrapper darkMode={darkMode}>
-      <SplashCursor />
+
 
 
       <div className='home' darkMode={darkMode}>
@@ -19,9 +20,11 @@ export default function Home({ darkMode }) {
           <HeroSubtitle darkMode={darkMode}>
             Global açık veri platformu ile otobüs, tren ve diğer toplu taşıma hatlarınızı yönetin.
           </HeroSubtitle>
-          <Link to="/pricing">
-            <HeroButton>Planları İncele</HeroButton>
-          </Link>
+          {!isLoggedIn && (
+            <Link to="/pricing">
+              <HeroButton>Planları İncele</HeroButton>
+            </Link>
+          )}
         </HeroSection>
         <div style={{ textAlign: 'center', marginTop: '12rem' }} darkMode={darkMode}>
 

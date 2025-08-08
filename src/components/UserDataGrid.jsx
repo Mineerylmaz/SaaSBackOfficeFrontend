@@ -52,20 +52,6 @@ export default function UserDataGrid() {
     };
     const [loadingPlanUpdate, setLoadingPlanUpdate] = useState(false);
 
-    const updateUserPlan = async (userId, newPlan) => {
-        try {
-            const response = await fetch(`http://localhost:32807/api/adminpanel/update-user-plan/${userId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ plan: newPlan }),
-            });
-            if (!response.ok) throw new Error('Plan güncellenemedi');
-            Swal.fire('Başarılı', 'Plan güncellendi', 'success');
-            fetchUsers();
-        } catch (error) {
-            Swal.fire('Hata', error.message, 'error');
-        }
-    };
 
 
 
@@ -76,12 +62,12 @@ export default function UserDataGrid() {
         }
 
         Swal.fire({
-            title: 'Are you sure?',
-            text: `${selectedIds.length} users will be deleted!`,
+            title: 'Emin Misiniz?',
+            text: `${selectedIds.length} kullanıcıyı silmek istediğinize emin misiniz?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes, delete!',
-            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Evet, Sil',
+            cancelButtonText: 'Hayır, İptal Et',
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
@@ -96,7 +82,7 @@ export default function UserDataGrid() {
                             }
                         })
                     );
-                    Swal.fire('Success', 'Selected users have been deleted.', 'success');
+                    Swal.fire('Başarılı', 'Seçili kullanıcılar silindi', 'success');
                     fetchUsers();
                     setSelectedIds([]);
                 } catch (error) {
@@ -144,6 +130,14 @@ export default function UserDataGrid() {
             width: 160,
             renderCell: (params) => (params.value ? formatDate(params.value) : '-'),
         },
+        {
+            field: 'remainingCredits',
+            headerName: 'Kalan Kredi',
+            width: 130,
+            renderCell: (params) => params.value
+
+        }
+        ,
     ];
 
     return (
@@ -156,7 +150,7 @@ export default function UserDataGrid() {
                     onClick={handleDeleteSelected}
 
                 >
-                    Delete Selected
+                    Seçilenleri Sil
                 </Button>
 
                 <Button
@@ -164,7 +158,7 @@ export default function UserDataGrid() {
                     onClick={fetchDeletedUsers}
                     disabled={showDeleted}
                 >
-                    Show Deleted Users
+                    Silinen Kullanıcıları Göster
                 </Button>
                 <Button
                     variant="contained"
@@ -223,7 +217,7 @@ export default function UserDataGrid() {
 
 
                 >
-                    Seçili Kullanıcıyı Ayarla
+                    Kullanıcı Ayarlarına Git
                 </Button>
 
 
