@@ -232,7 +232,11 @@ const AdminPanel = () => {
                 return;
             }
 
-            alert('Kullanıcı başarıyla eklendi');
+            Swal.fire({
+                title: 'Kullanıcı Başarıyla Eklendi',
+
+                icon: 'success',
+            });
             setEmail('');
             setPassword('');
             setCredits(0);

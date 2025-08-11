@@ -69,31 +69,39 @@ const Login = ({ setUser }) => {
 
       if (res.ok) {
         const data = await res.json();
-        const { token, id, email, role, plan, plan_start_date, plan_end_date, avatar } = data;
+        const { token, id, email, role, plan, plan_start_date, plan_end_date, avatar, customInputValues } = data;
+        if (!data.id) {
+          alert("Girişte kullanıcı id'si bulunamadı!");
+          return;
+        }
+
 
         if (token) {
           localStorage.setItem('token', token);
           localStorage.setItem('userId', id);
 
 
-          let fullPlan = plan;
-          if (!plan?.price || !plan?.id) {
+          let fullPlan = plan || {};
 
+          if (!fullPlan.price || !fullPlan.id) {
             const plansRes = await fetch('http://localhost:32807/api/plans');
             if (plansRes.ok) {
               const plansData = await plansRes.json();
 
-
-              fullPlan = plansData.find(p => p.id === plan.id || p.name === plan.name) || plan;
+              fullPlan = plansData.find(p => p.id === fullPlan.id || p.name === fullPlan.name) || fullPlan;
             }
           }
+
           localStorage.setItem('user', JSON.stringify({
             id, email, role, plan: fullPlan, token, plan_start_date,
             plan_end_date, avatar
           }));
+          const customInputValuesData = customInputValues || {};
+          localStorage.setItem('customInputValues', JSON.stringify(customInputValuesData));
 
 
           localStorage.setItem('selectedPlan', JSON.stringify(fullPlan));
+
 
 
 

@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-const AddUserModal = ({ visible, onClose, email, setEmail, password, setPassword, credits, setCredits, role, setRole, handleAddUser }) => {
+const AddUserModal = ({ visible, onClose, email, setEmail, password, setPassword, setCredits, role, setRole, handleAddUser }) => {
     if (!visible) return null;
 
     return (
@@ -25,20 +25,14 @@ const AddUserModal = ({ visible, onClose, email, setEmail, password, setPassword
                         required
                         style={inputStyle}
                     />
-                    <input
-                        type="number"
-                        placeholder="Kredi"
-                        value={credits}
-                        onChange={e => setCredits(Number(e.target.value))}
-                        style={inputStyle}
-                    />
+
                     <select value={role} onChange={e => setRole(e.target.value)} style={inputStyle}>
                         <option value="user">Kullanıcı</option>
                         <option value="admin">Admin</option>
                     </select>
                     <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-between' }}>
                         <button type="submit" style={buttonStyle}>Ekle</button>
-                        <button type="button" onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#ccc' }}>İptal</button>
+                        <button type="button" onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#d01313ff' }}>İptal</button>
                     </div>
                 </form>
             </div>

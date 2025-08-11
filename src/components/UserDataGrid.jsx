@@ -229,7 +229,7 @@ export default function UserDataGrid() {
                             fetchUsers();
                         }}
                     >
-                        Hide Deleted Users
+                        Silinmiş kullanıcıları gizle
                     </Button>
                 )}
             </Box>

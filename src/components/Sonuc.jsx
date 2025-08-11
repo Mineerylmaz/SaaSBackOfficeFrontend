@@ -4,9 +4,26 @@ import { useNavigate } from 'react-router';
 import { jwtDecode } from "jwt-decode";
 import styled from 'styled-components';
 function Sonuc() {
+    const token = localStorage.getItem('token');
+    const decoded = token ? jwtDecode(token) : null;
+    const userRole = decoded?.role || 'viewer';
     const userId = localStorage.getItem('userId');
+
+    const selectedUserStr = localStorage.getItem('selectedUser');
+    const selectedUser = selectedUserStr ? JSON.parse(selectedUserStr) : null;
+    const selectedUserId = selectedUser?.id;
+
+    const effectiveUserId = (userRole === 'superadmin' && selectedUserId) ? selectedUserId : userId;
+
+
+
+
+
+
+
     const [settings, setSettings] = useState(null);
     const [loadingSettings, setLoadingSettings] = useState(true);
+    const [inputValues, setInputValues] = useState(true);
 
     const navigate = useNavigate();
     const plan = JSON.parse(localStorage.getItem('selectedPlan'));
@@ -15,9 +32,7 @@ function Sonuc() {
     const [paramSchemaMap, setParamSchemaMap] = useState({});
     const [loadingParams, setLoadingParams] = useState(false);
 
-    const token = localStorage.getItem('token');
-    const decoded = token ? jwtDecode(token) : null;
-    const userRole = decoded?.role || 'viewer';
+
     const userIdFromToken = decoded?.id;
     const customInputValues = JSON.parse(localStorage.getItem('customInputValues')) || {};
 
@@ -37,17 +52,17 @@ function Sonuc() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (!userId || !token) return;
+        if (!effectiveUserId || !token) return;
 
         setLoadingSettings(true);
 
-        fetch(`http://localhost:32807/api/userSettings/settings/${userId}`, {
+        fetch(`http://localhost:32807/api/userSettings/settings/${effectiveUserId}`, {
             method: 'GET',
             headers: { Authorization: `Bearer ${token}` },
         })
             .then(res => res.json())
             .then(data => {
-                localStorage.setItem(`userSettings_${userId}`, JSON.stringify(data));
+                localStorage.setItem(`userSettings_${effectiveUserId}`, JSON.stringify(data));
                 setSettings({ ...data });
             })
             .catch(err => {
@@ -57,7 +72,30 @@ function Sonuc() {
             .finally(() => {
                 setLoadingSettings(false);
             });
-    }, [userId]);
+    }, [effectiveUserId]);
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!effectiveUserId || !token) return;
+
+        setLoadingSettings(true);
+
+        fetch(`http://localhost:32807/api/user_tab/${effectiveUserId}`, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(data => {
+                localStorage.setItem(`customInputValues${effectiveUserId}`, JSON.stringify(data));
+                setInputValues({ ...data });
+            })
+            .catch(err => {
+                console.error("Ayarlar alınırken hata:", err);
+                setInputValues({});
+            })
+            .finally(() => {
+                setLoadingSettings(false);
+            });
+    }, [effectiveUserId]);
 
 
 
@@ -343,33 +381,21 @@ function Sonuc() {
 `;
 
 
-    useEffect(() => {
-        const selectedUser = JSON.parse(localStorage.getItem("selectedUser"));
-        const user = JSON.parse(localStorage.getItem("user"));
-        const isSuperAdmin = user?.role === "superadmin";
-        const userid = isSuperAdmin && selectedUser ? selectedUser.id : userId;
+    const [loading, setLoading] = useState(true);
+    const [canAccess, setCanAccess] = useState(false);
 
-        fetch(`http://localhost:32807/api/user_tab?user_id=${userid}`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        })
-            .then(res => res.json())
-            .then(data => {
-                const emptyRequiredKeys = data.filter(item => item.required && (!item.value || item.value.trim() === ""));
-                if (emptyRequiredKeys.length > 0) {
-                    Swal.fire("Eksik alanlar var", "Zorunlu değerler girilmeden bu sayfaya geçemezsiniz.", "error")
-                        .then(() => navigate("/user-tab"));
-                }
-            });
-    }, []);
+
+
+
 
 
     if (
         !settings ||
         !settings.settings ||
         settings.settings.rt_urls?.length < 1 ||
-        settings.settings.static_urls?.length < 1
+        settings.settings.static_urls?.length < 1 ||
+        !customInputValues ||
+        Object.keys(customInputValues).length === 0
 
     ) {
         const darkMode = localStorage.getItem("theme") === "dark";
@@ -567,6 +593,9 @@ function Sonuc() {
                                     >
                                         🔍 Sorgula
                                     </button>
+                                    {loadingParams && (
+                                        <span style={{ fontSize: 14, color: '#666' }}>Yükleniyor...</span>
+                                    )}
                                 </div>
 
                                 {apiResponse && (

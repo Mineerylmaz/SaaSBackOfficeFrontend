@@ -142,6 +142,8 @@ const Register = ({ setUser }) => {
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
         localStorage.setItem('userId', data.user.id);
+        localStorage.setItem('customInputValues', JSON.stringify({}));
+
 
 
         const storedPlan = localStorage.getItem('selectedPlan');

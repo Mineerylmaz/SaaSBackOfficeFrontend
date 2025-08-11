@@ -66,13 +66,13 @@ body {
       var(--e-global-color-primary),
       var(--e-global-color-secondary),
       var(--e-global-color-65fcc69));
+  background-attachment: fixed;
 
-  transition:
-    background-color 0.5s ease,
-    color 0.5s ease,
+  background-size: cover;
 
-
+  transition: background 0.5s ease, color 0.5s ease;
 }
+
 
 .navbar-custom {
   background: linear-gradient(135deg,

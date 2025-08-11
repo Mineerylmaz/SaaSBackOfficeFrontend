@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Form from 'react-bootstrap/Form';
 import Profile from "./Profile";
+
 export default function Navbars({ user, setUser }) {
     const navigate = useNavigate();
 
@@ -19,6 +20,9 @@ export default function Navbars({ user, setUser }) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         localStorage.removeItem("selectedPlan");
+        localStorage.removeItem("customInputValues");
+
+
 
         localStorage.removeItem("invites");
 
@@ -69,9 +73,12 @@ export default function Navbars({ user, setUser }) {
                             </NavDropdown.Item>
                         </NavDropdown>
 
-                        <Nav.Link as={Link} to="/pricing">
-                            Planlar
-                        </Nav.Link>
+                        {user && !['viewer', 'editor'].includes(user.role) && (
+                            <Nav.Link as={Link} to="/pricing">
+                                Planlar
+                            </Nav.Link>
+                        )}
+
 
                         {!user && (
                             <Nav.Link as={Link} to="/login">
