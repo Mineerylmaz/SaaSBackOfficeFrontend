@@ -72,17 +72,7 @@ Tarayıcınızda http://localhost:3000 adresine giderek uygulamayı görüntüle
 
 ##  Dizin Yapısı
 
-SaaSBackOfficeFrontend/
-├── src/
-│ ├── components/ # Ortak bileşenler (Navbar, Buton, vs.)
-│ ├── Login/ # Login sayfası
-│ ├── UserSettings/ # Kullanıcı ayarlar sayfası
-│ ├── AdminPanel/ # Panel sayfası
-│ ├── Odeme/ # Ödeme sayfası
-│ └── App.jsx # Ana uygulama dosyası
-├── public/
-├── package.json
-└── README.md
+<pre> ```plaintext SaaSBackOfficeFrontend/ ├── src/ │ ├── components/ # Ortak bileşenler (Navbar, Buton, vs.) │ ├── Login/ # Login sayfası │ ├── UserSettings/ # Kullanıcı ayarlar sayfası │ ├── AdminPanel/ # Panel sayfası │ ├── Odeme/ # Ödeme sayfası │ └── App.jsx # Ana uygulama dosyası ├── public/ ├── package.json └── README.md ``` </pre>
 ##  Kullanım Senaryoları
 Yeni kullanıcı daveti ile kayıt
 
