@@ -69,9 +69,9 @@ Tarayıcınızda http://localhost:3000 adresine giderek uygulamayı görüntüle
 SaaSBackOfficeFrontend/
 ├── src/
 │   ├── components/        # Ortak bileşenler (Navbar, Buton, vs.)
-│        ├── Login /            # Login sayfasu
+│        ├── Login /            # Login sayfas
 │        ├── UserSettings/             # Kullanıcı ayarlar sayfası
-│        ├── AdminPanel/             # YPanel sayfası
+│        ├── AdminPanel/             # Panel sayfası
 │        ├── Odeme/            # Odeme sayfası
 │   └── App.jsx             # Ana uygulama dosyası
 ├── public/
