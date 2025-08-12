@@ -20,7 +20,7 @@ afterAll(() => {
 
 beforeEach(() => {
     jest.resetAllMocks();
-    // global fetch mock
+
     global.fetch = jest.fn();
 });
 
@@ -44,7 +44,7 @@ describe('SettingTab Component', () => {
 
         expect(screen.getByText(/Yükleniyor/i)).toBeInTheDocument();
 
-        // Liste tamamlanınca öğeler görünmeli
+
         for (const key of mockKeys) {
             await waitFor(() => {
                 expect(screen.getByText(key.key_name)).toBeInTheDocument();
@@ -63,15 +63,15 @@ describe('SettingTab Component', () => {
 
         render(<SettingTab />);
 
-        // Başlangıçta modal yok
+
         expect(screen.queryByText(/Yeni Key Ekle/i)).not.toBeInTheDocument();
 
-        // Butona tıkla modal açılsın
+
         fireEvent.click(screen.getByTitle('Yeni Key Ekle'));
 
         expect(screen.getByText(/Yeni Key Ekle/i)).toBeInTheDocument();
 
-        // Modal iptal butonuna tıkla kapanmalı
+
         fireEvent.click(screen.getByText('İptal'));
 
         await waitFor(() => {
@@ -91,7 +91,6 @@ describe('SettingTab Component', () => {
 
         fireEvent.click(screen.getByTitle('Yeni Key Ekle'));
 
-        // Key input boş, ekle butonuna tıkla
         fireEvent.click(screen.getByText('Ekle'));
 
         expect(window.alert).toHaveBeenCalledWith('Key boş olamaz!');

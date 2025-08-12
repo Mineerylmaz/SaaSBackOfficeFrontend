@@ -148,6 +148,7 @@ export default function UserDataGrid() {
                     variant="contained"
                     color="error"
                     onClick={handleDeleteSelected}
+                    disabled={showDeleted}
 
                 >
                     Seçilenleri Sil
@@ -223,7 +224,7 @@ export default function UserDataGrid() {
 
                 {showDeleted && (
                     <Button
-                        variant="text"
+                        variant="outlined"
                         onClick={() => {
                             setShowDeleted(false);
                             fetchUsers();

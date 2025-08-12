@@ -368,7 +368,7 @@ const Settings = ({ user }) => {
                 fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
                 color: '#333'
             }}>
-                <p style={{ fontSize: '1.2rem' }}>
+                <p style={{ fontSize: '1.2rem', color: 'white' }}>
                     Ödeme yapılmadığı için bu sayfaya erişim yok.
                 </p>
                 <button
@@ -602,7 +602,7 @@ const Settings = ({ user }) => {
                                     </div>
                                     <div>
                                         <storng>
-                                            Kalan Kredi:
+                                            Kredi Durumu:
                                         </storng>
                                         <RemainingCredits
                                             userId={userRole === 'superadmin' ? selectedUser?.id : currentUser.id}

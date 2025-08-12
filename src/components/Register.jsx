@@ -107,6 +107,18 @@ const Register = ({ setUser }) => {
 
       if (res.ok) {
         const data = await res.json();
+        const updatedUser = {
+          ...data.user,
+          plan_start_date: data.user.plan_start_date ? new Date(data.user.plan_start_date).toISOString() : null,
+          plan_end_date: data.user.plan_end_date ? new Date(data.user.plan_end_date).toISOString() : null,
+        };
+
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.user.id);
+
+
 
 
 
@@ -134,22 +146,9 @@ const Register = ({ setUser }) => {
         }
 
 
-        setUser(data.user);
+
 
         setFormData({ firstname: '', lastname: '', email: '', password: '' });
-
-
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", data.token);
-        localStorage.setItem('userId', data.user.id);
-        localStorage.setItem('customInputValues', JSON.stringify({}));
-
-
-
-        const storedPlan = localStorage.getItem('selectedPlan');
-        if (storedPlan) {
-          localStorage.setItem('selectedPlan', storedPlan);
-        }
 
 
         if (!inviteInfo && localStorage.getItem('selectedPlan')) {
@@ -157,6 +156,12 @@ const Register = ({ setUser }) => {
         } else {
           navigate('/');
         }
+
+
+
+
+
+
 
 
 
@@ -213,7 +218,7 @@ const Register = ({ setUser }) => {
                   name='firstname'
                   className="input"
                   type="text"
-                  placeholder="Firstname"
+                  placeholder="İsim"
                   value={formData.firstname}
                   onChange={handleChange}
                   required
@@ -224,7 +229,7 @@ const Register = ({ setUser }) => {
                   name='lastname'
                   className="input"
                   type="text"
-                  placeholder="Lastname"
+                  placeholder="Soyisim"
                   value={formData.lastname}
                   onChange={handleChange}
                   required
@@ -248,14 +253,14 @@ const Register = ({ setUser }) => {
                 name='password'
                 className="input"
                 type="password"
-                placeholder="Password"
+                placeholder="Şifre"
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
             </label>
 
-            <button className="submit" type="submit">Submit</button>
+            <button className="submit" type="submit">Kayıt ol</button>
             <p className="signin">
               Zaten kayıtlı mısınız? <Link to="/login">Giriş yap</Link>
             </p>

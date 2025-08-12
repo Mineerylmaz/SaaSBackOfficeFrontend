@@ -24,6 +24,7 @@ export default function Home({ darkMode }) {
             <Link to="/pricing">
               <HeroButton>Planları İncele</HeroButton>
             </Link>
+
           )}
         </HeroSection>
         <div style={{ textAlign: 'center', marginTop: '12rem' }} darkMode={darkMode}>
@@ -111,7 +112,7 @@ const HeroSubtitle = styled.p`
 `;
 
 
-const HeroButton = styled.a`
+const HeroButton = styled.button`
   background: white;
   color: #071f35;
   padding: 0.8rem 2rem;
@@ -119,18 +120,15 @@ const HeroButton = styled.a`
   border-radius: 50px;
   cursor: pointer;
   text-decoration: none;
+  border: none;
   transition: all 0.3s ease;
 
   &:hover {
     background: #071f35;
     color: white;
-        text-decoration: none;
   }
-        &:visited {
-  text-decoration: none;
-}
-
 `;
+
 
 
 

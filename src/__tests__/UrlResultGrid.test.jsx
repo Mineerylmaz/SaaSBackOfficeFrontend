@@ -3,6 +3,9 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import UrlResultsGrid from '../components/UrlResultsGrid';
 
 global.fetch = jest.fn();
+jest.mock('sweetalert2', () => ({
+    fire: jest.fn(() => Promise.resolve()),
+}));
 
 describe('UrlResultsGrid', () => {
     const fakeResults = [

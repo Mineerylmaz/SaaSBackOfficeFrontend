@@ -9,13 +9,11 @@ const Pricing = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const user = JSON.parse(localStorage.getItem('user')); // Kullanıcıyı dışarıda al, render sırasında
 
   const handleGetStarted = (plan) => {
-    console.log("Planın boyutu:", plan.max_file_size);
-
     const user = JSON.parse(localStorage.getItem('user'));
     localStorage.setItem('selectedPlan', JSON.stringify(plan));
-
 
     if (user) {
       navigate('/odeme');
@@ -46,63 +44,60 @@ const Pricing = () => {
 
   return (
     <StyledWrapper>
-
-      <h2 className="main__heading">Planlar</h2>
+      <h2 className="main__heading"></h2>
       <div className="cards">
-        {plans.map((plan, index) => (
-          <div key={plan.id || index} className="card" style={{ '--hue': 165 + index * 20 }}>
-            <p className="card__heading">{plan.name}</p>
-            <p className="card__price">${plan.price}/month</p>
-            <ul className="card__bullets flow" role="list">
-              {Array.isArray(plan.features) && plan.features.map((feature, i) => (
-                <li key={i}>{feature}</li>
-              ))}
+        {plans.map((plan, index) => {
+          const isCurrentPlan = user?.plan?.id === plan.id;
 
-              <li>RT URL Limit: {plan.rt_url_limit || 0}</li>
-              <li>Static URL Limit: {plan.static_url_limit || 0}</li>
-              <li>Max File Size: {plan.max_file_size || 0} MB</li>
-              <li>Kredi sayısı:{plan.credits || 0}</li>
-              <li>
-                Metotlar:{" "}
-                {Array.isArray(plan.metotlar) && plan.metotlar.length > 0
-                  ? plan.metotlar.map((m, i) => (
-                    <span key={i}>
-                      {m}{i < plan.metotlar.length - 1 ? ', ' : ''}
-                    </span>
-                  ))
-                  : 'Yok'}
-
-              </li>
-
-              <li>
-                Roller:{" "}
-                {plan.roles && plan.roles.length > 0
-                  ? plan.roles.map((r, i) => (
-                    <span key={i}>
-                      {r.role} ({r.count}){i < plan.roles.length - 1 ? ", " : ""}
-                    </span>
-                  ))
-                  : "Yok"}
-              </li>
-
-            </ul>
-
-
-
-            <a
-              className="card__cta cta"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                handleGetStarted(plan);
-              }}
+          return (
+            <div
+              key={plan.id || index}
+              className={`card ${isCurrentPlan ? 'active' : ''}`}
+              style={{ '--hue': 165 + index * 20 }}
             >
-              Get Started
-            </a>
 
+              <p className="card__heading">{plan.name}</p>
+              <p className="card__price">${plan.price}/month</p>
+              <ul className="card__bullets flow" role="list">
+                {Array.isArray(plan.features) && plan.features.map((feature, i) => (
+                  <li key={i}>{feature}</li>
+                ))}
+                <li>RT URL Limit: {plan.rt_url_limit || 0}</li>
+                <li>Static URL Limit: {plan.static_url_limit || 0}</li>
+                <li>Max File Size: {plan.max_file_size || 0} MB</li>
+                <li>Kredi sayısı: {plan.credits || 0}</li>
+                <li>
+                  Metotlar:{" "}
+                  {Array.isArray(plan.metotlar) && plan.metotlar.length > 0
+                    ? plan.metotlar.map((m, i) => (
+                      <span key={i}>
+                        {m}{i < plan.metotlar.length - 1 ? ', ' : ''}
+                      </span>
+                    ))
+                    : 'Yok'}
+                </li>
+                <li>
+                  Roller:{" "}
+                  {plan.roles && plan.roles.length > 0
+                    ? plan.roles.map((r, i) => (
+                      <span key={i}>
+                        {r.role} ({r.count}){i < plan.roles.length - 1 ? ", " : ""}
+                      </span>
+                    ))
+                    : "Yok"}
+                </li>
+              </ul>
 
-          </div>
-        ))}
+              <button
+                className="card__cta cta"
+                disabled={isCurrentPlan}
+                onClick={() => handleGetStarted(plan)}
+              >
+                {isCurrentPlan ? "Aktif Plan" : "Planı Seç"}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </StyledWrapper>
   );
@@ -168,15 +163,55 @@ const StyledWrapper = styled.div`
     background-image: linear-gradient(163deg, #6EC1E4 0%, #3700ff 100%);
     color: rgb(0, 0, 0);
   }
-  .card:hover {
-  background: #a0d8f7; /* Daha açık ve soft mavi */
-  color: #000;
-  outline: 1px solid rgba(110, 193, 228, 0.6); /* Daha yumuşak outline */
+ .card:hover {
+  background: #c9cbcc33;
+  outline: 1px solid rgba(110, 193, 228, 0.3); 
   box-shadow:
-    inset 0 0 30px rgba(255, 255, 255, 0.6),
-    0 0 15px rgba(110, 193, 228, 0.7);
+    inset 0 0 10px rgba(255, 255, 255, 0.2),
+    0 0 5px rgba(110, 193, 228, 0.2); 
   transition: all 0.3s ease;
 }
+
+.card.active {
+  position: relative;
+  background-color: #61c2f6ff; 
+  color: #071f35;
+
+  
+  border: 2px solid;
+  border-color: var(--active-border, #4cafa2ff);
+
+  /* Parlak efekt */
+  box-shadow:
+    0 0 25px 8px rgba(97, 194, 246, 0.85),
+    0 0 8px 2px rgba(255, 255, 255, 0.6) inset;
+
+  transition: box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .card.active {
+    border-color: #a7e6ff; 
+    background-color: rgba(97, 194, 246, 0.15);
+    color: #fff;
+  }
+}
+
+/* Light mod */
+@media (prefers-color-scheme: light) {
+  .card.active {
+    border-color: #3aa8c1; 
+    background-color: #61c2f6ff;
+    color: #071f35;
+  }
+}
+
+
+
+
+
+
 
 `;
 

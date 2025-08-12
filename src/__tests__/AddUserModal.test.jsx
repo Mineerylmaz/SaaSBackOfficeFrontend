@@ -1,6 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import AddUserModal from '../components/AddUserModal';
+jest.mock('sweetalert2', () => ({
+    fire: jest.fn(() => Promise.resolve()),
+}));
+
 
 describe('AddUserModal component', () => {
     const defaultProps = {

@@ -4,6 +4,10 @@ import AdminPanel from '../components/AdminPanel';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 
+jest.mock('sweetalert2', () => ({
+    fire: jest.fn(() => Promise.resolve()),
+}));
+
 beforeEach(() => {
     global.fetch = jest.fn((url) => {
         if (url.includes('/list-users')) {

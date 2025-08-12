@@ -1,6 +1,9 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import DateFilter from '../components/DateFilter';
+jest.mock('sweetalert2', () => ({
+    fire: jest.fn(() => Promise.resolve()),
+}));
 
 describe('DateFilter component', () => {
     const mockSetStartDate = jest.fn();

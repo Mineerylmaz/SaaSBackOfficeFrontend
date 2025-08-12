@@ -69,7 +69,7 @@ const Login = ({ setUser }) => {
 
       if (res.ok) {
         const data = await res.json();
-        const { token, id, email, role, plan, plan_start_date, plan_end_date, avatar, customInputValues } = data;
+        const { token, id, email, role, plan, plan_start_date, plan_end_date, avatar, next_plan, plan_change_date, customInputValues } = data;
         if (!data.id) {
           alert("Girişte kullanıcı id'si bulunamadı!");
           return;
@@ -94,7 +94,7 @@ const Login = ({ setUser }) => {
 
           localStorage.setItem('user', JSON.stringify({
             id, email, role, plan: fullPlan, token, plan_start_date,
-            plan_end_date, avatar
+            plan_end_date, next_plan, plan_change_date, avatar
           }));
           const customInputValuesData = customInputValues || {};
           localStorage.setItem('customInputValues', JSON.stringify(customInputValuesData));
@@ -107,7 +107,7 @@ const Login = ({ setUser }) => {
 
           setUser({
             id, email, role, plan: fullPlan, token, plan_start_date,
-            plan_end_date, avatar
+            plan_end_date, next_plan, plan_change_date, avatar
           });
 
           if (!fullPlan || !fullPlan.name) {

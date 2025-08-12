@@ -34,7 +34,7 @@ export default function Navbars({ user, setUser }) {
         <Navbar expand="lg" className="navbar-custom">
             <Container>
                 <Navbar.Brand as={Link} to="/">
-                    KentKart
+                    kentkart
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
@@ -86,21 +86,28 @@ export default function Navbars({ user, setUser }) {
                             </Nav.Link>
                         )}
                         {user && (
-                            <NavDropdown title="👤" id="profile-nav-dropdown" align="end">
+                            <NavDropdown title="👩" id="profile-nav-dropdown" align="end">
                                 <NavDropdown.Item disabled style={{ fontWeight: 'bold', cursor: 'default' }}>
                                     {user.email}
                                 </NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/profile">
-                                    Profil
-                                </NavDropdown.Item>
-                                <NavDropdown.Divider />
 
+                                {user.role !== "superadmin" && (
+                                    <>
+                                        <NavDropdown.Item as={Link} to="/profile">
+                                            Profil
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item as={Link} to="/ayarlar">
+                                            Ayarlar
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                    </>
+                                )}
 
-                                <NavDropdown.Item as={Link} to="/ayarlar">Ayarlar</NavDropdown.Item>
-                                <NavDropdown.Divider />
                                 <NavDropdown.Item onClick={handleLogout}>Çıkış Yap</NavDropdown.Item>
                             </NavDropdown>
                         )}
+
                         {user && user.role === "superadmin" && (
                             <Nav.Link as={Link} to="/admin">
                                 Admin Paneli

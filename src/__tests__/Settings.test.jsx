@@ -3,6 +3,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Settings from '../components/Settings';
 
 global.fetch = jest.fn();
+jest.mock('sweetalert2', () => ({
+    fire: jest.fn(() => Promise.resolve()),
+}));
+
 
 describe('Settings component', () => {
     const fakeUser = { id: 1, name: 'Test User' };

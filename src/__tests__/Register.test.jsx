@@ -9,6 +9,9 @@ import { MemoryRouter } from 'react-router-dom';
 const mockNavigate = jest.fn();
 const mockSetUser = jest.fn();
 
+jest.mock('sweetalert2', () => ({
+    fire: jest.fn(() => Promise.resolve()),
+}));
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),

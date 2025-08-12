@@ -37,8 +37,7 @@ const RemainingCredits = ({ userId, role }) => {
     if (!credits) return <p>Kredi bilgisi alınamadı.</p>;
 
     return (
-        <div style={{ padding: '1rem', border: '1px solid #ddd', borderRadius: '8px' }}>
-            <h4>Kredi Durumu (Kullanıcı ID: {userId})</h4>
+        <div style={{ padding: '0.1rem', border: '1px solid #ddd', borderRadius: '8px' }}>
             <p><strong>Kredi Limiti:</strong> {credits.creditLimit}</p>
             <p><strong>Kullanılan Kredi:</strong> {credits.usedCredits}</p>
             <p><strong>Kalan Kredi:</strong> {credits.remainingCredits}</p>

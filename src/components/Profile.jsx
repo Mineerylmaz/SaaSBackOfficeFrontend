@@ -208,6 +208,19 @@ const Profile = ({ user }) => {
                 <Value>{new Date(user.plan_end_date).toLocaleDateString()}</Value>
               </InfoRow>
             )}
+            {user.next_plan && (
+              <InfoRow>
+                <Label>Gelecek Plan:</Label>
+                <Value>{user.next_plan}</Value>
+              </InfoRow>
+            )}
+
+            {user.plan_change_date && (
+              <InfoRow>
+                <Label>Plan Değişim Tarihi:</Label>
+                <Value>{new Date(user.plan_change_date).toLocaleDateString()}</Value>
+              </InfoRow>
+            )}
           </ProfileCard>
         )}
 
@@ -310,29 +323,36 @@ const Wrapper = styled.div`
   }
 `;
 
-const Sidebar = styled.div`
+const Sidebar = styled.nav`
+  position:fixed;
+  top: 0;
+  left: 0;
   width: 250px;
-  color: white;
-  padding: 20px;
-  @media (max-width: 768px) {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  height: 100vh;
+  background-color: ${({ theme }) => (theme === 'dark' ? '#0d1117' : '#f0f4f8')};
+  padding: 20px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  color: #d1eaff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 1000;
+
   .user-card {
     text-align: center;
     margin-bottom: 20px;
+
     img {
       border-radius: 50%;
       width: 80px;
       height: 80px;
       object-fit: cover;
     }
+
     h4, p {
       margin: 10px 0;
     }
   }
+
   nav button {
     display: block;
     width: 100%;
@@ -340,11 +360,25 @@ const Sidebar = styled.div`
     padding: 10px;
     background: transparent;
     border: none;
-    color: white;
+    color: inherit;
     text-align: left;
     cursor: pointer;
+
     &:hover {
-      background: rgba(255,255,255,0.1);
+      background: ${({ theme }) => (theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)')};
+    }
+  }
+
+  @media (max-width: 768px) {
+   position: relative;  /* fixed iptal */
+    width: 100%;        /* tam genişlik */
+    height: auto;       /* içeriğe göre yükseklik */
+    padding: 10px;
+    .user-card {
+      img {
+        width: 60px;
+        height: 60px;
+      }
     }
   }
 `;
@@ -353,6 +387,11 @@ const Content = styled.div`
   flex: 1;
   padding: 30px;
   overflow-y: auto;
+  margin-left:250px;
+  @media (max-width: 768px) {
+    margin-left: 0; /* Sidebar yan boşluğu kaldır */
+    padding: 15px 10px;
+  }
   section {
     max-width: 500px;
     margin: 0 auto;

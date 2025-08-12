@@ -477,7 +477,7 @@ function Sonuc() {
                     <div key={methodKey}>
                         <h3 style={styles.methodHeader} onClick={() => handleToggle(index)}>
                             {methodKey}
-                            <span style={{ fontSize: 20 }}>{openIndex === index ? '^' : 'v'}</span>
+                            <span style={{ fontSize: 20 }}>{openIndex === index ? '^' : 'ᵛ'}</span>
                         </h3>
 
 
@@ -577,7 +577,7 @@ function Sonuc() {
 
 
                                     >
-                                        💻 Export cURL
+                                        💻 cURL Dışa Aktar
                                     </button>
                                     <button
                                         style={{
