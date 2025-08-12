@@ -51,11 +51,17 @@ Projeyi klonlayın:
 
 git clone https://github.com/Mineerylmaz/SaaSBackOfficeFrontend.git
 Proje klasörüne girin:
-
-
 cd SaaSBackOfficeFrontend
-Bağımlılıkları yükleyin:
 
+Backend API Kullanımı
+Frontend uygulaması, tüm verilerini ve iş mantığını sağlamak için bu backend API’ye bağlıdır.
+
+API URL’sini .env dosyanızda veya config dosyanızda ayarlayın 
+
+Kullanıcı işlemleri, abonelik ve diğer tüm backend endpointleri bu API üzerinden yönetilir.
+https://github.com/Mineerylmaz/SaaS-BackOffice-Backend
+
+Bağımlılıkları yükleyin:
 npm install
 ▶️ Projeyi Çalıştırma
 Geliştirme modunda çalıştırmak için:
@@ -66,17 +72,20 @@ Tarayıcınızda http://localhost:3000 adresine giderek uygulamayı görüntüle
 
 ##  Dizin Yapısı
 
+```plaintext
 SaaSBackOfficeFrontend/
 ├── src/
 │   ├── components/        # Ortak bileşenler (Navbar, Buton, vs.)
-│        ├── Login /            # Login sayfasu
-│        ├── UserSettings/             # Kullanıcı ayarlar sayfası
-│        ├── AdminPanel/             # YPanel sayfası
-│        ├── Odeme/            # Odeme sayfası
-│   └── App.jsx             # Ana uygulama dosyası
+│   │    ├── Login/            # Login sayfası
+│   │    ├── UserSettings/     # Kullanıcı ayarlar sayfası
+│   │    ├── AdminPanel/       # Panel sayfası
+│   │    ├── Odeme/            # Ödeme sayfası
+│   └── App.jsx              # Ana uygulama dosyası
 ├── public/
 ├── package.json
 └── README.md
+```
+
 ##  Kullanım Senaryoları
 Yeni kullanıcı daveti ile kayıt
 
