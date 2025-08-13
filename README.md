@@ -114,10 +114,10 @@ Başarılı işlem sonrası profil sayfasına yönlendirme yapılır
 ## Bağımlılıklar
 
 "dependencies": {
-  "react": "^18.x.x",
-  "react-dom": "^18.x.x",
+  "react": "^19.x.x",
+  "react-dom": "^19.x.x",
   "react-router-dom": "^6.x.x",
-  "styled-components": "^5.x.x",
+  "styled-components": "^6.x.x",
   "sweetalert2": "^11.x.x"
 }
 ##  Katkı Sağlamak
