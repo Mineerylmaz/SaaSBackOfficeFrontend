@@ -146,32 +146,23 @@ function Sonuc() {
 
 
     const handleQuery = async (methodKey) => {
+        if (!token) {
+
+            window.location.href = '/login';
+            return;
+        }
+
         if (creditStatus.isLimited) {
             Swal.fire('Kredi Limiti Doldu', 'Yeni istek yapamazsınız.', 'warning');
             return;
         }
 
-        if (!token) {
-            Swal.fire('Hata', 'Giriş yapmanız gerekiyor.', 'error');
-            return;
-        }
+        setApiError('');
+        setApiResponse('Yükleniyor...');
+
+        let creditUsed = false;
 
         try {
-            setApiError('');
-            setApiResponse('Yükleniyor...');
-
-            const creditRes = await fetch('http://localhost:32807/api/credits/use', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!creditRes.ok) {
-                const err = await creditRes.json();
-                throw new Error(err.message || 'Kredi düşürme başarısız.');
-            }
 
             let url = `http://localhost:32807/api/busService/PassengerInformationServices/Bus?func=${methodKey}`;
 
@@ -181,7 +172,6 @@ function Sonuc() {
                     url += `&${field}=${encodeURIComponent(value)}`;
                 }
             });
-
 
             const res = await fetch(url, {
                 method: 'GET',
@@ -196,11 +186,43 @@ function Sonuc() {
             const data = await res.json();
             setApiResponse(data);
 
+
+            const creditRes = await fetch('http://localhost:32807/api/credits/use', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!creditRes.ok) {
+                const err = await creditRes.json();
+                throw new Error(err.message || 'Kredi düşürme başarısız.');
+            }
+
+            creditUsed = true;
+
         } catch (error) {
             setApiResponse('');
             setApiError(error.message || 'Bir hata oluştu');
+        } finally {
+
+            if (!creditUsed && token) {
+                try {
+                    await fetch('http://localhost:32807/api/credits/use', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                } catch (e) {
+                    console.error('Kredi düşme işlemi başarısız:', e.message);
+                }
+            }
         }
     };
+
 
 
 
