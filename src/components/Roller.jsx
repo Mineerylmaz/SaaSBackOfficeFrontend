@@ -328,7 +328,7 @@ export default function Roller() {
                     </Actions>
                 </FormRow>
 
-                {/* Rol kotaları (okunurluk) */}
+
                 <QuotaRow>
                     {userPlanRoles.length === 0 ? (
                         <QuotaEmpty>Bu plan için rol kotası tanımlı değil.</QuotaEmpty>

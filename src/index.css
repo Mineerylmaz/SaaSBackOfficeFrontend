@@ -58,9 +58,9 @@ body {
 
 }
 
-/* NAVBAR – dark metinler, ikonlar, dropdown uyumu */
+
 .navbar.navbar-custom {
-  background-color: rgba(13, 27, 42, 0.85) !important;
+  background-color: #122339 !important;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(56, 189, 248, 0.3);
 }
@@ -99,7 +99,7 @@ body {
   opacity: .95;
 }
 
-/* Dropdown menüyü de dark yapalım */
+
 .navbar-custom .dropdown-menu {
   background: rgba(10, 20, 32, 0.98);
   border: 1px solid rgba(148, 163, 184, .18);

@@ -155,47 +155,67 @@ export default function UserDataGrid() {
 
     return (
         <div className="userdatagrid">
-            {/* Sticky Action Bar */}
+            {/* ✅ Sticky Action Bar */}
             <Box
                 sx={{
-                    position: 'sticky',
+                    position: "sticky",
                     top: 0,
                     zIndex: 2,
                     mb: 2,
                     p: 2,
                     borderRadius: 2,
-                    bgcolor: 'rgba(255,255,255,.85)',
-
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    display: 'grid',
-                    gridTemplateColumns: '1fr auto auto',
+                    bgcolor: "rgba(255,255,255,.85)",
+                    backdropFilter: "blur(8px)",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr", // 📱 Mobil: tek kolon
+                        md: "1fr auto auto", // 💻 Desktop: 3 kolon
+                    },
                     gap: 1.5,
-                    alignItems: 'center',
+                    alignItems: "center",
                 }}
             >
-                {/* Sol: Arama & chipler */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-
+                {/* ✅ Sol: Arama & chipler */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        justifyContent: { xs: "center", md: "flex-start" },
+                        flexWrap: "wrap",
+                    }}
+                >
                     <Chip
                         label={`Seçili: ${selectedIds.length}`}
-                        color={selectedIds.length ? 'primary' : 'default'}
-                        variant={selectedIds.length ? 'filled' : 'outlined'}
-                        sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+                        color={selectedIds.length ? "primary" : "default"}
+                        variant={selectedIds.length ? "filled" : "outlined"}
+                        sx={{ display: { xs: "none", md: "inline-flex" } }}
                     />
                     <Chip
-                        label={`Toplam: ${(showDeleted ? deletedUsers : users)?.length || 0}`}
+                        label={`Toplam: ${(showDeleted ? deletedUsers : users)?.length || 0
+                            }`}
                         variant="outlined"
-                        sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+                        sx={{ display: { xs: "none", md: "inline-flex" } }}
                     />
                 </Box>
 
-                {/* Orta: Görünüm anahtarı */}
-                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                    <Button
+                {/* ✅ Orta: Görünüm anahtarı */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: 1,
+                        justifyContent: "center",
 
-                        variant={showDeleted ? 'outlined' : 'contained'}
+                        width: { xs: "100%", md: "auto" },
+                        flexDirection: { xs: "column", md: "row" },
+                    }}
+                >
+                    <Button
+                        fullWidth={false}
+                        size="small" // küçük buton
+                        variant={showDeleted ? "outlined" : "contained"}
                         onClick={() => {
                             if (showDeleted) {
                                 setShowDeleted(false);
@@ -206,8 +226,8 @@ export default function UserDataGrid() {
                         Aktif Kullanıcılar
                     </Button>
                     <Button
-
-                        variant={showDeleted ? 'contained' : 'outlined'}
+                        fullWidth={false}
+                        variant={showDeleted ? "contained" : "outlined"}
                         onClick={fetchDeletedUsers}
                         disabled={showDeleted}
                     >
@@ -215,11 +235,20 @@ export default function UserDataGrid() {
                     </Button>
                 </Box>
 
-                {/* Sağ: Aksiyonlar */}
-                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                    <Tooltip title={showDeleted ? 'Silinenlerde toplu silme kapalı' : ''}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: 1,
+                        flexDirection: { xs: "column", md: "row" },
+                        width: { xs: "100%", md: "auto" },
+                        alignItems: { xs: "stretch", md: "center" },
+                        justifyContent: { xs: "center", md: "flex-end" },
+                    }}
+                >
+                    <Tooltip title={showDeleted ? "Silinenlerde toplu silme kapalı" : ""}>
                         <span>
                             <Button
+                                sx={{ width: { xs: "100%", md: "auto" } }}
                                 variant="contained"
                                 color="error"
                                 onClick={handleDeleteSelected}
@@ -230,19 +259,28 @@ export default function UserDataGrid() {
                         </span>
                     </Tooltip>
 
-                    <Tooltip title={selectedIds.length !== 1 ? 'Bir kullanıcı seçin' : ''}>
+                    <Tooltip
+                        title={selectedIds.length !== 1 ? "Bir kullanıcı seçin" : ""}
+                    >
                         <span>
                             <Button
+                                sx={{ width: { xs: "100%", md: "auto" } }}
                                 variant="contained"
                                 color="primary"
                                 disabled={selectedIds.length !== 1}
                                 onClick={async () => {
-                                    const selectedUser = users.find((u) => u.id === selectedIds[0]);
+                                    const selectedUser = users.find(
+                                        (u) => u.id === selectedIds[0]
+                                    );
                                     if (!selectedUser) return;
 
-                                    const token = localStorage.getItem('token');
+                                    const token = localStorage.getItem("token");
                                     if (!token) {
-                                        return Swal.fire('Hata', 'Oturum süresi dolmuş, tekrar giriş yapın.', 'error');
+                                        return Swal.fire(
+                                            "Hata",
+                                            "Oturum süresi dolmuş, tekrar giriş yapın.",
+                                            "error"
+                                        );
                                     }
 
                                     try {
@@ -251,12 +289,12 @@ export default function UserDataGrid() {
                                             {
                                                 headers: {
                                                     Authorization: `Bearer ${token}`,
-                                                    'Content-Type': 'application/json',
+                                                    "Content-Type": "application/json",
                                                 },
                                             }
                                         );
 
-                                        if (!res.ok) throw new Error('Plan bilgisi alınamadı');
+                                        if (!res.ok) throw new Error("Plan bilgisi alınamadı");
 
                                         const data = await res.json();
                                         const enrichedUser = {
@@ -265,24 +303,27 @@ export default function UserDataGrid() {
                                             settings: data.settings || {},
                                         };
 
-                                        localStorage.setItem('selectedUser', JSON.stringify(enrichedUser));
+                                        localStorage.setItem(
+                                            "selectedUser",
+                                            JSON.stringify(enrichedUser)
+                                        );
 
                                         Swal.fire({
-                                            icon: 'success',
-                                            title: 'Kullanıcı Seçildi',
+                                            icon: "success",
+                                            title: "Kullanıcı Seçildi",
                                             text: `${selectedUser.email} ayarlarını görmek için ayarlara geçin.`,
-                                            confirmButtonText: 'Ayarlara Git',
+                                            confirmButtonText: "Ayarlara Git",
                                         }).then((result) => {
                                             if (result.isConfirmed) {
-                                                window.location.href = '/ayarlar';
+                                                window.location.href = "/ayarlar";
                                             }
                                         });
                                     } catch (err) {
-                                        console.error('Plan bilgisi alınamadı:', err);
+                                        console.error("Plan bilgisi alınamadı:", err);
                                         Swal.fire({
-                                            icon: 'error',
-                                            title: 'Hata',
-                                            text: 'Plan bilgisi alınamadı',
+                                            icon: "error",
+                                            title: "Hata",
+                                            text: "Plan bilgisi alınamadı",
                                         });
                                     }
                                 }}
@@ -294,7 +335,8 @@ export default function UserDataGrid() {
                 </Box>
             </Box>
 
-            <Box sx={{ height: 500, width: '100%' }}>
+            {/* ✅ Responsive DataGrid */}
+            <Box sx={{ height: { xs: 400, md: 600 }, width: "100%" }}>
                 <DataGrid
                     rows={showDeleted ? deletedUsers : users}
                     columns={columns}
@@ -305,7 +347,6 @@ export default function UserDataGrid() {
                         if (selectionModel?.ids) {
                             const idsSet = selectionModel.ids;
                             const idsArray = Array.from(idsSet);
-                            console.log('Selected IDs:', idsArray);
                             setSelectedIds(idsArray);
                         } else if (Array.isArray(selectionModel)) {
                             setSelectedIds(selectionModel);
@@ -316,25 +357,26 @@ export default function UserDataGrid() {
                     onRowClick={(params) => {
                         const clickedUser = users.find((u) => u.id === params.row.id);
                         if (clickedUser) {
-                            localStorage.setItem('selectedUser', JSON.stringify(clickedUser));
+                            localStorage.setItem(
+                                "selectedUser",
+                                JSON.stringify(clickedUser)
+                            );
                             Swal.fire({
-                                icon: 'success',
-                                title: 'Kullanıcı Seçildi',
+                                icon: "success",
+                                title: "Kullanıcı Seçildi",
                                 text: `${clickedUser.email} ayarlarını görmek için ayarlara geçin.`,
                                 showCancelButton: true,
-                                confirmButtonText: 'Ayarlara Git',
-                                cancelButtonText: 'Kapat',
+                                confirmButtonText: "Ayarlara Git",
+                                cancelButtonText: "Kapat",
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    window.location.href = '/ayarlar';
+                                    window.location.href = "/ayarlar";
                                 }
                             });
                         }
                     }}
-
-                    // ✅ Hata önleyici ayarlar
                     pagination
-                    pageSizeOptions={[5, 10, 25]} // rowsPerPageOptions yerine MUI v6+ formatı
+                    pageSizeOptions={[5, 10, 25]}
                     initialState={{
                         pagination: {
                             paginationModel: { pageSize: 10, page: 0 },
@@ -342,8 +384,8 @@ export default function UserDataGrid() {
                     }}
                 />
             </Box>
-
         </div>
     );
+
 
 }

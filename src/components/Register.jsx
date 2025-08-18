@@ -72,14 +72,14 @@ const Register = ({ setUser }) => {
     e.preventDefault();
 
     try {
-      // 1) Seçili planı oku
+
       const selectedPlanStr = localStorage.getItem("selectedPlan");
       let selectedPlan = null;
       if (selectedPlanStr) {
         try { selectedPlan = JSON.parse(selectedPlanStr); } catch { }
       }
 
-      // 2) Davet olsa da olmasa da planı gönder (yoksa null)
+
       const planToSend = selectedPlan || null;
 
       const bodyData = {
@@ -110,7 +110,7 @@ const Register = ({ setUser }) => {
         return;
       }
 
-      // 3) Response'u normalize et (register eski/yeni veya login formatı)
+
       const base = raw.user ? { ...raw.user, token: raw.token } : { ...raw };
 
       let userForStore = {
@@ -124,10 +124,9 @@ const Register = ({ setUser }) => {
         plan_start_date: base.plan_start_date ? new Date(base.plan_start_date).toISOString() : null,
         plan_end_date: base.plan_end_date ? new Date(base.plan_end_date).toISOString() : null,
         customInputValues: base.customInputValues ?? {},
-        token: base.token, // aşağıda localStorage'a da yazacağız
+        token: base.token,
       };
 
-      // 4) Plan eksikse zenginleştir (price/max_file_size vs)
       if (userForStore.plan && (!userForStore.plan.price || !userForStore.plan.max_file_size)) {
         try {
           const resPlan = await fetch('http://localhost:32807/api/plans');
@@ -143,7 +142,7 @@ const Register = ({ setUser }) => {
         }
       }
 
-      // 5) Kaydet → sonra navigate
+
       setUser(userForStore);
       localStorage.setItem('user', JSON.stringify(userForStore));
       localStorage.setItem('token', userForStore.token || '');

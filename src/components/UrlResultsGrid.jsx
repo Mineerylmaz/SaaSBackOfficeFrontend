@@ -212,7 +212,15 @@ const UrlResultsGrid = ({ userId }) => {
                         },
                     }}
                     pageSizeOptions={[5, 10, 25]}
-                    sx={{ minWidth: 'fit-content' }}
+                    sx={{
+                        width: "100%",   // tam genişlik
+                        maxWidth: "100%",
+                        "& .MuiDataGrid-cell": {
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                        },
+                    }}
                 />
 
 
@@ -291,6 +299,24 @@ export const StyledWrapper = styled.div`
       width: 100%;
     }
   }
+   @media (max-width: 600px) {
+  .data-grid-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .MuiDataGrid-root {
+    font-size: 11px;    /* daha da küçült */
+  }
+
+  .MuiDataGrid-cell, 
+  .MuiDataGrid-columnHeaderTitle {
+    padding: 4px;       /* hücre içi boşluğu küçült */
+  }
+}
+
+
 `;
 
 export default UrlResultsGrid;

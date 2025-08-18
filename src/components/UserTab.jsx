@@ -8,6 +8,7 @@ const UserTab = () => {
     return JSON.parse(localStorage.getItem("selectedUser"));
   });
 
+
   useEffect(() => {
     const onStorageChange = () => {
       setSelectedUser(JSON.parse(localStorage.getItem("selectedUser")));
@@ -17,7 +18,33 @@ const UserTab = () => {
   }, []);
   const user = JSON.parse(localStorage.getItem("user"));
   const isSuperAdmin = user?.role === "superadmin";
-  const currentUserId = isSuperAdmin && selectedUser ? selectedUser.id : user?.id;
+  const [currentUserId, setCurrentUserId] = useState(
+    user?.role !== "viewer" ? (isSuperAdmin && selectedUser ? selectedUser.id : user?.id) : null
+  );
+  const isReadOnly = (isSuperAdmin && selectedUser) || user?.role === "viewer";
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (user?.role === "viewer") {
+      fetch(`http://localhost:32807/api/userSettings/settings/${user.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          // viewer için inviter_id kullan
+          if (!data || !data.customInputs) console.error("Backend inviterId yok veya hatalı!");
+          setCurrentUserId(data.id || data.inviterId); // data.id backend’den geliyor, viewer ise inviter id
+        })
+        .catch(err => console.error("Viewer davet eden ID çekilemedi:", err));
+    } else {
+      setCurrentUserId(isSuperAdmin && selectedUser ? selectedUser.id : user?.id);
+    }
+  }, [user, selectedUser]);
+
+
+
   const [keys, setKeys] = useState([]);
   const [values, setValues] = useState({});
   const [settings, setSettings] = useState({
@@ -43,7 +70,51 @@ const UserTab = () => {
       })
       .catch(err => console.error("Kullanıcı değerleri çekilemedi:", err));
   }, [currentUserId]);
+  useEffect(() => {
+    if (!currentUserId) return; // null ise fetch’i iptal et
 
+    const token = localStorage.getItem("token");
+
+    fetch(`http://localhost:32807/api/userSettings/full-keys/${currentUserId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const keysWithValues = data.map(k => ({
+          ...k,
+          value: values[k.key_name] || "",
+          displayName: toDisplayName(k.key_name)
+        }));
+        setKeys(keysWithValues);
+      })
+      .catch(err => console.error("Keys çekilemedi:", err));
+  }, [currentUserId, values]);
+  useEffect(() => {
+    if (!user) return;
+    const token = localStorage.getItem("token");
+
+    let fetchUrl;
+
+    if (user.role === "viewer") {
+      fetchUrl = `http://localhost:32807/api/userSettings/settings/${user.id}`;
+    } else if (isSuperAdmin && selectedUser) {
+      fetchUrl = `http://localhost:32807/api/userSettings/settings/${selectedUser.id}`;
+    } else {
+      fetchUrl = `http://localhost:32807/api/userSettings/settings/${user.id}`;
+    }
+
+    fetch(fetchUrl, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => res.json())
+      .then(data => {
+
+        const inviterId = data.id || user.id;
+        setCurrentUserId(inviterId);
+
+
+        if (data.customInputs) setValues(data.customInputs);
+      })
+      .catch(err => console.error("Viewer davet eden ID veya ayar çekilemedi:", err));
+  }, [user, selectedUser]);
 
 
   const TooltipWrapper = styled.div`
@@ -287,7 +358,6 @@ const UserTab = () => {
           </div>
         </SummaryCard>
 
-        {/* Grid (Table yerine) */}
         {keys.length === 0 ? (
           <EmptyState>
             <div className="bubble">ℹ️</div>
@@ -298,7 +368,7 @@ const UserTab = () => {
           <SectionList>
             {Object.entries(
               keys.reduce((acc, k) => {
-                // basit grup: key_name prefix (örn: api_key -> api)
+
                 const group =
                   (k.group && String(k.group)) ||
                   (k.key_name?.includes('_') ? k.key_name.split('_')[0] : 'Genel');
@@ -338,11 +408,12 @@ const UserTab = () => {
                         <input
                           type={k.type === "number" ? "number" : "text"}
                           value={values[k.key_name] || ""}
-                          disabled={isSuperAdmin && selectedUser}
+                          disabled={isReadOnly}
                           onChange={(e) => {
+                            if (isReadOnly) return;
                             const val = e.target.value;
                             if (k.type === "number" && isNaN(Number(val))) return;
-                            setValues((prev) => ({ ...prev, [k.key_name]: val }));
+                            setValues(prev => ({ ...prev, [k.key_name]: val }));
                           }}
                           placeholder="Değer girin"
                           title={isSuperAdmin && selectedUser ? "Superadmin başka kullanıcı için değer giremez" : ""}

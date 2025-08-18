@@ -22,13 +22,15 @@ import { jwtDecode } from "jwt-decode";
 import UserTab from './UserTab';
 import Sonuc from './Sonuc';
 
+import { useMediaQuery } from "@mui/material";
+
 
 const Settings = ({ user }) => {
 
     const localSelectedUser = localStorage.getItem("selectedUser");
     const selectedUser = localSelectedUser ? JSON.parse(localSelectedUser) : null;
 
-
+    const isMobile = useMediaQuery("(max-width:768px)");
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -428,7 +430,7 @@ const Settings = ({ user }) => {
 
 
                 {(selectedMenu === 'rt' || selectedMenu === 'static' || selectedMenu === 'urlresults' || selectedMenu === 'ayarlar') && (
-                    <HorizontalWrapper style={{ display: 'flex', flexDirection: 'column' }}>
+                    <HorizontalWrapper style={{ display: 'flex', flexDirection: isMobile ? "column" : "row", }}>
 
 
 
@@ -439,7 +441,7 @@ const Settings = ({ user }) => {
 
 
                         {selectedMenu === 'urlresults' && (
-                            <div>
+                            <div style={{ flex: 1, width: "100%" }}>
                                 <UrlResultsGrid userId={currentUser.id} />
                             </div>
                         )}
@@ -457,7 +459,7 @@ const Settings = ({ user }) => {
                 )
                 }
                 {selectedMenu === 'sonuc' && (
-                    <div>
+                    <div style={{ flex: 1, width: "100%", minWidth: 0 }}>
                         <Sonuc></Sonuc>
                     </div>
                 )}
@@ -509,23 +511,6 @@ export default Settings;
 
 
 
-const Wrapper = styled.div`
-  width: 100%;
-  margin: 0 auto;
-  background: #0d1b2a;
-  display: flex;
-  /* ÖNEMLİ: sarmayı kapat */
-  flex-wrap: nowrap;
-  gap: 20px;
-  box-sizing: border-box;
-  padding: 20px 50px 20px 20px;
-  min-height: 100vh;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 10px;
-  }
-`;
 
 const Sidebar = styled.div`
   /* ÖNEMLİ: sabit genişlikli flex-basis */
@@ -554,20 +539,38 @@ const ContentArea = styled.div`
   flex-direction: column;
 `;
 
+const Wrapper = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  background: #0d1b2a;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  box-sizing: border-box;
+  padding: 20px 20px;  /* sağ padding küçültüldü */
+  min-height: 100vh;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
+`;
 
 const HorizontalWrapper = styled.div`
   display: flex;
-  gap: 20px;
-  align-items: flex-start;
+  flex: 1;                 /* Ekranı kaplasın */
   width: 100%;
-   
-justify-content: space-between;
+  align-items: stretch;    /* içindekini tam aç */
+  justify-content: flex-start; 
+   > * { flex: 1 1 0; min-width: 0; }
+
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 10px;
-    justify-content: normal;
   }
 `;
+
 const ContentWrapper = styled.div`
   min-width: ${({ fullWidth }) => (fullWidth ? 'auto' : '350px')};
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};

@@ -40,12 +40,16 @@ export default function Navbars({ user, setUser }) {
 
             <Container>
                 <Navbar.Brand as={Link} to="/" className="brand">
-                    kentkart
+                    <img
+                        src="/indir.svg"
+                        style={{ height: '40px', marginRight: '10px' }}
+                    />
+
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" className="toggler" />
                 <Navbar.Collapse id="basic-navbar-nav">
 
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto">
 
@@ -56,17 +60,18 @@ export default function Navbars({ user, setUser }) {
                                 Anasayfa
                             </Nav.Link>
                             <NavDropdown title="Biz Kimiz" id="basic-nav-dropdown">
-                                <NavDropdown.Item as={Link} to="/about">
+                                <NavDropdown.Item onClick={() => window.location.href = "https://www.kentkart.com/about-us/"}>
                                     Hakkımızda
                                 </NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/about">
-                                    Misyon
+
+                                <NavDropdown.Item onClick={() => window.location.href = "https://www.kentkart.com/history/"}>
+                                    Tarihçemiz
                                 </NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/about">
-                                    Vizyon
+                                <NavDropdown.Item onClick={() => window.location.href = "https://www.kentkart.com/quality-policy/"}>
+                                    Kalite Politikamız
                                 </NavDropdown.Item>
                                 <NavDropdown.Divider />
-                                <NavDropdown.Item as={Link} to="/about">
+                                <NavDropdown.Item onClick={() => window.location.href = "https://www.kentkart.com/contact-us/"}>
                                     İletişim
                                 </NavDropdown.Item>
                             </NavDropdown>
@@ -88,6 +93,12 @@ export default function Navbars({ user, setUser }) {
                                     Ayarlar
                                 </Nav.Link>
                             )}
+                            {user && user.role === "superadmin" && (
+                                <Nav.Link as={Link} to="/admin">
+                                    Admin Paneli
+                                </Nav.Link>
+                            )}
+
 
 
                             {user && (
@@ -96,7 +107,7 @@ export default function Navbars({ user, setUser }) {
                                         user.avatar
                                             ? <img src={user.avatar} alt="avatar"
                                                 style={{ width: "28px", height: "28px", borderRadius: "50%" }} />
-                                            : <FaUserCircle size={28} color="#38bdf8" />   // fallback ikon
+                                            : <FaUserCircle size={28} color="#38bdf8" />
                                     }
                                     id="profile-nav-dropdown"
                                     align="end"
@@ -121,11 +132,6 @@ export default function Navbars({ user, setUser }) {
                                 </NavDropdown>
                             )}
 
-                            {user && user.role === "superadmin" && (
-                                <Nav.Link as={Link} to="/admin">
-                                    Admin Paneli
-                                </Nav.Link>
-                            )}
 
                         </Nav>
                     </Navbar.Collapse>

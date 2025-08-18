@@ -663,6 +663,8 @@ const StudioWrapper = styled.div`
 const TopBar = styled.div`
   position: sticky; top: 8px; z-index: 10;
   display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; /* 👈 küçük ekranda satır kırmaya izin ver */
+  gap: 8px;
   background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(15,23,42,.75));
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -671,16 +673,23 @@ const TopBar = styled.div`
 
   h2 { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: .3px; }
   .hint { color: var(--muted); font-size: 12px; margin-left: 10px; }
+
+  @media (max-width: 600px) {
+    flex-direction: column; 
+    align-items: flex-start; 
+  }
 `;
+
 
 const MainLayout = styled.div`
   display: grid;
-  grid-template-columns: 280px 1fr;
+ grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
   gap: 16px;
   margin-top: 14px;
+  min-width: 0; 
 
   @media (max-width: 980px) {
-    grid-template-columns: 1fr;
+   grid-template-columns: minmax(0, 1fr);
   }
 `;
 
@@ -730,10 +739,14 @@ const WorkPane = styled.section`
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 12px;
+  min-width: 0;   
+  max-width: 100%;
 `;
 
 const UrlBar = styled.div`
-  position: sticky; top: 60px; z-index: 5;
+  position: sticky; 
+  top: 60px; 
+  z-index: 5;
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 10px;
@@ -745,41 +758,66 @@ const UrlBar = styled.div`
   backdrop-filter: blur(6px);
 
   .method {
-    font-weight: 900; color: #e2f4ff; background: rgba(0,85,164,.3);
+    font-weight: 900; 
+    color: #e2f4ff; 
+    background: rgba(0,85,164,.3);
     border: 1px solid rgba(0,85,164,.5);
-    padding: 6px 10px; border-radius: 999px; font-size: 12px; white-space: nowrap;
+    padding: 6px 10px; 
+    border-radius: 999px; 
+    font-size: 12px; 
+    white-space: nowrap;
   }
 
   .url code {
-    display: block; font-family: Consolas, monospace; font-size: 12px;
-    color: #e2f4ff; white-space: nowrap; overflow: auto;
+    display: block; 
+    font-family: Consolas, monospace; 
+    font-size: 12px;
+    color: #e2f4ff; 
+    white-space: nowrap; 
+    overflow-x: auto;
+    max-width: 100%;
   }
 
   .actions {
-    display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+    display: flex; 
+    gap: 8px; 
+    flex-wrap: wrap; 
+    justify-content: flex-end;
   }
 
   button {
-    border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px;
-    font-weight: 800; cursor: pointer; transition: .2s ease;
+    border: 1px solid var(--line); 
+    border-radius: 10px; 
+    padding: 8px 12px;
+    font-weight: 800; 
+    cursor: pointer; 
+    transition: .2s ease;
   }
-  button.ghost { background: rgba(2,6,23,.6); color: #e5e7eb; }
-  button.ghost:hover { border-color: rgba(0,174,239,.45); color: #e2f4ff; }
-  button.primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; border: none; }
-  button.primary:hover { filter: brightness(.95); }
 
   @media (max-width: 980px) {
     grid-template-columns: 1fr;
-    .actions { justify-content: flex-start; }
+    gap: 8px;
+
+    .url code {
+      white-space: normal;  /* taşmayı önler */
+      word-break: break-all; /* çok uzun url’leri kırar */
+    }
+
+    .actions {
+      justify-content: flex-start;
+      width: 100%;
+    }
   }
 `;
 
 const Panels = styled.div`
-  display: grid; gap: 12px; margin-top: 12px;
-  grid-template-columns: 1fr 1fr;
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* içerik taşmasını engelle */
 
   @media (max-width: 980px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* mobilde tek kolon */
   }
 `;
 
@@ -788,7 +826,22 @@ const Panel = styled.div`
   border-radius: 12px;
   background: rgba(2,6,23,.5);
   padding: 12px;
+  min-width: 0; /* bu olmazsa grid çocukları taşar */
+  max-width: 100%; /* ekranı aşmasını önle */
+
+  /* İçerik wrap ayarları */
+  pre, code {
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  input, textarea {
+    min-width: 0; /* grid içinde küçülebilmesi için */
+    width: 100%;
+  }
 `;
+
 
 const PanelHeader = styled.div`
   font-size: 12px; font-weight: 900; letter-spacing: .4px;
@@ -820,11 +873,13 @@ const ResponseBox = styled.pre`
   color: #e2f4ff;
   border-radius: 10px;
   padding: 12px;
-  max-height: 360px;
+ max-height: 360px;
   overflow: auto;
   font-size: 12px;
   font-family: Consolas, monospace;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* 👈 önemli */
+  word-break: break-word; /* 👈 uzun stringleri kır */
+  
 `;
 
 const ErrorBox = styled.div`

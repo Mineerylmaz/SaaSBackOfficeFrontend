@@ -7,7 +7,7 @@ const canViewMenu = (role, menuKey, adminOnly) => {
   if (adminOnly && !adminRoles.includes(role)) return false;
   if (adminRoles.includes(role)) return true;
   if (role === "viewer") {
-    const hiddenForViewer = ["urlresults", "upload", "invite"];
+    const hiddenForViewer = ["sonuc", "upload", "invite"];
     return !hiddenForViewer.includes(menuKey);
   }
   if (role === "editor") {
@@ -34,7 +34,7 @@ const Nav = styled.nav`
   left: 0;
   width: ${({ sidebarWidth }) => `${sidebarWidth}px`};
   height: calc(100vh - ${({ navOffset }) => `${navOffset}px`});
-  background-color: #0d1117;
+  background-color: #122339;
   padding: 20px 16px;
   display: none; /* mobilde gizli */
   flex-direction: column;
@@ -44,7 +44,7 @@ const Nav = styled.nav`
   border-right: 1px solid rgba(255,255,255,.06);
 
   @media (min-width: 1024px) {
-    display: flex; /* sadece desktop/tablet genişlikte sidebar göster */
+    display: flex; 
   }
 `;
 
@@ -77,7 +77,7 @@ const MenuItem = styled.button`
   &:hover { color: #2f81f7; background: rgba(255,255,255,.04); }
 `;
 
-/* Mobil tablet için: navbarın hemen altında yatay sekme barı */
+
 const TabStrip = styled.div`
   position: sticky;
   top: ${({ navOffset }) => `${navOffset}px`};
@@ -149,7 +149,7 @@ const Radio = ({ selectedMenu, setSelectedMenu, role, navOffset = 64 }) => {
 
   return (
     <>
-      {/* Mobil/Tablet: Yatay sekme şeridi */}
+
       <TabStrip navOffset={navOffset}>
         {visibleItems.map((item) => (
           <Pill

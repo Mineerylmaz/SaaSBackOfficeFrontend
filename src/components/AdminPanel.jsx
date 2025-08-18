@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaUsers, FaDollarSign, FaCogs, FaFileInvoiceDollar } from 'react-icons/fa';
+import { FaUsers, FaDollarSign, FaCogs, FaFileInvoiceDollar, FaBars, FaTimes } from 'react-icons/fa';
 import AddUserModal from './AddUserModal';
 import Swal from 'sweetalert2';
 import UserDataGrid from './UserDataGrid';
@@ -8,6 +8,11 @@ import SettingTab from './SettingTab';
 import '../styles/Panel.css'
 import { useSearchParams } from "react-router-dom";
 import styled from 'styled-components';
+import { Box, Button } from "@mui/material";
+
+import { useMediaQuery } from "@mui/material";
+
+
 const AdminPanel = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const initialTab = searchParams.get("tab") || "dashboard";
@@ -16,7 +21,7 @@ const AdminPanel = () => {
     const [newPlanplan_limitInputs, setNewPlanplan_limitInputs] = useState({});
     const [newplan_limitKey, setNewplan_limitKey] = useState(''); // Yeni plan_limit türü için input
 
-
+    const isMobile = useMediaQuery("(max-width:768px)");
     const [keys, setKeys] = useState([
 
         { key: 'durak', type: 'number' },
@@ -73,6 +78,7 @@ const AdminPanel = () => {
     const handleTabChange = (tabKey) => {
         setActiveTab(tabKey);
         setSearchParams({ tab: tabKey });
+        setSidebarOpen(false);
     };
 
     const admin = {
@@ -398,6 +404,8 @@ const AdminPanel = () => {
 
 
     const [addLimitKeyModal, setAddLimitKeyModal] = useState({ open: false, index: null, value: "" });
+    const menuFromUrl = searchParams.get('dashboard') || 'users';
+    const [selectedMenu, setSelectedMenu] = useState(menuFromUrl);
 
 
     return (
@@ -405,18 +413,36 @@ const AdminPanel = () => {
             className="admin"
             style={{
                 display: "flex",
+                flexDirection: isMobile ? "column" : "row", // ✅ mobilde dikey
                 height: "auto",
                 fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
             }}
         >
+            <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                style={{
+                    position: "fixed",
+                    top: "60px",
+                    left: "15px",
+                    background: "none",
+                    border: "none",
+                    color: "#fff",
+                    fontSize: "24px",
+                    zIndex: 1001,
+                }}
+            >
+                {sidebarOpen ? <FaTimes /> : <FaBars />}
+            </button>
+
             <nav
                 className={`sidebar ${sidebarOpen ? "open" : ""}`}
                 style={{
                     width: "250px",
-                    backgroundColor: "#1e3a5f",
+                    backgroundColor: "#122339",
                     padding: "20px",
                     color: "#fff",
-                    top: 0,
+                    top: 100,
+                    zIndex: 9999,
                 }}
             >
                 <div style={adminCardStyle}>
@@ -452,29 +478,15 @@ const AdminPanel = () => {
                     onClick={() => setActiveTab("settings")}
                 />
             </nav>
-            <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                style={{
-                    display: "none",
-                    position: "absolute",
-                    top: 0,
-                    left: 20,
-                    background: "transparent",
-                    border: "none",
-                    fontSize: 28,
-                    zIndex: 1000,
-                }}
-                className="hamburger-button"
-            >
-                &#9776;
-            </button>
 
 
-            <main // ContentArea gibi üst kapsayıcıda
+
+
+
+            <main
                 style={{
                     flex: 1,
-                    minHeight: 'calc(200vh - 64px)', // navbar yüksekliği kadar düş
-                    padding: '24px 16px'
+                    minHeight: 'calc(100vh - 64px)',
                 }}
             >
                 {(loadingUsers || loadingPricing) ? (
@@ -498,49 +510,54 @@ const AdminPanel = () => {
                                 </div>
                             </>
                         )}
+                        <Box
+                            sx={{
+                                p: { xs: 1, sm: 2, md: 3 }, // 📱 mobilde küçük padding, masaüstünde geniş
+                            }}
+                        >
+                            {activeTab === "users" && (
+                                <>
+                                    <button
+                                        onClick={() => setModalOpen(true)}
+                                        style={{
+                                            fontSize: "18px",
+                                            padding: "8px 16px",
+                                            marginBottom: "1rem",
 
-                        {activeTab === "users" && (
-                            <>
-                                <button
-                                    onClick={() => setModalOpen(true)}
-                                    style={{
-                                        fontSize: "18px",
-                                        padding: "8px 16px",
-                                        marginBottom: "1rem",
+                                            color: "#fff",
+                                            border: "none",
+                                            borderRadius: "8px",
+                                            cursor: "pointer",
+                                            background: 'linear-gradient(135deg, #00AEEF, #0055A4)',
+                                            '&:hover': { filter: 'brightness(1.05)' },
+                                        }}
+                                    >
+                                        + Kullanıcı Ekle
+                                    </button>
 
-                                        color: "#fff",
-                                        border: "none",
-                                        borderRadius: "8px",
-                                        cursor: "pointer",
-                                        background: 'linear-gradient(135deg, #00AEEF, #0055A4)',
-                                        '&:hover': { filter: 'brightness(1.05)' },
-                                    }}
-                                >
-                                    + Kullanıcı Ekle
-                                </button>
+                                    <AddUserModal
+                                        visible={modalOpen}
+                                        onClose={() => setModalOpen(false)}
+                                        email={email}
+                                        setEmail={setEmail}
+                                        password={password}
+                                        setPassword={setPassword}
+                                        credits={credits}
+                                        setCredits={setCredits}
+                                        role={role}
+                                        setRole={setRole}
+                                        handleAddUser={handleAddUser}
+                                    />
 
-                                <AddUserModal
-                                    visible={modalOpen}
-                                    onClose={() => setModalOpen(false)}
-                                    email={email}
-                                    setEmail={setEmail}
-                                    password={password}
-                                    setPassword={setPassword}
-                                    credits={credits}
-                                    setCredits={setCredits}
-                                    role={role}
-                                    setRole={setRole}
-                                    handleAddUser={handleAddUser}
-                                />
-
-                                <h1 style={{ color: "#ffffffff" }}>Kullanıcı Listesi</h1>
-                                {loadingUsers ? (
-                                    <p>Yükleniyor...</p>
-                                ) : (
-                                    <UserDataGrid users={users} fetchUsers={fetchUsers} />
-                                )}
-                            </>
-                        )}
+                                    <h1 style={{ color: "#ffffffff" }}>Kullanıcı Listesi</h1>
+                                    {loadingUsers ? (
+                                        <p>Yükleniyor...</p>
+                                    ) : (
+                                        <UserDataGrid users={users} fetchUsers={fetchUsers} />
+                                    )}
+                                </>
+                            )}
+                        </Box>
 
                         {activeTab === "pricing" && (
                             <div>

@@ -172,8 +172,8 @@ const StyledWrapper = styled.div`
   height: var(--h);
   background: linear-gradient(180deg, #2a3648, #1f2937);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.2);
-  overflow-x: hidden;   /* sadece yatay gizle */
-  overflow-y: visible;  /* ↑ araç üstten görünür kalsın */
+  overflow-x: hidden;  
+  overflow-y: visible;  
   z-index: 1;
 }
 
@@ -182,19 +182,19 @@ const StyledWrapper = styled.div`
   --h: 64px;
   position: relative;
   width: var(--w);
-  top: 4px;     /* önce: -22px idi. 0–8px arası “az aşağı” için ideal */
+  top: 4px;     
   left: -120px;
   height: var(--h);
   background: linear-gradient(180deg, #06b6d4, #0ea5e9);
   border-radius: 16px 16px 10px 10px;
  
-  z-index: 2;     /* yolun üstünde */
+  z-index: 2;    
   box-shadow: inset 0 10px 18px rgba(255,255,255,.18), 0 10px 26px rgba(0,0,0,.25);
   animation: drive 6.5s ease-in-out infinite;
 }
 
 
-  /* Yol çizgisi (akış animasyonu) */
+ 
   .line {
     position: absolute;
     left: 0; top: 50%;
@@ -302,14 +302,7 @@ const StyledWrapper = styled.div`
   .whell1{ left: 96px; }   /* arka */
   .whell2{ left: 18px; }   /* ön  */
 
-  /* jant dönen çizgiler (whell3/4’ü spinner yaptık) */
-  .whell3,.whell4{
-    position: absolute; inset: 3px;
-    border-radius: 999px;
-    border: 2px dashed #cfe8ff;
-    animation: spin .6s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg);} }
+  
 
   /* “eski” küçük teker kapsülleri görünmesin (kodu bozma, sadece gizle) */
   .whell1::after, .whell2::after { content:""; }

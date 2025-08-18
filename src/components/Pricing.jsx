@@ -9,7 +9,7 @@ const Pricing = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const user = JSON.parse(localStorage.getItem('user')); // Kullanıcıyı dışarıda al, render sırasında
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const handleGetStarted = (plan) => {
     const user = JSON.parse(localStorage.getItem('user'));
