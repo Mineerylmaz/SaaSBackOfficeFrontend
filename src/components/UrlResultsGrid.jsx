@@ -11,29 +11,26 @@ const UrlResultsGrid = ({ userId }) => {
     const fetchUrlResults = async () => {
         setLoading(true);
         try {
-            let url = `http://localhost:32807/api/userSettings/urlResults/${userId}`;
-            const params = [];
-            if (startDateTime) params.push(`start=${encodeURIComponent(startDateTime)}`);
-            if (endDateTime) params.push(`end=${encodeURIComponent(endDateTime)}`);
-            if (params.length) {
-                url += `?${params.join('&')}`;
-            }
+            const res = await fetch(`http://localhost:4000/api/disservis/success/urlkontrol`);
+            if (!res.ok) throw new Error('Mock server hatası');
 
-            const res = await fetch(url);
-            if (!res.ok) throw new Error('Sunucu hatası');
             const data = await res.json();
             setResults(data);
         } catch (error) {
-            console.error('URL sonuçları çekilirken hata:', error);
+            console.error('Mock sonuçları çekilirken hata:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Hata',
-                text: 'URL sonuçları çekilirken hata oluştu.',
+                text: 'Mock sonuçları çekilirken hata oluştu.',
             });
         } finally {
             setLoading(false);
         }
     };
+
+
+
+
 
 
 
@@ -146,7 +143,7 @@ const UrlResultsGrid = ({ userId }) => {
                 <label>
                     <input
                         style={{
-                            backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
+                            backgroundColor: loading || results.length === 0 ? '#ccc' : '#0055A4',
                             color: 'white',
                             boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
                         }}
@@ -159,7 +156,7 @@ const UrlResultsGrid = ({ userId }) => {
                 <label >
                     <input
                         style={{
-                            backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
+                            backgroundColor: loading || results.length === 0 ? '#ccc' : '#0055A4',
                             color: 'white',
                             boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
                         }}
@@ -177,7 +174,7 @@ const UrlResultsGrid = ({ userId }) => {
                     disabled={loading}
 
                     style={{
-                        backgroundColor: loading || results.length === 0 ? '#ccc' : '#24496b',
+                        backgroundColor: loading || results.length === 0 ? '#ccc' : '#0055A4',
                         color: 'white',
                         boxShadow: loading || results.length === 0 ? 'none' : '0 4px 6px rgba(0,0,0,0.1)',
                         cursor: loading ? 'not-allowed' : 'pointer',
@@ -251,7 +248,7 @@ export const StyledWrapper = styled.div`
 
   .filter-section input,
   .filter-section button {
-    width: 100%;
+    
     margin-top: 4px;
     padding: 8px 16px;
     border-radius: 8px;

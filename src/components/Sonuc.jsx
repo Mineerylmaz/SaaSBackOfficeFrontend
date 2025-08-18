@@ -3,6 +3,22 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router';
 import { jwtDecode } from "jwt-decode";
 import styled from 'styled-components';
+import RemainingCredits from './RemainingCredits';
+import {
+    Box,
+    Card,
+    CardHeader,
+    CardContent,
+    Grid,
+    TextField,
+    Button,
+    IconButton,
+    Typography,
+    Collapse
+} from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 function Sonuc() {
     const token = localStorage.getItem('token');
     const decoded = token ? jwtDecode(token) : null;
@@ -34,7 +50,11 @@ function Sonuc() {
 
 
     const userIdFromToken = decoded?.id;
-    const customInputValues = JSON.parse(localStorage.getItem('customInputValues')) || {};
+
+    const customInputValues =
+        JSON.parse(localStorage.getItem(`customInputValues${effectiveUserId}`) || 'null') ??
+        JSON.parse(localStorage.getItem('customInputValues') || '{}');
+
 
     const [openIndex, setOpenIndex] = useState(null);
 
@@ -407,19 +427,13 @@ function Sonuc() {
     const [canAccess, setCanAccess] = useState(false);
 
 
+    const hasRt = (settings?.settings?.rt_urls?.length ?? 0) > 0;
+    const hasStatic = (settings?.settings?.static_urls?.length ?? 0) > 0;
+    const hasInputs =
+        (inputValues && Object.keys(inputValues).length > 0) ||
+        (customInputValues && Object.keys(customInputValues).length > 0);
 
-
-
-
-    if (
-        !settings ||
-        !settings.settings ||
-        settings.settings.rt_urls?.length < 1 ||
-        settings.settings.static_urls?.length < 1 ||
-        !customInputValues ||
-        Object.keys(customInputValues).length === 0
-
-    ) {
+    if (!hasRt || !hasStatic || !hasInputs) {
         const darkMode = localStorage.getItem("theme") === "dark";
 
         return (
@@ -485,160 +499,365 @@ function Sonuc() {
 
 
     return (
-        <div style={styles.container}>
-            <hr style={{ margin: '2rem 0' }} />
+        <StudioWrapper>
+            {/* Header */}
+            <TopBar>
+                <div className="left">
+                    <h2>API Studio</h2>
 
+                </div>
+                <div className="right">
+                    <RemainingCredits userId={userId} role={userRole} />
+                </div>
+            </TopBar>
 
+            {/* Layout */}
+            <MainLayout>
+                {/* Sidebar: Methods */}
+                <Sidebar>
+                    <SidebarHeader>
+                        <span>Metotlar</span>
+                        <span className="count">{methods.length}</span>
+                    </SidebarHeader>
 
-            {methods.map((methodKey, index) => {
-
-
-
-
-                return (
-                    <div key={methodKey}>
-                        <h3 style={styles.methodHeader} onClick={() => handleToggle(index)}>
-                            {methodKey}
-                            <span style={{ fontSize: 20 }}>{openIndex === index ? '^' : 'ᵛ'}</span>
-                        </h3>
-
-
-                        {openIndex === index && (
-                            <div
-                                style={{
-                                    border: '1px solid #ddd',
-                                    borderTop: 'none',
-                                    borderRadius: '0 0 6px 6px',
-                                    background: '#fff',
-                                    padding: 20,
-                                    color: '#24292e',
-                                    boxShadow: '0 2px 8px rgb(149 157 165 / 20%)',
-                                }}
-                            >
-
-                                <p>
-                                    <strong>Sizin Erişim URL’niz:</strong>
-                                </p>
-                                <code
-                                    style={{
-                                        wordBreak: 'break-all',
-                                        overflowWrap: 'break-word',
-                                        display: 'block',
-                                        backgroundColor: '#f6f8fa',
-                                        padding: '10px',
-                                        borderRadius: 4,
-                                        fontFamily: 'Consolas, monospace',
-                                        border: '1px solid #e1e4e8',
-                                    }}
+                    <MethodList>
+                        {methods.map((mKey, i) => {
+                            const active = openIndex === i;
+                            return (
+                                <MethodItem
+                                    key={mKey}
+                                    className={active ? 'active' : ''}
+                                    onClick={() => handleToggle(i)}
+                                    title={mKey}
                                 >
-                                    {getDisplayUrl(methodKey)}
-                                </code>
+                                    <span className="bullet" />
+                                    <span className="name">{mKey}</span>
+                                </MethodItem>
+                            );
+                        })}
+                    </MethodList>
+                </Sidebar>
 
-
-
-                                <p style={{ marginTop: 20, marginBottom: 8, fontWeight: '600' }}>Parametreler:</p>
-
-                                <ul style={styles.paramList}>
-                                    {paramSchemaMap[methodKey]?.params?.map(({ field, req }) => (
-                                        <li key={field} style={styles.paramItem}>
-                                            <label htmlFor={`${field}-${methodKey}`}>
-                                                {field} {req && '*'}
-                                            </label>
-                                            <input
-                                                id={`${field}-${methodKey}`}
-
-                                                type="text"
-                                                placeholder={field}
-                                                value={params[methodKey]?.[field] || ''}
-                                                onChange={(e) => {
-                                                    setParams({
-                                                        ...params,
-                                                        [methodKey]: {
-                                                            ...params[methodKey],
-                                                            [field]: e.target.value
-                                                        }
-                                                    });
-                                                }}
-                                                style={styles.input}
-                                            />
-
-
-                                        </li>
-                                    ))}
-
-                                </ul>
-
-
-
-
-
-
-                                <div style={styles.buttonsRow}>
+                {/* Right: Builder + Response */}
+                <WorkPane>
+                    {methods.length === 0 ? (
+                        <EmptyBlock>
+                            Metot bulunamadı. Plan/metot ayarlarınızı kontrol edin.
+                        </EmptyBlock>
+                    ) : (
+                        <>
+                            {/* Üst URL bar (sticky) */}
+                            <UrlBar>
+                                <div className="method">{methods[openIndex ?? 0]}</div>
+                                <div className="url">
+                                    <code>{getDisplayUrl(methods[openIndex ?? 0])}</code>
+                                </div>
+                                <div className="actions">
                                     <button
-                                        disabled={loadingParams}
-                                        style={{
-                                            ...styles.button, ...styles.copyBtn, cursor: loadingParams ? 'not-allowed' : 'pointer',
-                                            opacity: loadingParams ? 0.6 : 1,
-                                            pointerEvents: loadingParams ? 'none' : 'auto',
-                                        }}
-                                        onClick={() => handleCopy(getFullUrl(methodKey))}
-                                        title="URL'yi kopyala"
-
+                                        className="ghost"
+                                        onClick={() => handleCopy(getFullUrl(methods[openIndex ?? 0]))}
                                     >
                                         📎 Kopyala
                                     </button>
                                     <button
-                                        style={{
-                                            ...styles.button, ...styles.curlBtn, cursor: loadingParams ? 'not-allowed' : 'pointer',
-                                            opacity: loadingParams ? 0.6 : 1,
-                                            pointerEvents: loadingParams ? 'none' : 'auto',
-                                        }}
-                                        onClick={() => handleCopy(`curl "${getFullUrl(methodKey)}" -H "Authorization: Bearer ${token}"`)}
-                                        title="cURL komutunu kopyala"
-                                        disabled={loadingParams}
-
-
+                                        className="ghost"
+                                        onClick={() =>
+                                            handleCopy(
+                                                `curl "${getFullUrl(methods[openIndex ?? 0])}" -H "Authorization: Bearer ${token}"`
+                                            )
+                                        }
                                     >
-                                        💻 cURL Dışa Aktar
+                                        💻 cURL
                                     </button>
                                     <button
-                                        style={{
-                                            ...styles.button, ...styles.queryBtn, cursor: loadingParams ? 'not-allowed' : 'pointer',
-                                            opacity: loadingParams ? 0.6 : 1,
-                                            pointerEvents: loadingParams ? 'none' : 'auto',
-                                        }}
-                                        onClick={() => handleQuery(methodKey)}
-                                        title="API sorgusu yap"
-                                        disabled={loadingParams}
-
-
+                                        className="primary"
+                                        onClick={() => handleQuery(methods[openIndex ?? 0])}
                                     >
                                         🔍 Sorgula
                                     </button>
-                                    {loadingParams && (
-                                        <span style={{ fontSize: 14, color: '#666' }}>Yükleniyor...</span>
-                                    )}
                                 </div>
+                            </UrlBar>
 
-                                {apiResponse && (
-                                    <pre style={styles.responseBox}>
-                                        {typeof apiResponse === 'string' ? apiResponse : JSON.stringify(apiResponse, null, 2)}
-                                    </pre>
-                                )}
+                            {/* Params + Response paneli */}
+                            <Panels>
+                                <Panel>
+                                    <PanelHeader>Parametreler</PanelHeader>
+                                    <ParamsGrid>
+                                        {paramSchemaMap[methods[openIndex ?? 0]]?.params?.length ? (
+                                            paramSchemaMap[methods[openIndex ?? 0]].params.map(({ field, req }) => (
+                                                <div key={field} className="field">
+                                                    <label htmlFor={`${field}-${methods[openIndex ?? 0]}`}>
+                                                        {field} {req && <span className="req">*</span>}
+                                                    </label>
+                                                    <input
+                                                        id={`${field}-${methods[openIndex ?? 0]}`}
+                                                        type="text"
+                                                        placeholder={field}
+                                                        value={params[methods[openIndex ?? 0]]?.[field] || ''}
+                                                        onChange={(e) =>
+                                                            setParams(prev => ({
+                                                                ...prev,
+                                                                [methods[openIndex ?? 0]]: {
+                                                                    ...(prev[methods[openIndex ?? 0]] || {}),
+                                                                    [field]: e.target.value
+                                                                }
+                                                            }))
+                                                        }
+                                                    />
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <EmptyInline>Bu metoda ait parametre bulunmuyor.</EmptyInline>
+                                        )}
+                                    </ParamsGrid>
+                                </Panel>
 
-                                {apiError && (
-                                    <div style={styles.errorBox}>
-                                        {apiError}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                );
-            })}
-        </div>
-    )
+                                <Panel>
+                                    <PanelHeader>Yanıt</PanelHeader>
+
+                                    {apiError ? (
+                                        <ErrorBox>{apiError}</ErrorBox>
+                                    ) : apiResponse ? (
+                                        <ResponseBox>
+                                            {typeof apiResponse === 'string'
+                                                ? apiResponse
+                                                : JSON.stringify(apiResponse, null, 2)}
+                                        </ResponseBox>
+                                    ) : (
+                                        <EmptyInline>Henüz yanıt yok. “Sorgula” ile deneyin.</EmptyInline>
+                                    )}
+
+                                    <FooterHint>
+                                        <span>Tam URL:</span>
+                                        <code>{getFullUrl(methods[openIndex ?? 0])}</code>
+                                    </FooterHint>
+                                </Panel>
+                            </Panels>
+                        </>
+                    )}
+                </WorkPane>
+            </MainLayout>
+        </StudioWrapper>
+    );
+
+
 }
 ;
+const StudioWrapper = styled.div`
+  --bg: #0b1220;
+  --card: #0f172a;
+  --muted: #94a3b8;
+  --line: rgba(148, 163, 184, 0.2);
+  --primary: #00aeef;
+  --primary-dark: #007bbf;
+  --accent: #0055a4;
+  --success: #10b981;
+  --danger: #ef4444;
+
+  color: #e5e7eb;
+  background: radial-gradient(1200px 600px at 20% -20%, #0b2345 0%, #0b1220 40%, #0b1220 100%);
+  min-height: 100vh;
+  padding: 16px;
+`;
+
+const TopBar = styled.div`
+  position: sticky; top: 8px; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(15,23,42,.75));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.25);
+
+  h2 { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: .3px; }
+  .hint { color: var(--muted); font-size: 12px; margin-left: 10px; }
+`;
+
+const MainLayout = styled.div`
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+  margin-top: 14px;
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Sidebar = styled.aside`
+  background: rgba(15,23,42,.7);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  height: fit-content;
+`;
+
+const SidebarHeader = styled.div`
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  span:first-child { font-weight: 800; letter-spacing: .3px; }
+  .count {
+    margin-left: auto;
+    font-size: 11px; font-weight: 800;
+    padding: 2px 8px; border-radius: 999px;
+    background: rgba(0,174,239,.12);
+    color: var(--primary);
+    border: 1px solid rgba(0,174,239,.3);
+  }
+`;
+
+const MethodList = styled.div`
+  display: grid; gap: 6px;
+`;
+
+const MethodItem = styled.button`
+  all: unset;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  border: 1px solid transparent;
+  transition: .2s ease;
+  color: #cbd5e1;
+
+  .bullet { width: 8px; height: 8px; border-radius: 999px; background: #64748b; }
+  .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  &:hover { background: rgba(148,163,184,.08); border-color: var(--line); }
+  &.active { background: rgba(0,174,239,.12); border-color: rgba(0,174,239,.35); color: #e2f4ff; }
+  &.active .bullet { background: var(--primary); }
+`;
+
+const WorkPane = styled.section`
+  background: rgba(15,23,42,.7);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+`;
+
+const UrlBar = styled.div`
+  position: sticky; top: 60px; z-index: 5;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  background: rgba(2,6,23,.6);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  backdrop-filter: blur(6px);
+
+  .method {
+    font-weight: 900; color: #e2f4ff; background: rgba(0,85,164,.3);
+    border: 1px solid rgba(0,85,164,.5);
+    padding: 6px 10px; border-radius: 999px; font-size: 12px; white-space: nowrap;
+  }
+
+  .url code {
+    display: block; font-family: Consolas, monospace; font-size: 12px;
+    color: #e2f4ff; white-space: nowrap; overflow: auto;
+  }
+
+  .actions {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+  }
+
+  button {
+    border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px;
+    font-weight: 800; cursor: pointer; transition: .2s ease;
+  }
+  button.ghost { background: rgba(2,6,23,.6); color: #e5e7eb; }
+  button.ghost:hover { border-color: rgba(0,174,239,.45); color: #e2f4ff; }
+  button.primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; border: none; }
+  button.primary:hover { filter: brightness(.95); }
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
+    .actions { justify-content: flex-start; }
+  }
+`;
+
+const Panels = styled.div`
+  display: grid; gap: 12px; margin-top: 12px;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Panel = styled.div`
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(2,6,23,.5);
+  padding: 12px;
+`;
+
+const PanelHeader = styled.div`
+  font-size: 12px; font-weight: 900; letter-spacing: .4px;
+  color: #94d5ff; margin-bottom: 10px;
+`;
+
+const ParamsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+
+  .field { display: grid; gap: 6px; }
+  label { font-size: 12px; color: #cbd5e1; }
+  .req { color: #f87171; }
+
+  input {
+    width: 100%; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--line); background: rgba(15,23,42,.8);
+    color: #e5e7eb; font-weight: 600; outline: none;
+    transition: .2s ease;
+  }
+  input:focus { border-color: rgba(0,174,239,.45); box-shadow: 0 0 0 3px rgba(0,174,239,.15); }
+`;
+
+const ResponseBox = styled.pre`
+  margin: 0;
+  background: rgba(0, 174, 239, .08);
+  border: 1px solid rgba(0,174,239,.35);
+  color: #e2f4ff;
+  border-radius: 10px;
+  padding: 12px;
+  max-height: 360px;
+  overflow: auto;
+  font-size: 12px;
+  font-family: Consolas, monospace;
+  white-space: pre-wrap;
+`;
+
+const ErrorBox = styled.div`
+  background: rgba(239, 68, 68,.08);
+  border: 1px solid rgba(239,68,68,.35);
+  color: #fecaca;
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 800;
+`;
+
+const FooterHint = styled.div`
+  margin-top: 10px;
+  display: grid; gap: 6px;
+  color: var(--muted);
+  code { font-family: Consolas, monospace; color: #e2f4ff; }
+`;
+
+const EmptyBlock = styled.div`
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  color: #9fb3c8;
+`;
+
+const EmptyInline = styled.div`
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  color: #9fb3c8;
+`;
+
 
 export default Sonuc;

@@ -13,6 +13,9 @@ const AdminPanel = () => {
     const initialTab = searchParams.get("tab") || "dashboard";
     const [activeTab, setActiveTab] = useState(initialTab);
     const [totalRemainingCredits, setTotalRemainingCredits] = useState(0);
+    const [newPlanplan_limitInputs, setNewPlanplan_limitInputs] = useState({});
+    const [newplan_limitKey, setNewplan_limitKey] = useState(''); // Yeni plan_limit türü için input
+
 
     const [keys, setKeys] = useState([
 
@@ -48,8 +51,8 @@ const AdminPanel = () => {
     const [password, setPassword] = useState('');
     const [credits, setCredits] = useState(0);
     const [role, setRole] = useState('user');
-    const [newPlanRTLimit, setNewPlanRTLimit] = useState(0);
-    const [newPlanStaticLimit, setNewPlanStaticLimit] = useState(0);
+
+
 
     const [newPlanCredits, setNewPlanCredits] = useState(0);
 
@@ -250,12 +253,17 @@ const AdminPanel = () => {
 
 
 
-    const handlePricingChange = (planIndex, field, value) => {
+    const handlePricingChange = (planIndex, field, value, subKey = null) => {
         const newPricing = [...pricing];
-        if (field === 'rt_url_limit' || field === 'static_url_limit') {
-            newPricing[planIndex][field] = Number(value);
-        }
 
+        if (field === 'plan_limit' && subKey) {
+
+            if (!newPricing[planIndex].plan_limit) {
+                newPricing[planIndex].plan_limit = {};
+            }
+
+            newPricing[planIndex].plan_limit[subKey] = Number(value);
+        }
         else if (field === 'features_bulk') {
             newPricing[planIndex].features = value
                 .split('\n')
@@ -265,8 +273,6 @@ const AdminPanel = () => {
         else if (field === 'credits') {
             newPricing[planIndex][field] = Number(value);
         }
-
-
         else {
             if (field === 'price') {
                 newPricing[planIndex][field] = Number(value);
@@ -275,9 +281,9 @@ const AdminPanel = () => {
             }
         }
 
-
         setPricing(newPricing);
     };
+
 
 
 
@@ -286,31 +292,44 @@ const AdminPanel = () => {
             alert('Plan adı boş olamaz');
             return;
         }
+
         const featuresArray = newPlanFeaturesText
             .split('\n')
             .map(f => f.trim())
             .filter(f => f.length > 0);
+
+        // plan_limitInput, kullanıcıdan gelen JSON benzeri bir string olabilir: "rt:5, static:7, mine:10"
+        // veya frontend inputlardan oluşturulabilir
+        const plan_limitObj = {};
+        if (newPlanplan_limitInputs) { // örnek olarak state: { rt: 5, static: 7, mine: 10 }
+            Object.entries(newPlanplan_limitInputs).forEach(([key, value]) => {
+                plan_limitObj[key] = Number(value) || 0;
+            });
+        }
 
         const newPlan = {
             id: Date.now(),
             name: newPlanName.trim(),
             price: Number(newPlanPrice) || 0,
             features: featuresArray,
-            rt_url_limit: Number(newPlanRTLimit),
-            static_url_limit: Number(newPlanStaticLimit),
+            plan_limit: plan_limitObj,
             max_file_size: Number(newPlanMaxFileSize) || 0,
-            credits: newPlanCredits,
+            credits: Number(newPlanCredits) || 0,
             roles: [],
             methods: newPlanMethods,
         };
-
 
         setPricing(prev => [...prev, newPlan]);
 
         setNewPlanName('');
         setNewPlanPrice('');
         setNewPlanFeaturesText('');
+        setNewPlanMaxFileSize('');
+        setNewPlanCredits('');
+        setNewPlanplan_limitInputs({}); // reset
     };
+
+
     function addRoleToPlan(planIndex, role, count) {
         if (!role || count <= 0) return;
 
@@ -378,7 +397,7 @@ const AdminPanel = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
 
-
+    const [addLimitKeyModal, setAddLimitKeyModal] = useState({ open: false, index: null, value: "" });
 
 
     return (
@@ -451,14 +470,20 @@ const AdminPanel = () => {
             </button>
 
 
-            <main style={{ flexGrow: 1, padding: "2rem", overflowY: "auto" }}>
+            <main // ContentArea gibi üst kapsayıcıda
+                style={{
+                    flex: 1,
+                    minHeight: 'calc(200vh - 64px)', // navbar yüksekliği kadar düş
+                    padding: '24px 16px'
+                }}
+            >
                 {(loadingUsers || loadingPricing) ? (
                     <p>Yükleniyor...</p>
                 ) : (
                     <>
                         {activeTab === "dashboard" && (
                             <>
-                                <h1 style={{ color: "#071f35" }}>Dashboard</h1>
+                                <h1 style={{ color: "#ffffffff" }}>Dashboard</h1>
                                 <div style={cardsContainerStyle}>
                                     <DashboardCard
                                         icon={<FaUsers color="#227BBF" />}
@@ -482,11 +507,13 @@ const AdminPanel = () => {
                                         fontSize: "18px",
                                         padding: "8px 16px",
                                         marginBottom: "1rem",
-                                        backgroundColor: "#446d92",
+
                                         color: "#fff",
                                         border: "none",
                                         borderRadius: "8px",
                                         cursor: "pointer",
+                                        background: 'linear-gradient(135deg, #00AEEF, #0055A4)',
+                                        '&:hover': { filter: 'brightness(1.05)' },
                                     }}
                                 >
                                     + Kullanıcı Ekle
@@ -506,7 +533,7 @@ const AdminPanel = () => {
                                     handleAddUser={handleAddUser}
                                 />
 
-                                <h1 style={{ color: "#071f35" }}>Kullanıcı Listesi</h1>
+                                <h1 style={{ color: "#ffffffff" }}>Kullanıcı Listesi</h1>
                                 {loadingUsers ? (
                                     <p>Yükleniyor...</p>
                                 ) : (
@@ -517,505 +544,374 @@ const AdminPanel = () => {
 
                         {activeTab === "pricing" && (
                             <div>
-                                <button
-                                    onClick={() => setShowNewPlanForm(true)}
-                                    style={{
-                                        fontSize: "18px",
-                                        padding: "8px 16px",
-                                        marginBottom: "1rem",
-                                        backgroundColor: "#446d92",
-                                        color: "#fff",
-                                        border: "none",
-                                        borderRadius: "8px",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    + Yeni Plan Ekle
-                                </button>
-
-                                <h1 style={{ color: "#071f35", marginBottom: "1.5rem" }}>
-                                    Fiyatları Kontrol Et
-                                </h1>
-
-                                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-                                    {pricing.map((plan, index) => (
-                                        <div
-                                            key={plan.id}
-                                            style={{
-                                                backgroundColor: "#446d92",
-                                                padding: "1.5rem 2rem",
-                                                borderRadius: "12px",
-                                                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                                                border: "1px solid #cce4ff",
-                                            }}
+                                {/* Sticky Toolbar */}
+                                <div style={toolbarStyle}>
+                                    <div className="left">
+                                        <h1>Planlar</h1>
+                                        <span className="sub">Toplam {pricing.length} plan</span>
+                                    </div>
+                                    <div className="right">
+                                        <button
+                                            onClick={() => setShowNewPlanForm(true)}
+                                            style={primaryBtn}
                                         >
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: "1.5rem",
-                                                    flexWrap: "wrap",
-                                                }}
-                                            >
-                                                <label
-                                                    style={{
-                                                        flex: "1 1 200px",
-                                                        color: "#071f35",
-                                                        fontWeight: "600",
-                                                    }}
-                                                >
-                                                    Plan Adı:
+                                            + Yeni Plan
+                                        </button>
+                                        <button
+                                            onClick={savePricing}
+                                            style={saveBtn}
+                                        >
+                                            Fiyatları Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Plan Kartları Grid */}
+                                <div style={planGridStyle}>
+                                    {pricing.map((plan, index) => (
+                                        <div key={plan.id} style={planCardStyle}>
+                                            <div style={planCardHeader}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                    <span style={planBadge}>{plan?.id ? `#${plan.id}` : 'Yeni'}</span>
                                                     <input
                                                         type="text"
                                                         value={plan.name}
-                                                        onChange={(e) =>
-                                                            handlePricingChange(index, "name", e.target.value)
-                                                        }
-                                                        style={{
-                                                            ...inputStyle,
-                                                            width: "100%",
-                                                            marginTop: "0.25rem",
-                                                        }}
+                                                        onChange={(e) => handlePricingChange(index, "name", e.target.value)}
+                                                        placeholder="Plan Adı"
+                                                        style={planTitleInput}
                                                     />
-                                                </label>
+                                                </div>
 
-                                                <label
-                                                    style={{
-                                                        flex: "0 0 120px",
-                                                        color: "#071f35",
-                                                        fontWeight: "600",
-                                                    }}
+                                                <button
+                                                    onClick={() => deletePlan(index)}
+                                                    style={dangerGhostBtn}
+                                                    title="Planı Sil"
                                                 >
-                                                    Fiyat:
+                                                    Sil
+                                                </button>
+                                            </div>
+
+                                            <div style={planBodyGrid}>
+                                                {/* Fiyat */}
+                                                <div style={fieldBlock}>
+                                                    <label style={labelSm}>Fiyat</label>
                                                     <input
                                                         type="number"
                                                         value={plan.price}
-                                                        onChange={(e) =>
-                                                            handlePricingChange(index, "price", e.target.value)
-                                                        }
-                                                        style={{
-                                                            ...inputStyle,
-                                                            width: "100%",
-                                                            marginTop: "0.25rem",
-                                                        }}
+                                                        onChange={(e) => handlePricingChange(index, "price", e.target.value)}
+                                                        style={inputLg}
                                                     />
-                                                </label>
+                                                </div>
 
-                                                <label
-                                                    style={{
-                                                        flex: "0 0 120px",
-                                                        color: "#071f35",
-                                                        fontWeight: "600",
-                                                    }}
-                                                >
-                                                    RT Limit:
-                                                    <input
-                                                        type="number"
-                                                        value={plan.rt_url_limit || 0}
-                                                        onChange={(e) =>
-                                                            handlePricingChange(index, "rt_url_limit", Number(e.target.value))
-                                                        }
-                                                        style={{
-                                                            ...inputStyle,
-                                                            width: "100%",
-                                                            marginTop: "0.25rem",
-                                                        }}
-                                                    />
-                                                </label>
-
-                                                <label
-                                                    style={{
-                                                        flex: "0 0 120px",
-                                                        color: "#071f35",
-                                                        fontWeight: "600",
-                                                    }}
-                                                >
-                                                    Static Limit:
-                                                    <input
-                                                        type="number"
-                                                        value={plan.static_url_limit || 0}
-                                                        onChange={(e) =>
-                                                            handlePricingChange(index, "static_url_limit", Number(e.target.value))
-                                                        }
-                                                        style={{
-                                                            ...inputStyle,
-                                                            width: "100%",
-                                                            marginTop: "0.25rem",
-                                                        }}
-                                                    />
-                                                </label>
-                                                <label
-                                                    style={{
-                                                        flex: "0 0 120px",
-                                                        color: "#071f35",
-                                                        fontWeight: "600",
-                                                    }}
-                                                >
-                                                    Dosya Boyutu:
+                                                {/* Max Dosya Boyutu */}
+                                                <div style={fieldBlock}>
+                                                    <label style={labelSm}>Maks. Dosya Boyutu (MB)</label>
                                                     <input
                                                         type="number"
                                                         value={plan.max_file_size || 0}
-                                                        onChange={(e) =>
-                                                            handlePricingChange(index, "max_file_size", Number(e.target.value))
-                                                        }
-                                                        style={{
-                                                            ...inputStyle,
-                                                            width: "100%",
-                                                            marginTop: "0.25rem",
-                                                        }}
-                                                        placeholder="MB"
+                                                        onChange={(e) => handlePricingChange(index, "max_file_size", Number(e.target.value))}
+                                                        style={inputLg}
                                                     />
-                                                </label>
+                                                </div>
 
-                                                <label
-                                                    style={{
-                                                        flex: "0 0 120px",
-                                                        color: "#071f35",
-                                                        fontWeight: "600",
-                                                    }}
-                                                >
-                                                    Kredi:
+                                                {/* Kredi */}
+                                                <div style={fieldBlock}>
+                                                    <label style={labelSm}>Kredi</label>
                                                     <input
                                                         type="number"
                                                         value={plan.credits || 0}
-                                                        onChange={(e) =>
-                                                            handlePricingChange(index, "credits", Number(e.target.value))
-                                                        }
-                                                        style={{
-                                                            ...inputStyle,
-                                                            width: "100%",
-                                                            marginTop: "0.25rem",
-                                                        }}
+                                                        onChange={(e) => handlePricingChange(index, "credits", Number(e.target.value))}
+                                                        style={inputLg}
                                                     />
-                                                </label>
+                                                </div>
 
-                                                <label style={{ color: "#071f35", fontWeight: "600", flex: "1 1 100%" }}>
-                                                    Erişim Linkleri:
-                                                    <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
-                                                        {availableMethods.map((method) => (
-                                                            <label key={method} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={plan.metotlar?.includes(method)}
-                                                                    onChange={(e) => {
-                                                                        const updated = e.target.checked
-                                                                            ? [...(plan.metotlar || []), method]
-                                                                            : (plan.metotlar || []).filter((m) => m !== method);
-                                                                        handlePricingChange(index, "metotlar", updated);
-                                                                    }}
-                                                                />
-                                                                {method}
-                                                            </label>
-                                                        ))}
+                                                {/* Yetkili Metotlar */}
+                                                <div style={{ ...fieldBlock, gridColumn: '1 / -1' }}>
+                                                    <label style={labelSm}>Erişim Linkleri / Metotlar</label>
+                                                    <div style={methodChipsWrap}>
+                                                        {availableMethods.map((method) => {
+                                                            const checked = plan.metotlar?.includes(method);
+                                                            return (
+                                                                <label
+                                                                    key={method}
+                                                                    style={chipCheck(checked)}
+                                                                    title={method}
+                                                                >
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={checked}
+                                                                        onChange={(e) => {
+                                                                            const updated = e.target.checked
+                                                                                ? [...(plan.metotlar || []), method]
+                                                                                : (plan.metotlar || []).filter((m) => m !== method);
+                                                                            handlePricingChange(index, "metotlar", updated);
+                                                                        }}
+                                                                        style={{ display: 'none' }}
+                                                                    />
+                                                                    {method}
+                                                                </label>
+                                                            );
+                                                        })}
                                                     </div>
-                                                </label>
+                                                </div>
 
-
-                                                {plan.roles && plan.roles.map((r, i) => (
-                                                    <div
-                                                        key={i}
-                                                        style={roleRowStyle}
-
-                                                    >
-                                                        <span style={roleNameStyle}>{r.role}</span>
-                                                        <input
-                                                            type="number"
-                                                            value={r.count}
-                                                            min={0}
-                                                            onChange={e => handleRoleCountChange(index, i, Number(e.target.value))}
-                                                            style={roleCountInputStyle}
-                                                        />
-                                                        <Silbuton onClick={() => removeRole(index, i)}>Sil</Silbuton>
+                                                {/* Plan Limitleri */}
+                                                <div style={{ ...fieldBlock, gridColumn: '1 / -1' }}>
+                                                    <div style={sectionHeader}>
+                                                        <h4 style={{ margin: 0, color: 'black' }}>Plan Limitleri</h4>
+                                                        <button
+                                                            style={ghostBtn}
+                                                            onClick={() => setAddLimitKeyModal({ open: true, index, value: "" })}
+                                                        >
+                                                            + Yeni Limit Key
+                                                        </button>
                                                     </div>
-                                                ))}
 
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedPlanForRoleAdd(index);
-                                                        setShowRoleModal(true);
-                                                        setNewRole('');
-                                                        setNewRoleCount(0);
-                                                    }}
-                                                    style={addRoleButtonStyle}
-                                                >
-                                                    Rol Ekle
-                                                </button>
+                                                    {Object.entries(plan.plan_limit || {}).length === 0 ? (
+                                                        <div style={emptyHint}>Henüz limit key tanımlanmadı.</div>
+                                                    ) : (
+                                                        <div style={limitsGrid}>
+                                                            {Object.entries(plan.plan_limit || {}).map(([key, value]) => (
+                                                                <div key={key} style={limitItem}>
+                                                                    <div style={limitKey}>{key}</div>
+                                                                    <input
+                                                                        type="number"
+                                                                        value={value}
+                                                                        onChange={(e) => {
+                                                                            const newPricing = [...pricing];
+                                                                            newPricing[index].plan_limit[key] = Number(e.target.value);
+                                                                            setPricing(newPricing);
+                                                                        }}
+                                                                        style={inputSm}
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
 
+                                                {/* Roller */}
+                                                <div style={{ ...fieldBlock, gridColumn: '1 / -1' }}>
+                                                    <div style={sectionHeader}>
+                                                        <h4 style={{ margin: 0, color: 'black' }}>Roller</h4>
+                                                        <button
+                                                            onClick={() => {
+                                                                setSelectedPlanForRoleAdd(index);
+                                                                setShowRoleModal(true);
+                                                                setNewRole('');
+                                                                setNewRoleCount(0);
+                                                            }}
+                                                            style={ghostBtn}
+                                                        >
+                                                            + Rol Ekle
+                                                        </button>
+                                                    </div>
 
-
-                                                <Silbuton
-                                                    onClick={() => deletePlan(index)}
-                                                    style={{
-                                                        marginLeft: "auto",
-                                                        backgroundColor: "#d33",
-                                                        color: "white",
-                                                        border: "none",
-                                                        padding: "6px 12px",
-                                                        borderRadius: "6px",
-                                                        cursor: "pointer",
-                                                        fontWeight: "600",
-                                                        marginTop: '10px'
-                                                    }}
-                                                >
-                                                    Sil
-                                                </Silbuton>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {showRoleModal && (
-                                        <div style={{
-                                            position: 'fixed',
-                                            top: 0, left: 0, right: 0, bottom: 0,
-                                            backgroundColor: 'rgba(0,0,0,0.5)',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            zIndex: 9999,
-                                        }}>
-                                            <div style={textareaStyle} >
-                                                <h3>Rol Ekle</h3>
-                                                <select value={newRole} onChange={e => setNewRole(e.target.value)} style={selectStyle}>
-                                                    <option value="">Rol Seç</option>
-                                                    <option value="viewer">Viewer</option>
-                                                    <option value="editor">Editor</option>
-                                                    <option value="admin">Admin</option>
-                                                </select>
-                                                <input
-                                                    type="number"
-                                                    min={0}
-                                                    value={newRoleCount}
-                                                    onChange={e => setNewRoleCount(Number(e.target.value))}
-                                                    placeholder="Kişi Sayısı"
-                                                    style={inputStyle}
-                                                />
-                                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                                                    <button onClick={() => setShowRoleModal(false)}>İptal</button>
-                                                    <button onClick={() => {
-                                                        if (selectedPlanForRoleAdd !== null) {
-                                                            addRoleToPlan(selectedPlanForRoleAdd, newRole, newRoleCount);
-
-                                                        }
-                                                    }}>Ekle</button>
+                                                    {plan.roles && plan.roles.length > 0 ? (
+                                                        <div style={rolesWrap}>
+                                                            {plan.roles.map((r, i) => (
+                                                                <div key={i} style={rolePill}>
+                                                                    <span>{r.role}</span>
+                                                                    <input
+                                                                        type="number"
+                                                                        value={r.count}
+                                                                        min={0}
+                                                                        onChange={e => handleRoleCountChange(index, i, Number(e.target.value))}
+                                                                        style={roleCount}
+                                                                    />
+                                                                    <button
+                                                                        onClick={() => removeRole(index, i)}
+                                                                        style={pillRemoveBtn}
+                                                                        title="Sil"
+                                                                    >
+                                                                        ×
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <div style={emptyHint}>Bu plana ait rol tanımı yok.</div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
-                                    )}
+                                    ))}
+                                </div>
 
-
-                                    {showNewPlanForm && (
-                                        <div
-                                            style={{
-                                                backgroundColor: "#446d92",
-                                                padding: "1.5rem 2rem",
-                                                borderRadius: "12px",
-                                                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                                                border: "1px solid #cce4ff",
-                                                marginBottom: "1rem",
-                                            }}
-                                        >
-                                            <h2 style={{ marginBottom: "1rem", color: "#071f35" }}>Yeni Plan Ekle</h2>
-
-
-                                            <label
-                                                style={{
-                                                    flex: "1 1 200px",
-                                                    color: "#071f35",
-                                                    fontWeight: "600",
-                                                }}
-                                            >
-                                                Plan Adı:
-                                                <input
-                                                    type="text"
-                                                    value={newPlanName}
-                                                    onChange={(e) => setNewPlanName(e.target.value)}
-                                                    style={{
-                                                        ...inputStyle,
-                                                        width: "100%",
-                                                        marginTop: "0.25rem",
+                                {/* ----------------- Küçük Modal: Yeni Limit Key ----------------- */}
+                                {addLimitKeyModal.open && (
+                                    <div style={modalOverlay}>
+                                        <div style={smallModalCard}>
+                                            <h3 style={{ marginTop: 0 }}>Yeni Limit Key</h3>
+                                            <input
+                                                type="text"
+                                                placeholder="örn. mine"
+                                                value={addLimitKeyModal.value}
+                                                onChange={(e) => setAddLimitKeyModal(m => ({ ...m, value: e.target.value }))}
+                                                style={inputLg}
+                                            />
+                                            <div style={modalActions}>
+                                                <button
+                                                    style={ghostBtn}
+                                                    onClick={() => setAddLimitKeyModal({ open: false, index: null, value: "" })}
+                                                >
+                                                    İptal
+                                                </button>
+                                                <button
+                                                    style={primaryBtn}
+                                                    onClick={() => {
+                                                        const keyName = (addLimitKeyModal.value || "").trim();
+                                                        if (!keyName) return;
+                                                        const idx = addLimitKeyModal.index;
+                                                        const newPricing = [...pricing];
+                                                        newPricing[idx].plan_limit = {
+                                                            ...(newPricing[idx].plan_limit || {}),
+                                                            [keyName]: 0
+                                                        };
+                                                        setPricing(newPricing);
+                                                        setAddLimitKeyModal({ open: false, index: null, value: "" });
                                                     }}
-                                                />
-                                            </label>
+                                                >
+                                                    Ekle
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
 
-                                            <label
-                                                style={{
-                                                    flex: "0 0 120px",
-                                                    color: "#071f35",
-                                                    fontWeight: "600",
-                                                }}
-                                            >
-                                                Fiyat:
-                                                <input
-                                                    type="number"
-                                                    value={newPlanPrice}
-                                                    onChange={(e) => setNewPlanPrice(e.target.value)}
-                                                    style={{ ...inputStyle, width: "100%", marginTop: "0.25rem" }}
-                                                />
-                                            </label>
-
-                                            <label
-                                                style={{
-                                                    flex: "0 0 120px",
-                                                    color: "#071f35",
-                                                    fontWeight: "600",
-                                                }}
-                                            >
-                                                RT Limit:
-                                                <input
-                                                    type="number"
-                                                    value={newPlanRTLimit}
-                                                    onChange={(e) => setNewPlanRTLimit(e.target.value)}
-                                                    style={{ ...inputStyle, width: "100%", marginTop: "0.25rem" }}
-                                                />
-                                            </label>
-
-                                            <label
-                                                style={{
-                                                    flex: "0 0 120px",
-                                                    color: "#071f35",
-                                                    fontWeight: "600",
-                                                }}
-                                            >
-                                                Static Limit:
-                                                <input
-                                                    type="number"
-                                                    value={newPlanStaticLimit}
-                                                    onChange={(e) => setNewPlanStaticLimit(e.target.value)}
-                                                    style={{ ...inputStyle, width: "100%", marginTop: "0.25rem" }}
-                                                    placeholder="0"
-                                                />
-                                            </label>
-                                            <label
-                                                style={{
-                                                    flex: "0 0 120px",
-                                                    color: "#071f35",
-                                                    fontWeight: "600",
-                                                }}
-                                            >
-                                                Maks. Dosya Boyutu:
-                                                <input
-                                                    type="number"
-                                                    value={newPlanMaxFileSize}
-                                                    onChange={(e) => setNewPlanMaxFileSize(e.target.value)}
-                                                    style={{
-                                                        ...inputStyle,
-                                                        width: "100%",
-                                                        marginTop: "0.25rem",
-                                                    }}
-                                                    placeholder="MB"
-                                                />
-                                            </label>
-                                            <label
-                                                style={{
-                                                    flex: "0 0 120px",
-                                                    color: "#071f35",
-                                                    fontWeight: "600",
-                                                }}
-                                            >
-                                                Kredi:
-                                                <input
-                                                    type="number"
-                                                    value={newPlanCredits}
-                                                    onChange={(e) => setNewPlanCredits(Number(e.target.value))}
-                                                    style={{
-                                                        ...inputStyle,
-                                                        width: "100%",
-                                                        marginTop: "0.25rem",
-                                                    }}
-                                                />
-                                            </label>
-
-                                            <div style={{ marginBottom: "1rem" }}>
-                                                <label style={{
-                                                    color: "#071f35",
-                                                    fontWeight: "600",
-                                                    marginBottom: "0.5rem",
-                                                    display: "block"
-                                                }}>
-                                                    Yetkili Metotlar:
-                                                </label>
-
-                                                {allMethods.map((method) => (
-                                                    <label
-                                                        key={method.name}
-                                                        style={{
-                                                            display: "block",
-                                                            color: "#fff",
-                                                            marginBottom: "0.25rem",
-                                                            fontSize: "1rem"
-                                                        }}
-                                                    >
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={newPlanMethods.includes(method.name)}
-                                                            onChange={(e) => {
-                                                                const selected = [...newPlanMethods];
-                                                                if (e.target.checked) {
-                                                                    selected.push(method.name);
-                                                                } else {
-                                                                    const index = selected.indexOf(method.name);
-                                                                    if (index > -1) selected.splice(index, 1);
-                                                                }
-                                                                setNewPlanMethods(selected);
-                                                            }}
-                                                        />
-                                                        {" "}{method.label}
-                                                    </label>
-                                                ))}
+                                {/* ----------------- Yeni Plan Modal (showNewPlanForm) ----------------- */}
+                                {showNewPlanForm && (
+                                    <div style={modalOverlay}>
+                                        <div style={modalCard}>
+                                            <div style={modalHeader}>
+                                                <h2 style={{ margin: 0 }}>Yeni Plan Ekle</h2>
+                                                <button style={xBtn} onClick={() => setShowNewPlanForm(false)}>×</button>
                                             </div>
 
+                                            <div style={modalGrid}>
+                                                <div style={fieldBlock}>
+                                                    <label style={labelSm}>Plan Adı</label>
+                                                    <input
+                                                        type="text"
+                                                        value={newPlanName}
+                                                        onChange={(e) => setNewPlanName(e.target.value)}
+                                                        style={inputLg}
+                                                    />
+                                                </div>
+                                                <div style={fieldBlock}>
+                                                    <label style={labelSm}>Fiyat</label>
+                                                    <input
+                                                        type="number"
+                                                        value={newPlanPrice}
+                                                        onChange={(e) => setNewPlanPrice(e.target.value)}
+                                                        style={inputLg}
+                                                    />
+                                                </div>
+                                                <div style={fieldBlock}>
+                                                    <label style={labelSm}>Maks. Dosya Boyutu (MB)</label>
+                                                    <input
+                                                        type="number"
+                                                        value={newPlanMaxFileSize}
+                                                        onChange={(e) => setNewPlanMaxFileSize(e.target.value)}
+                                                        style={inputLg}
+                                                    />
+                                                </div>
+                                                <div style={fieldBlock}>
+                                                    <label style={labelSm}>Kredi</label>
+                                                    <input
+                                                        type="number"
+                                                        value={newPlanCredits}
+                                                        onChange={(e) => setNewPlanCredits(Number(e.target.value))}
+                                                        style={inputLg}
+                                                    />
+                                                </div>
 
+                                                <div style={{ ...fieldBlock, gridColumn: '1 / -1' }}>
+                                                    <label style={labelSm}>Yetkili Metotlar</label>
+                                                    <div style={methodChipsWrap}>
+                                                        {allMethods.map((method) => {
+                                                            const isSelected = newPlanMethods.includes(method.name);
+                                                            return (
+                                                                <label
+                                                                    key={method.name}
+                                                                    style={chipCheck(isSelected)}
+                                                                    title={method.label}
+                                                                >
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={isSelected}
+                                                                        onChange={(e) => {
+                                                                            const selected = [...newPlanMethods];
+                                                                            if (e.target.checked) selected.push(method.name);
+                                                                            else selected.splice(selected.indexOf(method.name), 1);
+                                                                            setNewPlanMethods(selected);
+                                                                        }}
+                                                                        style={{ display: 'none' }}
+                                                                    />
+                                                                    {method.label}
+                                                                </label>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
 
-
-
-
-                                            <button
-                                                onClick={() => {
-                                                    addNewPlan();
-                                                    setShowNewPlanForm(false);
-                                                }}
-                                                style={{
-                                                    ...saveButtonStyle,
-                                                    marginTop: "1rem",
-                                                    backgroundColor: "#446d92",
-                                                    color: "#fff",
-                                                }}
-                                            >
-                                                Yeni Plan Ekle
-                                            </button>
-
-                                            <button
-                                                onClick={() => setShowNewPlanForm(false)}
-                                                style={{
-                                                    marginTop: "1rem",
-                                                    marginLeft: "1rem",
-                                                    backgroundColor: "#999",
-                                                    color: "#fff",
-                                                    border: "none",
-                                                    padding: "6px 12px",
-                                                    borderRadius: "6px",
-                                                    cursor: "pointer",
-                                                }}
-                                            >
-                                                İptal
-                                            </button>
+                                            <div style={modalActions}>
+                                                <button
+                                                    style={ghostBtn}
+                                                    onClick={() => setShowNewPlanForm(false)}
+                                                >
+                                                    İptal
+                                                </button>
+                                                <button
+                                                    style={primaryBtn}
+                                                    onClick={() => {
+                                                        addNewPlan();
+                                                        setShowNewPlanForm(false);
+                                                    }}
+                                                >
+                                                    Ekle
+                                                </button>
+                                            </div>
                                         </div>
-                                    )}
+                                    </div>
+                                )}
 
-
-                                    <button
-                                        onClick={savePricing}
-                                        style={{
-                                            ...saveButtonStyle,
-                                            backgroundColor: "#446d92",
-                                            color: "#fff",
-                                            maxWidth: "200px",
-                                            alignSelf: "flex-start",
-                                            marginTop: "2rem",
-                                        }}
-                                    >
-                                        Fiyatları Kaydet
-                                    </button>
-                                </div>
+                                {/* Rol Ekle modalın SENDE zaten var – sadece görünüm olarak bu yeni tasarımla uyumlu dursun diye overlay/card stillerini aşağıdakiyle güncelliyorum */}
+                                {showRoleModal && (
+                                    <div style={modalOverlay}>
+                                        <div style={smallModalCard}>
+                                            <h3 style={{ marginTop: 0 }}>Rol Ekle</h3>
+                                            <select value={newRole} onChange={e => setNewRole(e.target.value)} style={inputLg}>
+                                                <option value="">Rol Seç</option>
+                                                <option value="viewer">Viewer</option>
+                                                <option value="editor">Editor</option>
+                                                <option value="admin">Admin</option>
+                                            </select>
+                                            <input
+                                                type="number"
+                                                min={0}
+                                                value={newRoleCount}
+                                                onChange={e => setNewRoleCount(Number(e.target.value))}
+                                                placeholder="Kişi Sayısı"
+                                                style={inputLg}
+                                            />
+                                            <div style={modalActions}>
+                                                <button style={ghostBtn} onClick={() => setShowRoleModal(false)}>İptal</button>
+                                                <button
+                                                    style={primaryBtn}
+                                                    onClick={() => {
+                                                        if (selectedPlanForRoleAdd !== null) {
+                                                            addRoleToPlan(selectedPlanForRoleAdd, newRole, newRoleCount);
+                                                        }
+                                                    }}
+                                                >
+                                                    Ekle
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -1033,6 +929,204 @@ const AdminPanel = () => {
     );
 
 };
+const toolbarStyle = {
+    position: 'sticky',
+    top: 0,
+    zIndex: 5,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '10px 14px',
+    marginBottom: 16,
+
+    backdropFilter: 'blur(6px)',
+    border: '1px solid rgba(0,0,0,0.06)',
+    borderRadius: 12,
+    boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
+};
+toolbarStyle.left = { display: 'flex', alignItems: 'baseline', gap: 10 };
+toolbarStyle.right = { display: 'flex', gap: 10 };
+toolbarStyle.left['h1'] = { margin: 0 };
+const primaryBtn = {
+    background: 'linear-gradient(135deg, #0055A4, #00AEEF)',
+    color: '#fff', border: 'none',
+    padding: '10px 14px',
+    borderRadius: 10, fontWeight: 800, cursor: 'pointer',
+};
+const saveBtn = {
+    ...primaryBtn,
+    background: 'linear-gradient(135deg, #0B6B2B, #10B981)',
+};
+const ghostBtn = {
+    background: '#f3f4f6', color: '#111827',
+    border: '1px solid #e5e7eb',
+    padding: '8px 12px', borderRadius: 10,
+    cursor: 'pointer', fontWeight: 700,
+};
+const dangerGhostBtn = {
+    ...ghostBtn,
+    background: '#fff0f0',
+    color: '#B91C1C',
+    borderColor: '#fecaca'
+};
+
+const planGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gap: 16
+};
+const planCardStyle = {
+    background: '#9fb3c8',
+    borderRadius: 14,
+    border: '1px solid rgba(0,0,0,0.06)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.05)',
+    padding: 14,
+    display: 'grid',
+    gap: 12
+};
+const planCardHeader = { display: 'flex', justifyContent: 'space-between', alignItems: 'center' };
+const planBadge = {
+    padding: '4px 8px',
+    borderRadius: 999,
+
+    color: '#0055A4',
+    fontWeight: 800,
+    fontSize: 12,
+    border: '1px solid rgba(0,85,164,0.15)'
+};
+const planTitleInput = {
+    border: '1px solid #e5e7eb',
+    borderRadius: 10,
+    padding: '8px 10px',
+    fontWeight: 800,
+    minWidth: 140,
+    outline: 'none'
+};
+
+const planBodyGrid = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(12, 1fr)',
+    gap: 12
+};
+const fieldBlock = { display: 'grid', gap: 6, gridColumn: 'span 4' }; // responsive grid
+const labelSm = { fontSize: 12, color: '#ffff   ', fontWeight: 700 };
+const inputLg = {
+    width: '100%',
+    border: '1px solid #d1d5db',
+    borderRadius: 10,
+    padding: '10px 12px',
+    fontWeight: 600,
+    outline: 'none'
+};
+const inputSm = {
+    ...inputLg,
+    padding: '8px 10px'
+};
+
+const methodChipsWrap = { display: 'flex', flexWrap: 'wrap', gap: 8 };
+const chipCheck = (active) => ({
+    border: '1px solid ' + (active ? '#93c5fd' : '#e5e7eb'),
+    background: active ? '#e8f3ff' : '#fff',
+    color: active ? '#0055A4' : '#111827',
+    padding: '8px 10px',
+    borderRadius: 999,
+    fontWeight: 700,
+    cursor: 'pointer',
+    userSelect: 'none'
+});
+
+const sectionHeader = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 };
+const emptyHint = {
+    border: '1px dashed #e5e7eb',
+    borderRadius: 10,
+    padding: 12,
+    color: '#6b7280'
+};
+
+const limitsGrid = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+    gap: 8
+};
+const limitItem = {
+    display: 'grid',
+    gap: 6,
+    border: '1px solid #e5e7eb',
+    borderRadius: 10,
+    padding: 10
+};
+const limitKey = { fontWeight: 800, fontSize: 12, color: '#0b2345' };
+
+const rolesWrap = {
+    display: 'flex', flexWrap: 'wrap', gap: 8
+};
+const rolePill = {
+    display: 'flex', alignItems: 'center', gap: 6,
+    border: '1px solid #e5e7eb',
+
+    padding: '6px 8px',
+    borderRadius: 999
+};
+const roleCount = {
+    width: 80,
+    border: '1px solid #d1d5db',
+    borderRadius: 8,
+    padding: '6px 8px',
+    fontWeight: 600
+};
+const pillRemoveBtn = {
+    background: 'transparent',
+    border: 'none',
+    color: '#B91C1C',
+    fontSize: 16,
+    cursor: 'pointer',
+    padding: 0
+};
+
+/* MODALS */
+const modalOverlay = {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(0,0,0,0.5)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 9999,
+    padding: 16
+};
+const modalCard = {
+
+    width: 'min(720px, 100%)',
+    maxHeight: '90vh',
+    overflow: 'auto',
+    borderRadius: 16,
+    border: '1px solid rgba(0,0,0,0.06)',
+    boxShadow: '0 24px 64px rgba(0,0,0,0.25)',
+    padding: 16,
+    display: 'grid',
+    gap: 12
+};
+const smallModalCard = {
+    ...modalCard,
+    width: 'min(420px, 100%)'
+};
+const modalHeader = {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+};
+const xBtn = {
+    ...dangerGhostBtn,
+    borderRadius: 999,
+    width: 36, height: 36, display: 'grid', placeItems: 'center'
+};
+const modalGrid = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(12, 1fr)',
+    gap: 12
+};
+const modalActions = {
+    display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 6
+};
+
 
 function formatDate(dateString) {
     if (!dateString) return '-';

@@ -5,19 +5,19 @@ import Navbars from './Navbars';
 import styled from 'styled-components';
 import SplashCursor from './Cursor';
 
-export default function Home({ darkMode }) {
+export default function Home() {
   const isLoggedIn = Boolean(localStorage.getItem('token'));
   return (
-    <StyledWrapper darkMode={darkMode}>
+    <StyledWrapper >
 
 
 
-      <div className='home' darkMode={darkMode}>
+      <div className='home' >
 
 
-        <HeroSection darkMode={darkMode}>
+        <HeroSection >
           <HeroTitle  >Akıllı Transit Çözümleriyle Yolunuzu Kolaylaştırın</HeroTitle>
-          <HeroSubtitle darkMode={darkMode}>
+          <HeroSubtitle >
             Global açık veri platformu ile otobüs, tren ve diğer toplu taşıma hatlarınızı yönetin.
           </HeroSubtitle>
           {!isLoggedIn && (
@@ -27,7 +27,8 @@ export default function Home({ darkMode }) {
 
           )}
         </HeroSection>
-        <div style={{ textAlign: 'center', marginTop: '12rem' }} darkMode={darkMode}>
+        <div className="scene" >
+
 
           <div className='road'>
             <div className='cloud1'></div>
@@ -50,7 +51,7 @@ export default function Home({ darkMode }) {
               <div className='whell4'></div>
               <div className='fuel'></div>
               <div className='light'></div>
-              <div className='foggy' darkMode={darkMode}></div>
+              <div className='foggy'></div>
 
 
 
@@ -69,262 +70,257 @@ export default function Home({ darkMode }) {
 
 
 const HeroSection = styled.section`
-  padding: 8rem 3rem 5rem;
-
-  background-color: ${({ darkMode }) => (darkMode ? "#0b1d3a" : "transparent")};
-  color: #ffff 
+  padding: 7rem 3rem 2rem;        
+  background: transparent;        
+  color:#ffff;
   text-align: center;
-  @media (max-width: 768px) {
-    padding: 5rem 2rem;
-  }
 
-  @media (max-width: 480px) {
-    padding: 3rem 1rem;
-  }
+  
+ 
+
+  @media (max-width: 768px) { padding: 5rem 2rem 1.5rem; }
+  @media (max-width: 480px) { padding: 3rem 1rem 1.25rem; }
 `;
+
 
 
 const HeroTitle = styled.h1`
   font-size: 3rem;
   margin-bottom: 1rem;
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
+  font-weight: 900;
+  letter-spacing: .3px;
+  background: linear-gradient(135deg, #00AEEF, #0055A4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #ffff;
 
-  @media (max-width: 480px) {
-    font-size: 1.5rem;
-  }
- 
+  @media (max-width: 768px) { font-size: 2.2rem; }
+  @media (max-width: 480px) { font-size: 1.7rem; }
 `;
 
 const HeroSubtitle = styled.p`
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   margin-bottom: 2rem;
-  
- @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 0.9rem;
-  }
- 
+  opacity: .9;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+color:#fff
+  @media (max-width: 768px) { font-size: 1rem; }
+  @media (max-width: 480px) { font-size: .95rem; }
 `;
-
 
 const HeroButton = styled.button`
-  background: white;
-  color: #071f35;
-  padding: 0.8rem 2rem;
-  font-weight: 700;
-  border-radius: 50px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #00AEEF, #0055A4);
+  color: #fff;
+  padding: 0.9rem 2.1rem;
+  font-weight: 800;
+  border-radius: 14px;
   cursor: pointer;
-  text-decoration: none;
   border: none;
-  transition: all 0.3s ease;
+  box-shadow: 0 10px 26px rgba(0,85,164,.28);
+  transition: transform .12s ease, filter .2s ease;
 
-  &:hover {
-    background: #071f35;
-    color: white;
+  &:hover { transform: translateY(-1px); filter: brightness(1.02); }
+  &:active { transform: translateY(0); }
+
+  /* parıltı */
+  &::after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+    transform: translateX(-100%);
+    transition: transform .6s ease;
+  }
+  &:hover::after{ transform: translateX(100%); }
+`;
+const StyledWrapper = styled.div`
+  /* Tema değişkenleri */
+  --line: rgba(148,163,184,.25);
+  --sky-light: #f7f9fc;
+  --sky-dark: #0b1220;
+  --accent: #00AEEF;
+  --accent2: #0055A4;
+  --road: #1f2937;
+  --lane: #ffffff;
+
+  background: #0f172a;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  /* HERO altında sahne */
+  .home { flex: 1; display: flex; flex-direction: column; }
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 260px;
+ 
+  display: grid;
+  place-items: center;
+}
+
+
+ .road{
+  --h: 120px;
+  position: relative;
+  width: 100%;
+  height: var(--h);
+  background: linear-gradient(180deg, #2a3648, #1f2937);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.2);
+  overflow-x: hidden;   /* sadece yatay gizle */
+  overflow-y: visible;  /* ↑ araç üstten görünür kalsın */
+  z-index: 1;
+}
+
+.bus{
+  --w: 140px;
+  --h: 64px;
+  position: relative;
+  width: var(--w);
+  top: 4px;     /* önce: -22px idi. 0–8px arası “az aşağı” için ideal */
+  left: -120px;
+  height: var(--h);
+  background: linear-gradient(180deg, #06b6d4, #0ea5e9);
+  border-radius: 16px 16px 10px 10px;
+ 
+  z-index: 2;     /* yolun üstünde */
+  box-shadow: inset 0 10px 18px rgba(255,255,255,.18), 0 10px 26px rgba(0,0,0,.25);
+  animation: drive 6.5s ease-in-out infinite;
+}
+
+
+  /* Yol çizgisi (akış animasyonu) */
+  .line {
+    position: absolute;
+    left: 0; top: 50%;
+    translate: 0 -50%;
+    width: 200%;
+    height: 6px;
+    background-image: repeating-linear-gradient(90deg, var(--lane) 0 40px, transparent 40px 80px);
+    opacity: .9;
+    animation: laneFlow 1.35s linear infinite;
+  }
+  @keyframes laneFlow {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* Ağaç silüetleri (parallax) */
+  .tree {
+    position: absolute;
+    bottom: calc(var(--h) - 20px);
+    left: 0;
+    width: 200%;
+    height: 60px;
+    background:
+      radial-gradient(14px 16px at 20% 100%, #2b3d55 99%, transparent 100%) 0 0/140px 100% repeat-x,
+      radial-gradient(12px 14px at 60% 100%, #243449 99%, transparent 100%) 60px 0/140px 100% repeat-x;
+    opacity: .7;
+    animation: parallax 6s linear infinite;
+  }
+  @keyframes parallax { from{ transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  
+
+/* ekstra küçük baloncuk efekti kaldırıldı, sade */
+.cloud1 { left: 10%; animation-duration: 28s; }
+.cloud2 { left: 40%; animation-duration: 32s; }
+.cloud3 { left: 70%; animation-duration: 30s; }
+.cloud4 { left: 85%; animation-duration: 26s; }
+
+@keyframes cloud {
+  from { transform: translateX(0); }
+  to { transform: translateX(-120vw); }
+}
+
+  @keyframes drive{
+    0%   { left: -160px; transform: translateY(0); }
+    50%  { left: 55vw; transform: translateY(-1px); }
+    70%  { left: 72vw; transform: translateY(0); }
+    100% { left: 110vw; transform: translateY(0); }
+  }
+
+  /* tavan/ayrımlar */
+  .up1,.up2,.up3{
+    position:absolute; left:0; right:0;
+    height: 6px; background: rgba(255,255,255,.22);
+    border-radius: 6px;
+  }
+  .up1{ top: 8px; } .up2{ top: 18px; } .up3{ top: 28px; }
+
+  /* camlar */
+  .win1,.win2,.win3,.win4{
+    position: absolute; top: 10px;
+    width: 24px; height: 16px; border-radius: 6px;
+    background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.6));
+    box-shadow: inset 0 1px 0 rgba(0,0,0,.05);
+  }
+  .win1{ left: 12px; } .win2{ left: 40px; width: 28px;}
+  .win3{ left: 74px; width: 28px;} .win4{ left: 108px; width: 22px;}
+
+  /* far */
+  .light{
+    position:absolute; right: -10px; top: 28px;
+    width: 10px; height: 8px; border-radius: 2px;
+    background: #ffd166;
+    box-shadow: 0 0 16px 6px rgba(255,209,102,.45);
+  }
+
+  /* egzoz dumanı (foggy) */
+  .foggy{
+    position: absolute;
+    left: -14px; top: 36px;
+    width: 10px; height: 10px; border-radius: 999px;
+    background: ${({ darkMode }) => (darkMode ? "rgba(255,255,255,.12)" : "rgba(0,0,0,.12)")};
+    filter: blur(2px);
+    animation: smoke 1.6s ease-out infinite;
+  }
+  @keyframes smoke{
+    0% { opacity: .5; transform: translate(-2px,0) scale(.6); }
+    100% { opacity: 0; transform: translate(-16px,-8px) scale(1.4); }
+  }
+
+  /* yakıt kapağı (fuel) – ufak detay */
+  .fuel{
+    position:absolute; left: 46px; top: 38px;
+    width: 8px; height: 6px; border-radius: 2px;
+    background: rgba(0,0,0,.35);
+  }
+
+  /* tekerlekler */
+  .whell1,.whell2{
+    position: absolute; bottom: -6px;
+    width: 18px; height: 18px; border-radius: 999px; background: #111;
+    box-shadow: inset 0 0 0 4px #222, inset 0 0 0 6px #444;
+    overflow: hidden;
+  }
+  .whell1{ left: 96px; }   /* arka */
+  .whell2{ left: 18px; }   /* ön  */
+
+  /* jant dönen çizgiler (whell3/4’ü spinner yaptık) */
+  .whell3,.whell4{
+    position: absolute; inset: 3px;
+    border-radius: 999px;
+    border: 2px dashed #cfe8ff;
+    animation: spin .6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg);} }
+
+  /* “eski” küçük teker kapsülleri görünmesin (kodu bozma, sadece gizle) */
+  .whell1::after, .whell2::after { content:""; }
+
+  /* Responsive */
+  @media (max-width: 768px){
+    .scene{ height: 240px; }
+    .bus{ --w: 120px; --h: 56px; }
+  }
+  @media (max-width: 480px){
+    .scene{ height: 220px; }
+    .bus{ --w: 108px; --h: 52px; }
   }
 `;
-
-
-
-
-const StyledWrapper = styled.div`
- background-color: ${({ darkMode }) => (darkMode ? "#0b1d3a" : "#f7f9fc")};
-  height: 50vh;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-
-
-  .road {
-    position: relative;
-    width: 100%;
-    height: 110px;
-    background-color: gray;
-    margin-top: 1rem;
-    z-index: 10;
-     overflow-x: hidden;
-  min-width: 100%;
-  }
-
-
-
-
-
-.bus {
-
-  display: block;
-  
-
-
-   
-    width: 90px;
-    height: 45px;
-    clear:both;
-   
- 	background-color:red;
-    border-radius:17px 10px 2px 2px;  
-    background: red;
-    position :relative;
-  animation: mymove 7s infinite normal ease-in-out;
-  -webkit-animation: mymove 7s infinite normal ease-in-out;
-}
-@keyframes mymove {
-  0% { left: -100px; } 
-  70% { left: 70vw; }  
-}
-
-
-
-@-webkit-keyframes mymove {
-    0% { left: -300px;}
-    50% {left: 550px;}
-    100% {left: 1400px;}
- }
-
-.whell1 {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  background: black;
-  border-radius: 50%;
-  top: 37px;
-  left: 65px; 
-}
-
-.hidden {
-  display: none;
-}
-
-
-.whell2{
-  position:absolute;
-  display: inline-block;
-  width:14px;
-  height:14px;
-  background-color:black;
-  border-radius:80px;
-  
-  top:37px;
-  left:10px;
-  background-position: center center;
-  }
-
-.whell3{
-  position:absolute;
-  display: inline-block;
-  width:8px;
-  height:8px;
-  background-color:transparent;
-  border:1.5px dotted white;
-  border-radius:80px;
-  
-  top:39px;
-  left:67.1px;
-  background-position: center center;
-  }
-
-
-.whell4{
-  position:absolute;
-  display: inline-block;
-  width:8px;
-  height:8px;
-  background-color:transparent;
-  border:1.5px dotted white;
-  border-radius:80px;
-  
-  top:39px;
-  left:11.9px;
-  background-position: center center;
-  }
-
-
-.win1 {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: white;
-  border-radius: 4px 0 0 0;
-  top: 5px;
-  left: 8px;
-}
-
-.win2 {
-  position: absolute;
-  width: 18px;
-  height: 12px;
-  background-color: white;
-  border-radius: 3px 3px 0 0;
-  top: 5px;   
-  left: 24px;  
-}
-
-.win3 {
-  position: absolute;
-  width: 18px;
-  height: 12px;
-  background-color: white;
-  border-radius: 3px 3px 0 0;
-  top: 5px;
-  left: 48px;
-}
-
-.win4 {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background-color: white;
-  border-radius: 0 4px 0 0;
-  top: 5px;
-  left: 72px;
-}
-
-.line {
-  position: relative; 
-  width: 100%;         
-  height: 1px;
-  top: 60px;          
-  border: 1px dashed white;
-  margin: 0 auto;
-}
-
-.fuel{
-  position:absolute;
-  display: inline-block;
-  width:5px;
-  height:1.5px;
-  background-color:#1D1F20;
-  border-radius:0px;
-  margin:42px -5px;
-  background-position: center center;
-  transform:rotate(-18deg);  
-}
-
-
-
-
-
-.foggy{
-  width:4px;
-  height:7.8px;
-  border-right:200px solid #f7f771;
-  border-top:20px solid transparent;
-  border-left:20px solid transparent;
-  border-bottom:20px solid transparent;
-  border-radius:100px;
-  margin:90px 60px;
-  position:absolute;
-  margin:7px 68px;
-
-
-
-
-}
-  
-
-`

@@ -4,23 +4,25 @@ import { Link } from 'react-router-dom';
 import Page404 from './Page404';
 
 const NotFound = () => {
-    return (
-        <Wrapper>
+  return (
+    <Wrapper>
 
-            <Page404></Page404>
+      <Page404></Page404>
 
-            <Link to="/">Ana Sayfaya Dön</Link>
-        </Wrapper>
-    );
+      <Link to="/">Ana Sayfaya Dön</Link>
+    </Wrapper>
+  );
 };
 
 const Wrapper = styled.div`
-  height: 80vh;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+
+  ;
 
 
 

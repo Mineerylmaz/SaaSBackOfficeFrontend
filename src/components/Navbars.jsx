@@ -2,8 +2,10 @@ import React from "react";
 import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Form from 'react-bootstrap/Form';
-import Profile from "./Profile";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { Avatar } from "@mui/material";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Navbars({ user, setUser }) {
     const navigate = useNavigate();
@@ -31,90 +33,102 @@ export default function Navbars({ user, setUser }) {
     };
 
     return (
-        <Navbar expand="lg" className="navbar-custom">
+        <Navbar
+            expand="lg"
+            className="navbar-custom"
+        >
+
             <Container>
-                <Navbar.Brand as={Link} to="/">
+                <Navbar.Brand as={Link} to="/" className="brand">
                     kentkart
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav" className="toggler" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="ms-auto">
-                        <div className="theme-toggle-wrapper">
-                            <label className="theme-toggle">
-                                <input
-                                    type="checkbox"
-                                    checked={darkMode}
-                                    onChange={() => setDarkMode(!darkMode)}
-                                />
-                                <span className="slider">
-                                    {darkMode ? "⋆⁺₊⋆ ☾" : "𓂃 ☼"}
-                                </span>
-                            </label>
-                        </div>
+
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="ms-auto">
 
 
 
-                        <Nav.Link as={Link} to="/home">
-                            Anasayfa
-                        </Nav.Link>
-                        <NavDropdown title="Biz Kimiz" id="basic-nav-dropdown">
-                            <NavDropdown.Item as={Link} to="/about">
-                                Hakkımızda
-                            </NavDropdown.Item>
-                            <NavDropdown.Item as={Link} to="/about">
-                                Misyon
-                            </NavDropdown.Item>
-                            <NavDropdown.Item as={Link} to="/about">
-                                Vizyon
-                            </NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item as={Link} to="/about">
-                                İletişim
-                            </NavDropdown.Item>
-                        </NavDropdown>
 
-                        {user && !['viewer', 'editor'].includes(user.role) && (
-                            <Nav.Link as={Link} to="/pricing">
-                                Planlar
+                            <Nav.Link as={Link} to="/home">
+                                Anasayfa
                             </Nav.Link>
-                        )}
-
-
-                        {!user && (
-                            <Nav.Link as={Link} to="/login">
-                                Giriş Yap
-                            </Nav.Link>
-                        )}
-                        {user && (
-                            <NavDropdown title="👩" id="profile-nav-dropdown" align="end">
-                                <NavDropdown.Item disabled style={{ fontWeight: 'bold', cursor: 'default' }}>
-                                    {user.email}
+                            <NavDropdown title="Biz Kimiz" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to="/about">
+                                    Hakkımızda
                                 </NavDropdown.Item>
-
-                                {user.role !== "superadmin" && (
-                                    <>
-                                        <NavDropdown.Item as={Link} to="/profile">
-                                            Profil
-                                        </NavDropdown.Item>
-                                        <NavDropdown.Divider />
-                                        <NavDropdown.Item as={Link} to="/ayarlar">
-                                            Ayarlar
-                                        </NavDropdown.Item>
-                                        <NavDropdown.Divider />
-                                    </>
-                                )}
-
-                                <NavDropdown.Item onClick={handleLogout}>Çıkış Yap</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/about">
+                                    Misyon
+                                </NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/about">
+                                    Vizyon
+                                </NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item as={Link} to="/about">
+                                    İletişim
+                                </NavDropdown.Item>
                             </NavDropdown>
-                        )}
 
-                        {user && user.role === "superadmin" && (
-                            <Nav.Link as={Link} to="/admin">
-                                Admin Paneli
-                            </Nav.Link>
-                        )}
+                            {user && !['viewer', 'editor'].includes(user.role) && (
+                                <Nav.Link as={Link} to="/pricing">
+                                    Planlar
+                                </Nav.Link>
+                            )}
 
-                    </Nav>
+
+                            {!user && (
+                                <Nav.Link as={Link} to="/login">
+                                    Giriş Yap
+                                </Nav.Link>
+                            )}
+                            {user && user.role !== "superadmin" && (
+                                <Nav.Link as={Link} to="/ayarlar">
+                                    Ayarlar
+                                </Nav.Link>
+                            )}
+
+
+                            {user && (
+                                <NavDropdown
+                                    title={
+                                        user.avatar
+                                            ? <img src={user.avatar} alt="avatar"
+                                                style={{ width: "28px", height: "28px", borderRadius: "50%" }} />
+                                            : <FaUserCircle size={28} color="#38bdf8" />   // fallback ikon
+                                    }
+                                    id="profile-nav-dropdown"
+                                    align="end"
+                                >
+
+                                    <NavDropdown.Item disabled style={{ fontWeight: 'bold', cursor: 'default', color: 'white' }}>
+                                        {user.email}
+                                    </NavDropdown.Item>
+
+                                    {user.role !== "superadmin" && (
+                                        <>
+                                            <NavDropdown.Item as={Link} to="/profile">
+                                                Profil
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Divider />
+
+
+                                        </>
+                                    )}
+
+                                    <NavDropdown.Item onClick={handleLogout}>Çıkış Yap</NavDropdown.Item>
+                                </NavDropdown>
+                            )}
+
+                            {user && user.role === "superadmin" && (
+                                <Nav.Link as={Link} to="/admin">
+                                    Admin Paneli
+                                </Nav.Link>
+                            )}
+
+                        </Nav>
+                    </Navbar.Collapse>
                 </Navbar.Collapse>
             </Container>
         </Navbar>

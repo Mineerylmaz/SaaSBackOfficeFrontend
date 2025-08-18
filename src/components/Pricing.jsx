@@ -62,8 +62,14 @@ const Pricing = () => {
                 {Array.isArray(plan.features) && plan.features.map((feature, i) => (
                   <li key={i}>{feature}</li>
                 ))}
-                <li>RT URL Limit: {plan.rt_url_limit || 0}</li>
-                <li>Static URL Limit: {plan.static_url_limit || 0}</li>
+
+                {/* Limit key-value çiftlerini döndür */}
+                {plan.plan_limit && Object.entries(plan.plan_limit).map(([key, value]) => (
+                  <li key={key}>
+                    {key}: {value}
+                  </li>
+                ))}
+
                 <li>Max File Size: {plan.max_file_size || 0} MB</li>
                 <li>Kredi sayısı: {plan.credits || 0}</li>
                 <li>
@@ -88,6 +94,7 @@ const Pricing = () => {
                 </li>
               </ul>
 
+
               <button
                 className="card__cta cta"
                 disabled={isCurrentPlan}
@@ -104,115 +111,156 @@ const Pricing = () => {
 };
 
 const StyledWrapper = styled.div`
-  
-  .main__heading {
-    font-weight: 600;
-    font-size: 2.25em;
-    margin-bottom: 0.75em;
-    text-align: center;
-    color:#071f35;
+  /* --------- Theme --------- */
+  --bg1: #0b1220;
+  --bg2: #0d1b2a;
+  --line: rgba(148,163,184,.25);
+  --text: #e9f2ff;
+  --muted: #9fb3c8;
+
+  min-height: 100vh;
+  padding: 32px 16px;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 20% -20%, #0b2345 0%, var(--bg1) 40%, var(--bg1) 100%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+
+  .main__heading{
+    margin: 0 0 18px 0;
+    font-weight: 900;
+    letter-spacing: .3px;
+    color: #e7f5ff;
   }
-  .cards {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 0 1rem;
-    
-  }
-  .card {
-    --flow-space: 0.5em;
-    --hsl: var(--hue), 82.26%, 51.37%;
-    flex: 1 1 14rem;
-    padding: 1.5em 2em;
+
+  /* --------- Grid --------- */
+  .cards{
     display: grid;
-    grid-template-rows: auto auto auto 1fr;
-    align-items: start;
-    gap: 1.25em;
-    color: #071f35;
-    background-color: #eceff133;
-    border: 1px solid #eceff133;
-    border-radius: 15px;
-    transition: all 0.3s ease;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
-  .card__bullets {
-    line-height: 1.4;
+
+  /* --------- Card --------- */
+  .card{
+    /* accent renklerini inline --hue’dan üret */
+    --accent: hsl(var(--hue, 200) 85% 55%);
+    --accent2: hsl(var(--hue, 200) 85% 45%);
+    --glow: color-mix(in oklab, var(--accent) 35%, white);
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 16px 14px 16px;
+    background: rgba(15,23,42,.70);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 14px 40px rgba(0,0,0,.25);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+
+    /* ince iç ışık */
+    outline: 1px solid rgba(255,255,255,.04);
   }
-  .card__heading {
-    font-size: 1.05em;
+
+  .card:hover{
+    transform: translateY(-4px);
+    border-color: color-mix(in oklab, var(--accent) 22%, var(--line));
+    box-shadow: 0 20px 60px rgba(0,0,0,.35), 0 0 0 2px rgba(255,255,255,.02);
+  }
+
+  /* aktif plan rozeti ve glow */
+  .card.active{
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+    box-shadow:
+      0 24px 70px rgba(0,0,0,.4),
+      0 0 0 2px color-mix(in oklab, var(--accent) 30%, transparent),
+      0 0 40px -8px color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+  .card.active::after{
+    content: "Aktif";
+    position: absolute; top: 12px; right: 12px;
+    font-size: 11px; font-weight: 900; letter-spacing: .3px;
+    color: #01314f;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    padding: 4px 8px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.3);
+  }
+
+  .card__heading{
+    margin: 2px 0 6px 0;
+    font-weight: 900;
+    letter-spacing: .2px;
+    color: #e7f5ff;
+  }
+
+  .card__price{
+    margin: 0 0 12px 0;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--glow);
+    text-shadow: 0 0 12px color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+
+  /* --------- Bullets --------- */
+  .card__bullets{
+    margin: 0 0 14px 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+
+  .card__bullets li{
+    position: relative;
+    padding: 8px 10px 8px 28px;
+    border: 1px solid rgba(148,163,184,.18);
+    background: rgba(2,6,23,.5);
+    color: #d7e8ff;
+    border-radius: 10px;
     font-weight: 600;
+    line-height: 1.35;
   }
-  .card__price {
-    font-size: 1.75em;
-    font-weight: 700;
+
+  .card__bullets li::before{
+    content: "✓";
+    position: absolute; left: 8px; top: 50%; translate: 0 -50%;
+    font-weight: 900; font-size: 12px;
+    color: var(--accent);
+    filter: drop-shadow(0 0 6px color-mix(in oklab, var(--accent) 40%, transparent));
   }
-  .flow > * + * {
-    margin-top: var(--flow-space, 1.25em);
-  }
-  .cta {
-    text-decoration: none; 
-  text-align:center;
-  display: inline-block;
-    padding: 0.5em;
-    padding-left: 2.3em;
-    padding-right: 2.3em;
-    border-radius: 5px;
+
+  /* --------- CTA --------- */
+  .card__cta{
+    width: 100%;
     border: none;
-    outline: none;
-    transition: .4s ease-in-out;
-    background-image: linear-gradient(163deg, #6EC1E4 0%, #3700ff 100%);
-    color: rgb(0, 0, 0);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-weight: 900;
+    cursor: pointer;
+    color: #01263a;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    transition: transform .12s ease, filter .2s ease, box-shadow .2s ease;
+    box-shadow: 0 8px 24px color-mix(in oklab, var(--accent) 30%, transparent);
   }
- .card:hover {
-  background: #c9cbcc33;
-  outline: 1px solid rgba(110, 193, 228, 0.3); 
-  box-shadow:
-    inset 0 0 10px rgba(255, 255, 255, 0.2),
-    0 0 5px rgba(110, 193, 228, 0.2); 
-  transition: all 0.3s ease;
-}
-
-.card.active {
-  position: relative;
-  background-color: #61c2f6ff; 
-  color: #071f35;
-
-  
-  border: 2px solid;
-  border-color: var(--active-border, #4cafa2ff);
-
-  /* Parlak efekt */
-  box-shadow:
-    0 0 25px 8px rgba(97, 194, 246, 0.85),
-    0 0 8px 2px rgba(255, 255, 255, 0.6) inset;
-
-  transition: box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-}
-
-
-@media (prefers-color-scheme: dark) {
-  .card.active {
-    border-color: #a7e6ff; 
-    background-color: rgba(97, 194, 246, 0.15);
-    color: #fff;
+  .card__cta:hover{
+    filter: brightness(.98);
+    transform: translateY(-1px);
   }
-}
-
-/* Light mod */
-@media (prefers-color-scheme: light) {
-  .card.active {
-    border-color: #3aa8c1; 
-    background-color: #61c2f6ff;
-    color: #071f35;
+  .card__cta:active{
+    transform: translateY(0);
   }
-}
+  .card__cta:disabled{
+    cursor: not-allowed;
+    filter: grayscale(.15) saturate(.9) brightness(.9) opacity(.9);
+    color: #eaf7ff;
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--accent) 25%, #6b7280),
+      color-mix(in oklab, var(--accent2) 25%, #4b5563)
+    );
+    box-shadow: none;
+  }
 
-
-
-
-
-
-
+  /* --------- Responsive küçük dokunuş --------- */
+  @media (max-width: 520px){
+    .card__price{ font-size: 20px; }
+  }
 `;
+
 
 export default Pricing;

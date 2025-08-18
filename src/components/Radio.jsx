@@ -16,85 +16,35 @@ const canViewMenu = (role, menuKey, adminOnly) => {
   }
   return false;
 };
+const Content = styled.main`
+  padding: 16px;
+  /* navbar yüksekliği kadar üstten boşluk */
+  margin-top: ${props => (props.navOffset || 64)}px;
 
+  @media (min-width: 1024px) {
+    margin-left: ${props => (props.sidebarWidth || 220)}px;
+  }
+`;
+
+
+// === Styles
 const Nav = styled.nav`
   position: fixed;
-  top: 0px;
-  left: ${({ isOpen }) => (isOpen ? "0" : "-220px")};
-  
-  width: 220px;
-  height: 100vh;
+  top: ${({ navOffset }) => `${navOffset}px`}; /* NAVBAR ALTINA OTURT */
+  left: 0;
+  width: ${({ sidebarWidth }) => `${sidebarWidth}px`};
+  height: calc(100vh - ${({ navOffset }) => `${navOffset}px`});
   background-color: #0d1117;
-  padding: 20px;
-  display: flex;
+  padding: 20px 16px;
+  display: none; /* mobilde gizli */
   flex-direction: column;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #d1eaff;
-  z-index: 100;
-  transition: left 0.3s ease;
+  z-index: 1000; /* navbar’ın altında kalmasın */
+  border-right: 1px solid rgba(255,255,255,.06);
 
-  @media (min-width: 769px) {
-    left: 0;
-  }
-`;
-
-const Hamburger = styled.div`
-  display: none;
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  width: 30px;
-  height: 22px;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  z-index: 110;
-
-  div {
-    height: 4px;
-    background: #2f81f7;
-    border-radius: 2px;
-    margin: 3px 0;
-  }
-
-  @media (max-width: 768px) {
-    display: flex;
-  }
-`;
-
-const CloseButton = styled.button`
-  display: none;
-  margin-bottom: 20px;
-  color: #2f81f7;
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const MenuItem = styled.button`
-  background: none;
-  border: none;
-  color: ${({ active, darkMode }) =>
-    active ? "#2f81f7" : darkMode ? "#94a3b8" : "#000"};
-  font-weight: ${({ active }) => (active ? "700" : "400")};
-  font-size: 16px;
-  cursor: pointer;
-  padding: 12px 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-left: ${({ active }) =>
-    active ? "4px solid #2f81f7" : "4px solid transparent"};
-  border-radius: 0 8px 8px 0;
-  transition: all 0.3s ease;
-
-  &:hover {
-    color: #2f81f7;
+  @media (min-width: 1024px) {
+    display: flex; /* sadece desktop/tablet genişlikte sidebar göster */
   }
 `;
 
@@ -106,49 +56,82 @@ const Resizer = styled.div`
   height: 100%;
   cursor: ew-resize;
   z-index: 101;
+  @media (max-width: 1023px) { display: none; }
 `;
 
-const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const MenuItem = styled.button`
+  background: none;
+  border: none;
+  color: ${({ active }) => (active ? "#2f81f7" : "#9aa6b2")};
+  font-weight: ${({ active }) => (active ? "800" : "500")};
+  font-size: 15px;
+  cursor: pointer;
+  padding: 10px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-left: ${({ active }) =>
+    active ? "4px solid #2f81f7" : "4px solid transparent"};
+  border-radius: 0 10px 10px 0;
+  transition: all .2s ease;
+  &:hover { color: #2f81f7; background: rgba(255,255,255,.04); }
+`;
+
+/* Mobil tablet için: navbarın hemen altında yatay sekme barı */
+const TabStrip = styled.div`
+  position: sticky;
+  top: ${({ navOffset }) => `${navOffset}px`};
+  z-index: 999;
+  background: rgba(13,17,23,.85);
+  backdrop-filter: blur(8px);
+  padding: 8px 12px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+
+  @media (min-width: 1024px) {
+    display: none; /* desktop’ta yatay şerit gizleniyor */
+  }
+`;
+
+const Pill = styled.button`
+  white-space: nowrap;
+  border: 1px solid ${({ active }) => (active ? "transparent" : "rgba(255,255,255,.15)")};
+  background: ${({ active }) => (active ? "linear-gradient(135deg, #00AEEF, #0055A4)" : "transparent")};
+  color: ${({ active }) => (active ? "#fff" : "#cbd5e1")};
+  padding: 8px 14px;
+  font-weight: 700;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all .2s ease;
+  &:hover { border-color: rgba(255,255,255,.35); }
+`;
+
+// === Component
+const Radio = ({ selectedMenu, setSelectedMenu, role, navOffset = 64 }) => {
   const [sidebarWidth, setSidebarWidth] = useState(220);
   const isResizing = useRef(false);
   const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
     const menu = searchParams.get("menu");
-    if (menu) {
-      setSelectedMenu(menu);
-    }
-  }, []);
-
-
-  const [darkMode, setDarkMode] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e) => setDarkMode(e.matches);
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
+    if (menu) setSelectedMenu(menu);
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     function handleMouseMove(e) {
       if (isResizing.current) {
         let newWidth = e.clientX;
-        if (newWidth < 100) newWidth = 100;
-        if (newWidth > 400) newWidth = 400;
+        if (newWidth < 160) newWidth = 160;
+        if (newWidth > 360) newWidth = 360;
         setSidebarWidth(newWidth);
       }
     }
-
-    function handleMouseUp() {
-      isResizing.current = false;
-    }
-
+    function handleMouseUp() { isResizing.current = false; }
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
-
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -158,43 +141,45 @@ const Radio = ({ selectedMenu, setSelectedMenu, role }) => {
   const menuItems = [
     { key: "ayarlar", label: "Ayarlar" },
     { key: "urlresults", label: "URL Sonuçları" },
-
-    { key: "sonuc", label: "Sonuc" },
+    { key: "sonuc", label: "Sonuç" },
     { key: "kullanıcılar", label: "Kullanıcılar", adminOnly: true },
   ];
 
+  const visibleItems = menuItems.filter(i => canViewMenu(role, i.key, i.adminOnly));
+
   return (
     <>
-      {/* Hamburger Menu Button */}
-      <Hamburger onClick={() => setIsOpen(true)}>
-        <div></div>
-        <div></div>
-        <div></div>
-      </Hamburger>
+      {/* Mobil/Tablet: Yatay sekme şeridi */}
+      <TabStrip navOffset={navOffset}>
+        {visibleItems.map((item) => (
+          <Pill
+            key={item.key}
+            active={selectedMenu === item.key}
+            onClick={() => {
+              setSelectedMenu(item.key);
+              setSearchParams({ menu: item.key });
+            }}
+          >
+            {item.label}
+          </Pill>
+        ))}
+      </TabStrip>
 
-      {/* Sidebar */}
-      <Nav style={{ width: sidebarWidth }} isOpen={isOpen}>
+      {/* Desktop: Sabit yan menü */}
+      <Nav navOffset={navOffset} sidebarWidth={sidebarWidth}>
         <Resizer onMouseDown={() => (isResizing.current = true)} />
-        <CloseButton onClick={() => setIsOpen(false)}>✕ Kapat</CloseButton>
-
-        {menuItems.map((item) => {
-          if (!canViewMenu(role, item.key, item.adminOnly)) return null;
-
-          return (
-            <MenuItem
-              darkMode={darkMode}
-              key={item.key}
-              active={selectedMenu === item.key}
-              onClick={() => {
-                setSelectedMenu(item.key);
-                setSearchParams({ menu: item.key });
-              }}
-
-            >
-              {item.label}
-            </MenuItem>
-          );
-        })}
+        {visibleItems.map((item) => (
+          <MenuItem
+            key={item.key}
+            active={selectedMenu === item.key}
+            onClick={() => {
+              setSelectedMenu(item.key);
+              setSearchParams({ menu: item.key });
+            }}
+          >
+            {item.label}
+          </MenuItem>
+        ))}
       </Nav>
     </>
   );

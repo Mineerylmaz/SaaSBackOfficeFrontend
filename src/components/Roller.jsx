@@ -1,7 +1,8 @@
 import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
 import { useState, useEffect } from "react";
-
+import styled from "styled-components";
+import { color } from "@chakra-ui/react";
 const Silbuton = ({ onClick }) => (
     <button
         onClick={onClick}
@@ -35,9 +36,15 @@ export default function Roller() {
     const [inviteEmail, setInviteEmail] = useState("");
     const [inviteRole, setInviteRole] = useState("");
 
-    const [darkMode, setDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
+
     const width = useWindowWidth();
 
+    const [darkMode, setDarkMode] = useState(() => {
+        const localDark = localStorage.getItem("darkMode");
+        if (localDark === "true") return true;
+        if (localDark === "false") return false;
+        return false;
+    });
 
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -266,64 +273,332 @@ export default function Roller() {
     const roleColors = { viewer: darkMode ? "#1a1a1a" : "#E0F7FA", editor: darkMode ? "#2a1a00" : "#FFF3E0", admin: darkMode ? "#142a14" : "#E8F5E9" };
 
     return (
-        <div style={{ padding: "20px", maxWidth: "1000px", margin: "0 auto" }}>
+        <Page>
+            {/* Üst bar */}
+            <TopBar>
+                <div className="left" >
+                    <h2>Takım Erişimleri</h2>
+                    <span className="sub">Davet gönder, rolleri yönet</span>
+                </div>
 
 
-            <div style={{ marginTop: "30px" }}>
-                <h3 style={{ color: darkMode ? "#fff" : "#000" }}>Kullanıcı Davet Et</h3>
-                <input type="email" placeholder="E-posta" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)}
-                    style={{ display: "block", marginBottom: "10px", width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #ccc", background: darkMode ? "#333" : "#fff", color: darkMode ? "#fff" : "#000" }} />
+            </TopBar>
 
-                <select value={inviteRole} onChange={e => setInviteRole(e.target.value)}
-                    style={{ display: "block", marginBottom: "10px", width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #ccc", background: darkMode ? "#333" : "#fff", color: darkMode ? "#fff" : "#000" }}>
-                    <option value="">Rol Seç</option>
-                    {userPlanRoles.map((r, i) => (
-                        <option key={i} value={r.role}>{r.role}</option>
-                    ))}
-                </select>
+            {/* Davet kartı */}
+            <InviteCard $dark={darkMode}>
+                <div className="head">
+                    <div className="title">Kullanıcı Davet Et</div>
+                    <div className="hint">Planında tanımlı roller kadar davet edebilirsin.</div>
+                </div>
 
-                <button
-                    onClick={handleInvite}
-                    disabled={isSuperAdmin && selectedUser}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        borderRadius: "6px",
-                        border: "none",
-                        background: isSuperAdmin && selectedUser ? "#ccc" : "#007bff",
-                        color: "#fff",
-                        cursor: isSuperAdmin && selectedUser ? "not-allowed" : "pointer"
-                    }}
-                >
-                    {isSuperAdmin && selectedUser ? "Davet Devre Dışı" : "Davet Et"}
-                </button>
+                <FormRow>
+                    <Field>
+                        <label>E‑posta</label>
+                        <Input
+                            type="email"
+                            placeholder="ornek@domain.com"
+                            value={inviteEmail}
+                            onChange={(e) => setInviteEmail(e.target.value)}
+                            $dark={darkMode}
+                        />
+                    </Field>
 
-            </div>
-            <h2 style={{ color: darkMode ? "#fff" : "#000" }}>Plan Rolleri</h2>
-            <table style={{ width: "100%", borderCollapse: "collapse", background: darkMode ? "#1e1e1e" : "#fff", color: darkMode ? "#fff" : "#000", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden" }}>
-                <thead style={{ background: darkMode ? "#333" : "#f0f0f0" }}>
-                    <tr>
-                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Rol</th>
-                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Email</th>
+                    <Field>
+                        <label>Rol</label>
+                        <Select
+                            value={inviteRole}
+                            onChange={(e) => setInviteRole(e.target.value)}
+                            $dark={darkMode}
+                        >
+                            <option value="">Rol Seç</option>
+                            {userPlanRoles.map((r, i) => (
+                                <option key={i} value={r.role}>{r.role}</option>
+                            ))}
+                        </Select>
+                    </Field>
 
-                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>İşlem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {invites.map((invite) => (
-                        <tr key={invite.id} style={{ background: darkMode ? "#2a2a2a" : "inherit" }}>
-                            <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{roleIcons[invite.role]} {invite.role}</td>
-                            <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{invite.email}</td>
+                    <Actions>
+                        <PrimaryBtn
+                            onClick={handleInvite}
+                            disabled={isSuperAdmin && selectedUser}
+                            title={isSuperAdmin && selectedUser ? "Superadmin başka kullanıcı adına davet gönderemez" : "Davet Et"}
+                        >
+                            {isSuperAdmin && selectedUser ? "Davet Devre Dışı" : "Davet Et"}
+                        </PrimaryBtn>
+                    </Actions>
+                </FormRow>
 
-                            <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}><Silbuton onClick={() => handleSil(invite.email)} /></td>
-                        </tr>
-                    ))}
-                    {invites.length === 0 && (
-                        <tr><td colSpan="4" style={{ padding: "10px", textAlign: "center" }}>Hiç davet yok.</td></tr>
+                {/* Rol kotaları (okunurluk) */}
+                <QuotaRow>
+                    {userPlanRoles.length === 0 ? (
+                        <QuotaEmpty>Bu plan için rol kotası tanımlı değil.</QuotaEmpty>
+                    ) : (
+                        userPlanRoles.map((r) => {
+                            const currentCount = invites.filter((i) => i.role === r.role).length;
+                            const left = Math.max((r.count || 0) - currentCount, 0);
+                            return (
+                                <QuotaPill key={r.role}>
+                                    <span className="name">{r.role}</span>
+                                    <span className="bar">
+                                        <span
+                                            className="fill"
+                                            style={{
+                                                width: `${Math.min(100, (currentCount / Math.max(r.count || 1, 1)) * 100)}%`,
+                                            }}
+                                        />
+                                    </span>
+                                    <span className="count">
+                                        {currentCount}/{r.count || 0}
+                                    </span>
+                                    {left === 0 && <span className="limit">Limit dolu</span>}
+                                </QuotaPill>
+                            );
+                        })
                     )}
-                </tbody>
-            </table>
+                </QuotaRow>
+            </InviteCard>
 
-        </div>
+            {/* Davet listesi */}
+            <Section>
+                <SectionHead>
+                    <h3>Gönderilen Davetler</h3>
+                    <span className="badge">{invites.length}</span>
+                </SectionHead>
+
+                {invites.length === 0 ? (
+                    <EmptyList>Henüz davet yok.</EmptyList>
+                ) : (
+                    <InviteList>
+                        {invites.map((invite) => (
+                            <InviteItem key={invite.id} $dark={darkMode}>
+                                <div className="role">
+                                    <span className="icon">{roleIcons[invite.role]}</span>
+                                    <span className="name">{invite.role}</span>
+                                </div>
+
+                                <div className="email">{invite.email}</div>
+
+
+
+                                <div className="actions">
+                                    <DeleteBtn onClick={() => handleSil(invite.email)}>Sil</DeleteBtn>
+                                </div>
+                            </InviteItem>
+                        ))}
+                    </InviteList>
+                )}
+            </Section>
+        </Page>
     );
+
 }
+
+
+const Page = styled.div`
+  --page-bg: #0b1624;        /* arka plan (bir tık koyu) */
+  --surface: #12263b;        /* kart zemini (page’den belirgin açık) */
+  --surface-2: #17324d;      /* ikincil yüzey */
+  --border: rgba(148,163,184,0.18);
+  --text: #e9f2ff;
+  --muted: #9fb3c8;
+  --accent: #38bdf8;
+  --danger: #ef4444;
+
+  min-height: 100vh;
+  background: var(--page-bg);
+  color: var(--text);
+`;
+
+const TopBar = styled.div`
+  display:flex;align-items:center;justify-content:space-between;
+  padding: 16px 0 8px;
+  .left h2 { margin:0; color: var(--text); }
+  .left .sub { color: var(--muted); font-size: 0.9rem; }
+`;
+
+const InviteCard = styled.div`
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  color: var(--text);
+
+  .head .title { font-weight: 700; }
+  .head .hint { color: var(--muted); font-size: .9rem; }
+`;
+
+const ModeToggle = styled.button`
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 800;
+`;
+
+const FormRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 220px 160px;
+  gap: 10px;
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+`;
+const Field = styled.div`
+  display: grid; gap: 6px;
+  label { font-size: 12px; color: var(--muted); font-weight: 700; }
+`;
+
+const Actions = styled.div`
+  display: flex; align-items: end; justify-content: flex-end;
+`;
+
+
+/* Kota göstergeleri */
+const QuotaRow = styled.div`
+  display: flex; gap: 8px; flex-wrap: wrap;
+`;
+const QuotaPill = styled.div`
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--line);
+  background: rgba(0,85,164,.04);
+  padding: 6px 10px; border-radius: 999px;
+
+  .name { font-weight: 800; }
+  .bar {
+    width: 90px; height: 6px; border-radius: 999px; background: #e5e7eb; position: relative; overflow: hidden;
+  }
+  .fill { position: absolute; inset: 0; background: linear-gradient(90deg, var(--primary-2), var(--primary)); }
+  .count { font-size: 12px; color: var(--muted); }
+  .limit { font-size: 11px; color: #ef4444; font-weight: 800; margin-left: 2px; }
+`;
+const QuotaEmpty = styled.div`
+  color: var(--muted); font-size: 13px;
+`;
+
+
+
+const EmptyList = styled.div`
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  color: var(--muted);
+`;
+const InviteList = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+`;
+
+const sharedFieldCSS = `
+  color-scheme: dark;                 /* native kontroller için */
+  background: #0f2740;                /* koyu zemin */
+  color: var(--text);                 /* metin beyaz-mavi */
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+  width: 100%;
+  transition: border-color .2s, box-shadow .2s;
+
+  &::placeholder { color: ${'var(--muted)'}; opacity: .9; }
+  &:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56,189,248,.2); }
+  &:disabled { opacity: .6; cursor: not-allowed; }
+
+  /* Chrome autofill fix */
+  &:-webkit-autofill {
+    -webkit-text-fill-color: var(--text);
+    box-shadow: 0 0 0px 1000px #0f2740 inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+`;
+
+const Input = styled.input`
+  ${sharedFieldCSS}
+`;
+
+const Select = styled.select`
+  ${sharedFieldCSS}
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+                    linear-gradient(135deg, var(--muted) 50%, transparent 50%),
+                    linear-gradient(to right, transparent, transparent);
+  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%, 0 0;
+  background-size: 6px 6px, 6px 6px, 100% 100%;
+  background-repeat: no-repeat;
+
+  option {
+    background: #0f2740;
+    color: var(--text);
+  }
+`;
+
+const PrimaryBtn = styled.button`
+  background: var(--accent);
+  color: #001627;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .05s ease, filter .2s ease;
+
+  &:hover { filter: brightness(1.05); }
+  &:active { transform: translateY(1px); }
+  &:disabled { opacity: .5; cursor: not-allowed; }
+`;
+const Section = styled.section`
+  margin-top: 20px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+`;
+
+const SectionHead = styled.div`
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+  h3 { margin:0; color: var(--text); }
+  .badge {
+    padding: 2px 8px; border-radius: 999px;
+    background: rgba(56,189,248,.12);
+    border: 1px solid rgba(56,189,248,.35);
+    color: var(--accent);
+    font-size: .85rem;
+  }
+`;
+
+const InviteItem = styled.div`
+  display:grid; grid-template-columns: 180px 1fr 140px 80px; gap:12px;
+  align-items:center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: var(--text);
+
+  .email { color: var(--text); }
+  .role .name { color: var(--text); }
+  .status .text { color: var(--muted); }
+  .dot { width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px; }
+  .dot.pending { background:#f59e0b; }
+  .dot.accepted { background:#10b981; }
+  .dot.rejected { background:#ef4444; }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+  }
+`;
+
+const DeleteBtn = styled.button`
+  background: transparent;
+  color: #ffb4b4;
+  border: 1px solid rgba(239,68,68,.35);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover { background: rgba(239,68,68,.12); }
+`;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const RemainingCredits = ({ userId, role }) => {
+const RemainingCredits = ({ userId, role, darkMode }) => {
     const [credits, setCredits] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -37,12 +37,22 @@ const RemainingCredits = ({ userId, role }) => {
     if (!credits) return <p>Kredi bilgisi alınamadı.</p>;
 
     return (
-        <div style={{ padding: '0.1rem', border: '1px solid #ddd', borderRadius: '8px' }}>
+        <div
+            style={{
+                padding: '0.5rem',
+                border: '1px solid',
+                borderColor: darkMode ? '#444' : '#ddd',
+                borderRadius: '8px',
+
+                color: '#ffff'
+            }}
+        >
             <p><strong>Kredi Limiti:</strong> {credits.creditLimit}</p>
             <p><strong>Kullanılan Kredi:</strong> {credits.usedCredits}</p>
             <p><strong>Kalan Kredi:</strong> {credits.remainingCredits}</p>
         </div>
     );
+
 };
 
 export default RemainingCredits;

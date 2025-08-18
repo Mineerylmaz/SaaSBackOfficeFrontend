@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import Swal from 'sweetalert2';
 import { useSearchParams } from "react-router-dom";
 import '../styles/Profile.css';
+
 const Profile = ({ user }) => {
 
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
@@ -272,12 +273,10 @@ const Profile = ({ user }) => {
         {activeTab === 'hesapsilme' && (
           <section>
             <h2>Hesap İşlemleri</h2>
-            <button
-              style={{ backgroundColor: 'red', color: 'white' }}
-              onClick={handleDeleteAccount}
-            >
+            <DangerButton onClick={handleDeleteAccount}>
               Hesabı Sil
-            </button>
+            </DangerButton>
+
           </section>
         )}
 
@@ -285,196 +284,188 @@ const Profile = ({ user }) => {
     </Wrapper>
   );
 };
-const EmptyAvatarLabel = styled.label`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 2px dashed #1e3a5f;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #1e3a5f;
-  font-size: 24px;
-  user-select: none;
-
-  &.active {
-    border-color: #345678;
-    background-color: rgba(30, 58, 95, 0.1);
-  }
-
-  &:hover {
-    background-color: rgba(30, 58, 95, 0.2);
-  }
-`;
 
 
+/* Sayfa layout */
+export const Wrapper = styled.div`
+  --line: rgba(148,163,184,.25);
+  --muted: #64748b;
+  --primary: #0055A4;
+  --primary2: #00AEEF;
+  --bg: #0b1220;
 
-const fadeScale = keyframes`
-  0% { opacity: 0; transform: scale(0.95); }
-  100% { opacity: 1; transform: scale(1); }
-`;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+  padding: 16px;
+  background:
+    radial-gradient(1200px 600px at 20% -20%, #0b2345 0%, #0b1220 40%, #0b1220 100%);
 
-const Wrapper = styled.div`
-  display: flex;
-  height: 100vh;
-  @media (max-width: 768px) {
-    flex-direction: column;
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const Sidebar = styled.nav`
-  position:fixed;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 100vh;
-  background-color: ${({ theme }) => (theme === 'dark' ? '#0d1117' : '#f0f4f8')};
-  padding: 20px 20px 20px 20px;
-  display: flex;
-  flex-direction: column;
-  color: #d1eaff;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  z-index: 1000;
+/* Sol menü */
+export const Sidebar = styled.aside`
+  position: sticky; top: 16px; align-self: start;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  background: ${({ style }) =>
+    style?.backgroundColor ? style.backgroundColor : "rgba(15,23,42,.72)"};
+  backdrop-filter: blur(6px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.25);
 
   .user-card {
+    display: grid; place-items: center; gap: 10px;
+    padding: 10px 8px 14px; margin-bottom: 12px;
+    border-bottom: 1px dashed var(--line);
     text-align: center;
-    margin-bottom: 20px;
-
-    img {
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-    }
-
-    h4, p {
-      margin: 10px 0;
-    }
   }
+
+  .user-card img {
+    width: 88px; height: 88px; border-radius: 999px; object-fit: cover;
+    border: 2px solid rgba(255,255,255,.2);
+    box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  }
+
+  .user-card h4 { margin: 0; color: #fff; font-weight: 900; letter-spacing: .2px; }
+  .user-card p { margin: 0; color: rgba(255,255,255,.8); font-size: 13px; }
+
+  nav { display: grid; gap: 8px; margin-top: 12px; }
 
   nav button {
-    display: block;
-    width: 100%;
-    margin: 8px 0;
-    padding: 10px;
-    background: transparent;
-    border: none;
-    color: inherit;
-    text-align: left;
-    cursor: pointer;
-
-    &:hover {
-      background: ${({ theme }) => (theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)')};
-    }
+    all: unset;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 12px;
+    color: #e5f1ff; font-weight: 800; cursor: pointer;
+    border: 1px solid transparent; transition: .2s ease;
   }
-
-  @media (max-width: 768px) {
-   position: relative;  /* fixed iptal */
-    width: 100%;        /* tam genişlik */
-    height: auto;       /* içeriğe göre yükseklik */
-    padding: 10px;
-    .user-card {
-      img {
-        width: 60px;
-        height: 60px;
-      }
-    }
+  nav button:hover { background: rgba(255,255,255,.06); border-color: var(--line);}
+  nav button.active {
+    background: rgba(0,174,239,.14);
+    border: 1px solid rgba(0,174,239,.4);
+    color: #e2f4ff;
   }
 `;
 
-const Content = styled.div`
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
-  margin-left:250px;
-  @media (max-width: 768px) {
-    margin-left: 0; /* Sidebar yan boşluğu kaldır */
-    padding: 15px 10px;
+/* Sağ içerik alanı */
+export const Content = styled.main`
+  display: grid; gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(15,23,42,.65);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.25);
+
+  /* başlık şeridi (isteğe bağlı) */
+  &:before {
+    content: "Profil";
+    display: inline-block;
+    align-self: start;
+    padding: 6px 10px;
+    margin-bottom: 2px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 900; letter-spacing: .3px;
+    color: #cfefff;
+    background: rgba(0,85,164,.22);
+    border: 1px solid rgba(0,85,164,.35);
+    width: fit-content;
   }
-  section {
-    max-width: 500px;
-    margin: 0 auto;
-    h2 {
-      margin-bottom: 20px;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      input {
-        padding: 10px;
-        font-size: 16px;
-      }
-      button {
-        padding: 10px;
-        background-color: #1e3a5f;
-        color: white;
-        border: none;
-        cursor: pointer;
-        &:hover {
-          background-color: #345678;
-        }
-      }
-    }
-    label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 10px 0;
-    }
-  }
+
+  h2 { margin: 6px 0 8px; color: #e7f5ff; }
 `;
 
-const ProfileCard = styled.section`
-  max-width: 500px;
-  margin: 0 auto;
-  background: ${({ theme }) => theme === 'dark' ? '#222' : '#fff'};
-  color: ${({ theme }) => theme === 'dark' ? '#eee' : '#333'};
-  border-radius: 15px;
-  padding: 30px 40px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  animation: ${fadeScale} 0.4s ease forwards;
-  transition: background 0.3s, color 0.3s;
-  h2 {
-    margin-bottom: 25px;
-    font-weight: 700;
-    letter-spacing: 1.1px;
+/* Profil kartı (bilgi listesi) */
+export const ProfileCard = styled.section`
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(2,6,23,.55);
+  padding: 14px;
+  display: grid; gap: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.1);
+`;
+
+export const InfoRow = styled.div`
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px dashed var(--line);
+
+  &:last-child { border-bottom: none; }
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const InfoRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid ${({ theme }) => theme === 'dark' ? '#444' : '#eee'};
-  font-size: 18px;
+export const Label = styled.span`
+  color: #9fb3c8;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .2px;
 `;
 
-const Label = styled.span`
-  font-weight: 600;
-  color: ${({ theme }) => theme === 'dark' ? '#aaa' : '#555'};
+export const Value = styled.span`
+  color: #e7f5ff;
+  font-weight: 700;
+  word-break: break-word;
 `;
 
-const Value = styled.span`
-  font-weight: 500;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
-`;
+/* Avatar seçim ızgarası */
+export const AvatarGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(96px,1fr));
+  gap: 12px;
+  margin-top: 8px;
 
-const AvatarGrid = styled.div`
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
-    &.active {
-      border-color: #1e3a5f;
-    }
+  img, label {
+    width: 100%; aspect-ratio: 1/1; object-fit: cover;
+    border-radius: 14px; cursor: pointer;
+    border: 2px solid transparent; transition: .2s ease;
+    background: rgba(255,255,255,.06);
+    display: grid; place-items: center; color: #cfefff;
+    box-shadow: 0 6px 18px rgba(0,0,0,.15);
   }
+
+  img:hover, label:hover { transform: translateY(-2px); }
+  img.active { border-color: rgba(0,174,239,.6); box-shadow: 0 0 0 3px rgba(0,174,239,.2); }
+  label.active { border-color: rgba(0,174,239,.6); box-shadow: 0 0 0 3px rgba(0,174,239,.2); }
 `;
+
+/* Boş avatar (upload) */
+export const EmptyAvatarLabel = styled.label`
+  font-size: 34px; font-weight: 900;
+  border: 2px dashed rgba(148,163,184,.4) !important;
+  background: rgba(148,163,184,.08) !important;
+`;
+
+/* Hesap işlemleri alanı */
+export const DangerButton = styled.button`
+  border: 1px solid rgba(239,68,68,.35);
+  background: rgba(239,68,68,.12);
+  color: #fecaca;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: .2s ease;
+  &:hover { background: rgba(239,68,68,.18); }
+`;
+
+/* Küçük yardımcılar */
+export const Section = styled.section`
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(2,6,23,.55);
+  padding: 14px;
+  display: grid; gap: 8px;
+`;
+
+
 
 export default Profile;

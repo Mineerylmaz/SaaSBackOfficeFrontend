@@ -72,19 +72,15 @@ const Register = ({ setUser }) => {
     e.preventDefault();
 
     try {
-
+      // 1) Seçili planı oku
       const selectedPlanStr = localStorage.getItem("selectedPlan");
       let selectedPlan = null;
       if (selectedPlanStr) {
-        try {
-          selectedPlan = JSON.parse(selectedPlanStr);
-        } catch {
-          selectedPlan = null;
-        }
+        try { selectedPlan = JSON.parse(selectedPlanStr); } catch { }
       }
 
-
-      const planToSend = inviteInfo ? selectedPlan : null;
+      // 2) Davet olsa da olmasa da planı gönder (yoksa null)
+      const planToSend = selectedPlan || null;
 
       const bodyData = {
         firstname: formData.firstname,
@@ -96,84 +92,66 @@ const Register = ({ setUser }) => {
         plan: planToSend,
       };
 
-
-
-
       const res = await fetch('http://localhost:32807/api/register/add-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bodyData),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const updatedUser = {
-          ...data.user,
-          plan_start_date: data.user.plan_start_date ? new Date(data.user.plan_start_date).toISOString() : null,
-          plan_end_date: data.user.plan_end_date ? new Date(data.user.plan_end_date).toISOString() : null,
-        };
+      const raw = await res.json();
 
-        setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userId', data.user.id);
+      if (!res.ok) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Kayıt Hatası',
+          text: raw?.error || 'Bilinmeyen hata',
+          confirmButtonColor: '#3085d6',
+        });
+        return;
+      }
 
+      // 3) Response'u normalize et (register eski/yeni veya login formatı)
+      const base = raw.user ? { ...raw.user, token: raw.token } : { ...raw };
 
+      let userForStore = {
+        id: base.id ?? null,
+        email: base.email ?? formData.email,
+        role: base.role ?? 'user',
+        plan: base.plan ?? null,
+        next_plan: base.next_plan ?? null,
+        plan_change_date: base.plan_change_date ?? null,
+        avatar: base.avatar ?? null,
+        plan_start_date: base.plan_start_date ? new Date(base.plan_start_date).toISOString() : null,
+        plan_end_date: base.plan_end_date ? new Date(base.plan_end_date).toISOString() : null,
+        customInputValues: base.customInputValues ?? {},
+        token: base.token, // aşağıda localStorage'a da yazacağız
+      };
 
-
-
-
-
-
-        if (!data.user.plan?.price || !data.user.plan?.max_file_size) {
+      // 4) Plan eksikse zenginleştir (price/max_file_size vs)
+      if (userForStore.plan && (!userForStore.plan.price || !userForStore.plan.max_file_size)) {
+        try {
           const resPlan = await fetch('http://localhost:32807/api/plans');
           if (resPlan.ok) {
             const plans = await resPlan.json();
-
-            if (data.user.plan && data.user.plan.name) {
-              const fullPlan = plans.find(p => p.name === data.user.plan.name);
-              if (fullPlan) {
-                data.user.plan = fullPlan;
-              }
-            } else {
-
-              const defaultPlan = plans.find(p => p.name === 'basic');
-              if (defaultPlan) {
-                data.user.plan = defaultPlan;
-              }
-            }
+            const full = userForStore.plan?.name
+              ? plans.find(p => p.name === userForStore.plan.name)
+              : plans.find(p => p.name === 'null');
+            if (full) userForStore.plan = full;
           }
+        } catch (e) {
+          console.warn('Plan enrich failed:', e);
         }
-
-
-
-
-        setFormData({ firstname: '', lastname: '', email: '', password: '' });
-
-
-        if (!inviteInfo && localStorage.getItem('selectedPlan')) {
-          navigate('/odeme');
-        } else {
-          navigate('/');
-        }
-
-
-
-
-
-
-
-
-
-      } else {
-        const errData = await res.json();
-        Swal.fire({
-          icon: 'error',
-          title: 'Kayıtlı Kullanıcı!',
-          text: 'Zaten Kayıtlısınız!',
-          confirmButtonColor: '#3085d6',
-        });
       }
+
+      // 5) Kaydet → sonra navigate
+      setUser(userForStore);
+      localStorage.setItem('user', JSON.stringify(userForStore));
+      localStorage.setItem('token', userForStore.token || '');
+      localStorage.setItem('userId', String(userForStore.id || ''));
+
+      setFormData({ firstname: '', lastname: '', email: '', password: '' });
+
+      navigate(!inviteInfo && localStorage.getItem('selectedPlan') ? '/odeme' : '/');
 
     } catch (error) {
       console.error('Sunucu hatası:', error);
@@ -272,187 +250,131 @@ const Register = ({ setUser }) => {
 };
 
 const StyledWrapper = styled.div`
-    height: auto;
-    width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #0d1b2a;
+  font-family: "Poppins", sans-serif;
+
+  .card {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    width: 380px;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .card2 {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+  }
 
-    .card {
-      background-image: linear-gradient(163deg, #98b1c8 0%, #3700ff 100%);
-      border-radius: 22px;
-      transition: all .3s;
-      margin: 0 15px;
-    }
+  .title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
 
-    .card2 {
-      border-radius: 0;
-      transition: all .2s;
-    }
+  .flex {
+    display: flex;
+    gap: 10px;
+  }
 
-    .card2:hover {
-      transform: scale(0.98);
-      border-radius: 20px;
-    }
-    .input{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
-      border-radius: 25px;
-      margin:10px;
-      border: none;
-      outline: none;
-      color: white;
-      background-color: #171717;
-      box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
-    }
+  .input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
 
-    .card:hover {
-      box-shadow: 0px 0px 30px 1px rgba(0, 255, 117, 0.30);
-    }
-    .form {
-      display: flex;
-      flex-direction: column;
-      gap: 18px; 
-      max-width: 400px;
-     padding: 30px 20px; 
-      border-radius: 20px;
-      position: relative;
-      background-color: #171717;
-      color: #fff;
-      border: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
-      border-radius: 2px;
-      transition: all .3s;
-      
-    }
+  .input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
 
-    .title {
-      font-size: 28px;
-      font-weight: 600;
-      letter-spacing: -1px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      padding-left: 30px;
-      color: rgb(0, 255, 200);
-    }
+  .input:focus {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+  }
 
-    .title::before {
-      width: 18px;
-      height: 18px;
-    }
+  .submit {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #fff;
+    color: #0d1b2a;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+  }
 
-    .title::after {
-      width: 18px;
-      height: 18px;
-      animation: pulse 1s linear infinite;
-    }
+  .submit:hover {
+    background: #0d1b2a;
+    color: #fff;
+  }
 
-    .title::before,
-    .title::after {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      border-radius: 50%;
-      left: 0px;
-      background-color: #00bfff;
-    }
+  .signin {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
 
-    .message, 
-    .signin {
-      font-size: 14.5px;
-      color: rgba(255, 255, 255, 0.7);
-    }
+  .signin a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
 
-    .signin {
-      text-align: center;
-    }
+  .signin a:hover {
+    color: #ffd5b5;
+  }
 
-    .signin a:hover {
-      text-decoration: underline royalblue;
-    }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+    /* mevcut StyledWrapper içine ekle/güncelle */
+.card2 .form { 
+  width: 100%;
+  display: grid;
+  gap: 12px;
+}
 
-    .signin a {
-      color: #00bfff;
-    }
+.card2 .form label {
+  display: block;        /* kritik: label artık tam satır */
+  width: 100%;
+}
 
-    .flex {
-      display: flex;
-      width: 100%;
-      gap: 66px; 
-    }
-      
-    .flex label {
-      flex: 1;  
-    }
+.flex {
+  display: grid;         /* ad/soyad yan yana */
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
-    .form label {
-      position: relative;
-    }
+/* küçük ekranda alta düşsün */
+@media (max-width: 480px) {
+  .flex { grid-template-columns: 1fr; }
+}
 
-    .form label .input {
-      background-color: #333;
-      color: #fff;
-      width: 100%;
-      padding: 25px 0px 10px 2px;
-      font-size: 16px; 
-      outline: 0;
-      border: 1px solid rgba(105, 105, 105, 0.397);
-      border-radius: 12px; 
-      width:100%;
-    }
+/* input zaten width:100%; kalsın */
+.input {
+  width: 100%;
+}
 
-    .form label .input + span {
-      color: rgba(255, 255, 255, 0.5);
-      position: absolute;
-      left: 10px;
-      top: 0px;
-      font-size: 0.9em;
-      cursor: text;
-      transition: 0.3s ease;
-    }
+`;
 
-    .form label .input:placeholder-shown + span {
-      top: 12.5px;
-      font-size: 0.9em;
-    }
-
-    .form label .input:focus + span,
-    .form label .input:valid + span {
-      color: #00bfff;
-      top: 0px;
-      font-weight: 600;
-    }
-
-    .submit {
-      border: none;
-      outline: none;
-      padding: 14px;
-      border-radius: 12px;
-      color: #fff;
-      font-size: 18px;
-      transition: .3s ease;
-      background-image: linear-gradient(163deg, #446d92 0%, #13034b 100%);
-      cursor: pointer;
-    }
-
-    .submit:hover {
-      background-image: linear-gradient(163deg, #98b1c8 0%, #3700ff 100%);
-      color: rgb(0, 255, 200);
-    }
-
-    @keyframes pulse {
-      from {
-        transform: scale(0.9);
-        opacity: 1;
-      }
-      to {
-        transform: scale(1.8);
-        opacity: 0;
-      }
-    }
-  `;
 
 export default Register;
