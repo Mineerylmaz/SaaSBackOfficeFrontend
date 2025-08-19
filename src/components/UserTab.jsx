@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Swal from "sweetalert2";
 import styled from 'styled-components';
 import { Button as MuiButton, Box } from '@mui/material';
 
 const UserTab = () => {
+  const user = useMemo(() => JSON.parse(localStorage.getItem("user")), []);
+
   const [selectedUser, setSelectedUser] = useState(() => {
     return JSON.parse(localStorage.getItem("selectedUser"));
   });
@@ -16,7 +18,7 @@ const UserTab = () => {
     window.addEventListener("storage", onStorageChange);
     return () => window.removeEventListener("storage", onStorageChange);
   }, []);
-  const user = JSON.parse(localStorage.getItem("user"));
+
   const isSuperAdmin = user?.role === "superadmin";
   const [currentUserId, setCurrentUserId] = useState(
     user?.role !== "viewer" ? (isSuperAdmin && selectedUser ? selectedUser.id : user?.id) : null
@@ -70,25 +72,50 @@ const UserTab = () => {
       })
       .catch(err => console.error("Kullanıcı değerleri çekilemedi:", err));
   }, [currentUserId]);
+
+
   useEffect(() => {
     if (!currentUserId) return; // null ise fetch’i iptal et
-
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:32807/api/userSettings/full-keys/${currentUserId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => {
-        const keysWithValues = data.map(k => ({
+    const fetchKeys = async () => {
+      try {
+        const resSettings = await fetch(
+          `http://localhost:32807/api/userSettings/settings/${currentUserId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const dataSettings = await resSettings.json();
+        const customInputs = dataSettings.customInputs || {};
+
+        const resKeys = await fetch(
+          `http://localhost:32807/api/userSettings/full-keys/${currentUserId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const baseKeys = await resKeys.json();
+
+        const keysWithValues = baseKeys.map(k => ({
           ...k,
-          value: values[k.key_name] || "",
+          value: customInputs[k.key_name] || "",
           displayName: toDisplayName(k.key_name)
         }));
-        setKeys(keysWithValues);
-      })
-      .catch(err => console.error("Keys çekilemedi:", err));
-  }, [currentUserId, values]);
+
+        // sadece değişmişse setKeys
+        setKeys(prev => {
+          if (JSON.stringify(prev) !== JSON.stringify(keysWithValues)) {
+            return keysWithValues;
+          }
+          return prev;
+        });
+
+        setValues(customInputs); // değerleri sadece bir kez set et
+      } catch (err) {
+        console.error("Veri çekme hatası:", err);
+      }
+    };
+
+    fetchKeys();
+  }, [currentUserId]);
+
   useEffect(() => {
     if (!user) return;
     const token = localStorage.getItem("token");
@@ -106,55 +133,28 @@ const UserTab = () => {
     fetch(fetchUrl, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
-
         const inviterId = data.id || user.id;
-        setCurrentUserId(inviterId);
 
+        // currentUserId sadece değişmişse set ediliyor
+        setCurrentUserId(prevId => (prevId !== inviterId ? inviterId : prevId));
 
-        if (data.customInputs) setValues(data.customInputs);
+        // values sadece değişmişse set ediliyor
+        if (data.customInputs) {
+          setValues(prevValues => {
+            const newValues = data.customInputs;
+            // JSON.stringify ile derin karşılaştırma
+            return JSON.stringify(prevValues) !== JSON.stringify(newValues) ? newValues : prevValues;
+          });
+        }
       })
       .catch(err => console.error("Viewer davet eden ID veya ayar çekilemedi:", err));
-  }, [user, selectedUser]);
+
+  }, [user, selectedUser?.id, isSuperAdmin]); // sadece selectedUser.id değişirse tetiklenir
 
 
-  const TooltipWrapper = styled.div`
-        position: relative;
-        display: inline-block;
-        cursor: help;
-    `;
-  const TooltipText = styled.div`
-        visibility: hidden;
-        background-color: #0055A4; 
-        color: white;
-        text-align: left;
-        border-radius: 6px;
-        padding: 8px 12px;
-        position: absolute;
-        z-index: 100;
-        bottom: 125%;
-        left: 50%;
-        transform: translateX(-50%);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        min-width: 180px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        &::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -6px;
-            border-width: 6px;
-            border-style: solid;
-            border-color: #0055A4 transparent transparent transparent;
-        }
-    `;
-  const TooltipContainer = styled(TooltipWrapper)`
-        &:hover ${TooltipText} {
-            visibility: visible;
-            opacity: 1;
-        }
-    `;
+
+
+
   function toDisplayName(key_name) {
     return key_name
       .replace(/_/g, ' ')
@@ -432,6 +432,49 @@ const UserTab = () => {
   );
 
 };
+const TooltipWrapper = styled.div`
+        position: relative;
+        display: inline-block;
+        cursor: help;
+    `;
+
+const TooltipText = styled.div`
+  background-color: #0055A4;
+  color: white;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px 12px;
+  position: absolute;
+  z-index: 100;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-80%) translateY(2px); /* daha küçük kayma */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  min-width: 180px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #0055A4 transparent transparent transparent;
+  }
+`;
+
+const TooltipContainer = styled(TooltipWrapper)`
+  &:hover ${TooltipText} {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0); /* yukarı kayma */
+    pointer-events: auto;
+  }
+`;
+
 
 const CardGrid = styled.div`
   display: grid;
@@ -671,7 +714,7 @@ const SectionHeader = styled.div`
   }
 `;
 
-/* Masaüstünde tablo düzeni, mobilde kart/stak düzeni */
+
 const Rows = styled.div`
   display: grid;
   gap: 8px;
@@ -726,52 +769,7 @@ const Cell = styled.div`
   }
 `;
 
-const TooltipWrapper = styled.div`
-  position: relative;
-  display: inline-block;
-  cursor: help;
-  max-width: 100%;
-`;
-const TooltipText = styled.div`
-  visibility: hidden;
-  background-color: #0055A4; 
-  color: white;
-  text-align: left;
-  border-radius: 8px;
-  padding: 8px 12px;
-  position: absolute;
-  z-index: 100;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  min-width: 180px;
-  max-width: min(320px, 80vw);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  word-wrap: break-word;
 
-  &::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -6px;
-    border-width: 6px;
-    border-style: solid;
-    border-color: #0055A4 transparent transparent transparent;
-  }
-
-  @media (max-width: 480px){
-    left: 50%;
-    transform: translateX(-50%);
-  }
-`;
-const TooltipContainer = styled(TooltipWrapper)`
-  &:hover ${TooltipText} { visibility: visible; opacity: 1; }
-`;
-
-/* Boş durum */
 const EmptyState = styled.div`
   border: 1px dashed rgba(0,0,0,0.15);
   border-radius: 12px;

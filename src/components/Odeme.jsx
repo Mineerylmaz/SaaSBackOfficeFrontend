@@ -104,6 +104,7 @@ const Odeme = () => {
     const userStr = localStorage.getItem('user');
     if (!userStr) return;
 
+
     const user = JSON.parse(userStr);
     const currentPlan = user.plan?.name || (user.plan === null ? 'none' : user.plan);
 
@@ -119,8 +120,9 @@ const Odeme = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ newPlan }),
+        body: JSON.stringify({ newPlan: plan.name }),
       });
+
 
       const data = await response.json();
 
@@ -141,6 +143,7 @@ const Odeme = () => {
 
         user.plan = plan;
         localStorage.setItem('user', JSON.stringify(user));
+
 
 
       } else if (data.message.includes('sonraki ay')) {
@@ -181,7 +184,7 @@ const Odeme = () => {
                 <h2 className='cards__heading'>Seçilen Plan: {plan.name}</h2>
                 <p className='cards__price'>Fiyat: ${plan.price}</p>
 
-               
+
                 <div className="order">
                   <div className="row">
                     <span>Ürün Bedeli</span>

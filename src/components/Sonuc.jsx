@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { jwtDecode } from "jwt-decode";
 import styled from 'styled-components';
 import RemainingCredits from './RemainingCredits';
+import { FiCopy, FiTerminal, FiSearch } from "react-icons/fi"; // Feather icons
 import {
     Box,
     Card,
@@ -452,10 +453,10 @@ function Sonuc() {
                         color: darkMode ? "#fff" : "#333",
                     }}
                 >
-                    <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: darkMode ? '#fff' : '#333' }}>
+                    <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'white' }}>
                         Bu sayfa için gerekli ayarlar yapılmamış!
                     </h2>
-                    <p style={{ fontSize: '1.1rem', marginBottom: '2rem', maxWidth: '500px', color: darkMode ? '#ccc' : '#666' }}>
+                    <p style={{ fontSize: '1.1rem', marginBottom: '2rem', maxWidth: '500px', color: 'white' }}>
                         Devam edebilmek için önce gerekli ayarları tamamlamalısınız.
                     </p>
                     <button
@@ -557,7 +558,7 @@ function Sonuc() {
                                         className="ghost"
                                         onClick={() => handleCopy(getFullUrl(methods[openIndex ?? 0]))}
                                     >
-                                        📎 Kopyala
+                                        <FiCopy style={{ marginRight: "6px" }} /> Kopyala
                                     </button>
                                     <button
                                         className="ghost"
@@ -567,13 +568,13 @@ function Sonuc() {
                                             )
                                         }
                                     >
-                                        💻 cURL
+                                        <FiTerminal style={{ marginRight: "6px" }} /> cURL
                                     </button>
                                     <button
                                         className="primary"
                                         onClick={() => handleQuery(methods[openIndex ?? 0])}
                                     >
-                                        🔍 Sorgula
+                                        <FiSearch style={{ marginRight: "6px" }} /> Sorgula
                                     </button>
                                 </div>
                             </UrlBar>
@@ -663,7 +664,7 @@ const StudioWrapper = styled.div`
 const TopBar = styled.div`
   position: sticky; top: 8px; z-index: 10;
   display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; /* 👈 küçük ekranda satır kırmaya izin ver */
+  flex-wrap: wrap; 
   gap: 8px;
   background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(15,23,42,.75));
   border: 1px solid var(--line);
@@ -783,7 +784,44 @@ const UrlBar = styled.div`
     gap: 8px; 
     flex-wrap: wrap; 
     justify-content: flex-end;
+    
   }
+  
+
+.actions .ghost {
+    background-color: rgba(255, 255, 255, 0.2); /* Hafif şeffaf beyaz */
+    color: #fff;/* Üstteki arka planla kontrast */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    backdrop-filter: blur(5px); /* Şeffaflık altında hafif bulanıklık */
+}
+
+.actions .ghost:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
+}
+
+.actions .primary {
+   background-color: rgba(255, 255, 255, 0.2); /* Modern degrade renk */
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.actions .primary:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px); /* Hafif yükselme efekti */
+}
+
 
   button {
     border: 1px solid var(--line); 

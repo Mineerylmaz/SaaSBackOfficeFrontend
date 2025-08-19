@@ -194,6 +194,39 @@ export default function Roller() {
     }, []);
 
     const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+    const handleReject = async (inviteToken) => {
+        try {
+            const res = await fetch("http://localhost:32807/api/invites/reject", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: inviteToken })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || "Davet reddedilemedi");
+            }
+            setInvites(prev =>
+                prev.map(inv =>
+                    inv.id === inviteToken ? { ...inv, status: "rejected" } : inv
+                )
+            );
+
+            Swal.fire({
+                icon: "info",
+                title: "Davet reddedildi",
+                text: "Bu davete katılmadınız."
+            });
+        } catch (err) {
+            console.error(err);
+            Swal.fire({
+                icon: "error",
+                title: "Hata!",
+                text: err.message
+            });
+        }
+    };
+
 
     const handleInvite = async () => {
         if (isSuperAdmin && selectedUser) {
@@ -209,16 +242,36 @@ export default function Roller() {
             return Swal.fire({ icon: "error", title: "Hata!", text: "Email ve rol seçiniz!", confirmButtonColor: "#d33" });
         }
 
+        const alreadyInvited = invites.some(
+            i => i.email.toLowerCase() === inviteEmail.toLowerCase() &&
+                ["pending", "accepted", "rejected"].includes(i.status)
+        );
+
+        if (alreadyInvited) {
+            return Swal.fire({
+                icon: "info",
+                title: "Davet Gönderilemez",
+                text: "Bu kullanıcıya daha önce davet gönderilmiş.",
+                confirmButtonColor: "#d33"
+            });
+        }
+
         if (!validateEmail(inviteEmail)) {
             return Swal.fire({ icon: "error", title: "Geçersiz Email!", text: "Lütfen geçerli bir email adresi giriniz!", confirmButtonColor: "#d33" });
         }
 
         const planLimit = userPlanRoles.find(r => r.role === inviteRole)?.count || 0;
-        const currentCount = invites.filter(i => i.role === inviteRole).length;
+        const currentCount = invites.filter(i => i.role === inviteRole && i.status === "accepted").length;
+
 
 
         if (currentCount >= planLimit) {
-            return Swal.fire({ icon: "error", title: "Limit Aşıldı!", text: `Bu plana göre maksimum ${planLimit} ${inviteRole} davet edebilirsin!`, confirmButtonColor: "#d33" });
+            return Swal.fire({
+                icon: "error",
+                title: "Limit Aşıldı!",
+                text: `Bu plana göre maksimum ${planLimit} ${inviteRole} davet edebilirsin!`,
+                confirmButtonColor: "#d33"
+            });
         }
 
         try {
@@ -253,7 +306,34 @@ export default function Roller() {
             setInvites(updatedInvites);
             localStorage.setItem(`invites-${userEmail}`, JSON.stringify(updatedInvites));
 
-            Swal.fire({ icon: "success", title: "Davet Linki Oluşturuldu", html: `Davet linki: <a href="${inviteLink}" target="_blank">${inviteLink}</a>` });
+            Swal.fire({
+                icon: "success",
+                title: "Davet Linki Oluşturuldu",
+                html: `
+    <p>Davet linki: <a href="${inviteLink}" target="_blank">${inviteLink}</a></p>
+    <button id="rejectBtn" style="
+      margin-top: 10px;
+      padding: 5px 15px;
+      background-color: #d33;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    ">Reddet</button>
+  `,
+                showConfirmButton: true,
+                didOpen: () => {
+                    const rejectBtn = document.getElementById("rejectBtn");
+                    if (rejectBtn) {
+                        rejectBtn.addEventListener("click", () => {
+                            handleReject(newInvite.id); // doğru token gönderiliyor
+                            Swal.close();
+                        });
+                    }
+                }
+            });
+
+
             setInviteEmail("");
             setInviteRole("");
 
@@ -262,12 +342,36 @@ export default function Roller() {
             Swal.fire({ icon: "error", title: "Hata!", text: error.message, confirmButtonColor: "#d33" });
         }
     };
+    useEffect(() => {
+        const fetchInvites = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const res = await fetch("http://localhost:32807/api/invites/", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                if (!res.ok) throw new Error("Davetler getirilemedi");
+                const data = await res.json();
+                setInvites(data);
+
+
+                localStorage.setItem(`invites-${userEmail}`, JSON.stringify(data));
+            } catch (err) {
+                console.error("Davetiye fetch hatası:", err);
+            }
+        };
+
+        fetchInvites();
+    }, [userEmail]);
 
     const groupedInvites = invites.reduce((acc, curr) => {
         if (!acc[curr.role]) acc[curr.role] = [];
         acc[curr.role].push(curr);
         return acc;
     }, {});
+
+
 
     const roleIcons = { viewer: "👁️", editor: "✏️", admin: "🛡️" };
     const roleColors = { viewer: darkMode ? "#1a1a1a" : "#E0F7FA", editor: darkMode ? "#2a1a00" : "#FFF3E0", admin: darkMode ? "#142a14" : "#E8F5E9" };
@@ -334,8 +438,14 @@ export default function Roller() {
                         <QuotaEmpty>Bu plan için rol kotası tanımlı değil.</QuotaEmpty>
                     ) : (
                         userPlanRoles.map((r) => {
-                            const currentCount = invites.filter((i) => i.role === r.role).length;
-                            const left = Math.max((r.count || 0) - currentCount, 0);
+
+                            const acceptedCount = invites.filter(
+                                (i) => i.role === r.role && i.status === "accepted"
+                            ).length;
+
+                            const totalLimit = r.count || 0;
+                            const left = Math.max(totalLimit - acceptedCount, 0);
+
                             return (
                                 <QuotaPill key={r.role}>
                                     <span className="name">{r.role}</span>
@@ -343,12 +453,15 @@ export default function Roller() {
                                         <span
                                             className="fill"
                                             style={{
-                                                width: `${Math.min(100, (currentCount / Math.max(r.count || 1, 1)) * 100)}%`,
+                                                width: `${Math.min(
+                                                    100,
+                                                    (acceptedCount / Math.max(totalLimit, 1)) * 100
+                                                )}%`,
                                             }}
                                         />
                                     </span>
                                     <span className="count">
-                                        {currentCount}/{r.count || 0}
+                                        {acceptedCount}/{totalLimit}
                                     </span>
                                     {left === 0 && <span className="limit">Limit dolu</span>}
                                 </QuotaPill>
@@ -356,6 +469,7 @@ export default function Roller() {
                         })
                     )}
                 </QuotaRow>
+
             </InviteCard>
 
             {/* Davet listesi */}
@@ -377,12 +491,38 @@ export default function Roller() {
                                 </div>
 
                                 <div className="email">{invite.email}</div>
+                                <div className="status">{invite.status}</div>
 
 
 
                                 <div className="actions">
-                                    <DeleteBtn onClick={() => handleSil(invite.email)}>Sil</DeleteBtn>
+                                    <DeleteBtn
+                                        onClick={() => handleSil(invite.email)}
+                                        disabled={invite.status === "rejected"}
+                                        style={{
+                                            backgroundColor: invite.status === "rejected" ? "#ccc" : "#f44336", // gri veya kırmızı
+                                            color: invite.status === "rejected" ? "#666" : "#fff",
+                                            cursor: invite.status === "rejected" ? "not-allowed" : "pointer",
+                                            borderRadius: "6px",
+                                            padding: "6px 12px",
+                                            border: "none",
+                                            fontWeight: "500",
+                                            transition: "all 0.2s ease",
+                                            opacity: invite.status === "rejected" ? 0.7 : 1,
+                                            boxShadow: invite.status === "rejected" ? "none" : "0 2px 6px rgba(0,0,0,0.2)"
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (invite.status !== "rejected") e.target.style.backgroundColor = "#d32f2f";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (invite.status !== "rejected") e.target.style.backgroundColor = "#f44336";
+                                        }}
+                                    >
+                                        Sil
+                                    </DeleteBtn>
+
                                 </div>
+
                             </InviteItem>
                         ))}
                     </InviteList>
@@ -571,7 +711,7 @@ const SectionHead = styled.div`
 `;
 
 const InviteItem = styled.div`
-  display:grid; grid-template-columns: 180px 1fr 140px 80px; gap:12px;
+  display:grid; grid-template-columns: 380px 1.5fr 0.5fr 100px; gap:12px;
   align-items:center;
   padding: 10px 12px;
   border-radius: 10px;
