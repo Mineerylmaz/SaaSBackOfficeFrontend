@@ -1,4 +1,4 @@
-🌐 SaaS BackOffice Frontend
+ SaaS BackOffice Frontend
 Bu proje, bir SaaS (Software as a Service) uygulamasının BackOffice arayüzü için geliştirilmiş modern, ölçeklenebilir ve kullanıcı dostu bir React tabanlı frontend uygulamasıdır. Kullanıcılar kayıt olabilir, giriş yapabilir, kendilerine özel abonelik planlarını görüntüleyebilir ve ödeme işlemlerini gerçekleştirebilir.
 # İçindekiler
 - [Proje Hakkında](#proje-hakkında)
@@ -13,35 +13,38 @@ Bu proje, bir SaaS (Software as a Service) uygulamasının BackOffice arayüzü 
 Bu frontend projesi, SaaS uygulamasının kullanıcı panelini temsil eder. Kullanıcıların sisteme davetle kayıt olma, giriş yapma, abonelik planlarını görme, ödeme işlemleri yapma ve profil ayarlarını yönetme gibi işlemleri gerçekleştirmesine olanak tanır. Uygulama responsive (mobil uyumlu) olarak geliştirilmiştir ve karanlık / aydınlık tema desteği içerir.
 
 ##  Özellikler
-✅ Kullanıcı kayıt & giriş işlemleri (invite token desteği)
+˖⁺‧₊˖ Kullanıcı kayıt & giriş işlemleri (invite token desteği)
 
-✅ JWT token ile oturum yönetimi
+˖⁺‧₊˖ JWT token ile oturum yönetimi
 
-✅ Kullanıcı rollerine göre yönlendirme
+˖⁺‧₊˖ Kullanıcı rollerine göre yönlendirme
 
-✅ Abonelik planlarını listeleme ve satın alma
+˖⁺‧₊˖ Abonelik planlarını listeleme ve satın alma
 
-✅ Ödeme adımı ve yönlendirme
+˖⁺‧₊˖ Ödeme adımı ve yönlendirme
 
-✅ Profil sayfası ve tema ayarları (dark/light)
+˖⁺‧₊˖ Profil sayfası ve tema ayarları (dark/light)
 
-✅ Responsive ve mobil uyumlu tasarım
+˖⁺‧₊˖ Responsive ve mobil uyumlu tasarım
 
-✅ React Router ile sayfa bazlı yönlendirme
+˖⁺‧₊˖ React Router ile sayfa bazlı yönlendirme
 
-✅ SweetAlert2 ile kullanıcı dostu geri bildirimler
+˖⁺‧₊˖ SweetAlert2 ile kullanıcı dostu geri bildirimler
 
-✅ LocalStorage üzerinde kullanıcı bilgileri ve token saklama
+˖⁺‧₊˖ LocalStorage üzerinde kullanıcı bilgileri ve token saklama
 
-✅ Gelişmiş loading, error, fetch yönetimi
+˖⁺‧₊˖ Gelişmiş loading, error, fetch yönetimi
 
 ##   Teknolojiler
 
-
+![SaaS](https://img.shields.io/badge/Sass-CC6699?style=flat&logo=sass&logoColor=white)
 ![React](https://img.shields.io/badge/React-FFB6C1?style=flat&logo=react&logoColor=black)
 ![JavaScript](https://img.shields.io/badge/JavaScript-FEC8D8?style=flat&logo=javascript&logoColor=black)
 ![Styled Components](https://img.shields.io/badge/Styled--Components-FADADD?style=flat&logo=styled-components&logoColor=black)
 ![SweetAlert2](https://img.shields.io/badge/SweetAlert2-F8C3CD?style=flat&logo=sweetalert2&logoColor=black)
+![Css](https://img.shields.io/badge/CSS-FFB6C1?&style=flat&logo=css3&logoColor=white)
+![Bootsrtap](https://img.shields.io/badge/Bootstrap-FFB6C1?style=flat&logo=bootstrap&logoColor=white)
+![React_Router](https://img.shields.io/badge/React_Router-FFB6C1?style=flat&logo=react-router&logoColor=white)
 
 
 
@@ -63,7 +66,7 @@ https://github.com/Mineerylmaz/SaaS-BackOffice-Backend
 
 Bağımlılıkları yükleyin:
 npm install
-▶️ Projeyi Çalıştırma
+ ▶  Projeyi Çalıştırma
 Geliştirme modunda çalıştırmak için:
 
 
