@@ -63,7 +63,7 @@ const Pricing = () => {
                   <li key={i}>{feature}</li>
                 ))}
 
-                {/* Limit key-value çiftlerini döndür */}
+
                 {plan.plan_limit && Object.entries(plan.plan_limit).map(([key, value]) => (
                   <li key={key}>
                     {key}: {value}

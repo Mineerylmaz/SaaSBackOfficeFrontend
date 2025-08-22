@@ -389,7 +389,7 @@ const UserTab = () => {
 
                 <Rows>
                   {groupKeys.map((k) => (
-                    <Row key={k.key_name}>
+                    <Row style={{ color: 'white' }} key={k.key_name}>
                       <Cell className="left">
                         <TooltipContainer>
                           <span className="name">
@@ -719,6 +719,7 @@ const Rows = styled.div`
   display: grid;
   gap: 8px;
   padding: 8px;
+  
 `;
 
 const Row = styled.div`

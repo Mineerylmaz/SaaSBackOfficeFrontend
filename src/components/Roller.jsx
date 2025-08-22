@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { color } from "@chakra-ui/react";
+import { FiEye, FiEdit, FiShield } from "react-icons/fi";
 const Silbuton = ({ onClick }) => (
     <button
         onClick={onClick}
@@ -346,24 +347,41 @@ export default function Roller() {
         const fetchInvites = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await fetch("http://localhost:32807/api/invites/", {
+
+                let url;
+                if (isSuperAdmin && selectedUser) {
+                    // superadmin ise, seçilen kullanıcının davetlerini getir
+                    url = `http://localhost:32807/api/invites/by-inviter/${encodeURIComponent(selectedUser.email)}`;
+                } else {
+                    // normal kullanıcı kendi davetlerini görsün
+                    url = "http://localhost:32807/api/invites/";
+                }
+
+                const res = await fetch(url, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
                 });
+
                 if (!res.ok) throw new Error("Davetler getirilemedi");
+
                 const data = await res.json();
                 setInvites(data);
 
+                // cache de superadmin için farklı key ile tutulmalı
+                const cacheKey = isSuperAdmin && selectedUser
+                    ? `invites-${selectedUser.email}`
+                    : `invites-${userEmail}`;
 
-                localStorage.setItem(`invites-${userEmail}`, JSON.stringify(data));
+                localStorage.setItem(cacheKey, JSON.stringify(data));
             } catch (err) {
                 console.error("Davetiye fetch hatası:", err);
             }
         };
 
         fetchInvites();
-    }, [userEmail]);
+    }, [userEmail, isSuperAdmin, selectedUser]);
+
 
     const groupedInvites = invites.reduce((acc, curr) => {
         if (!acc[curr.role]) acc[curr.role] = [];
@@ -372,8 +390,11 @@ export default function Roller() {
     }, {});
 
 
-
-    const roleIcons = { viewer: "👁️", editor: "✏️", admin: "🛡️" };
+    const roleIcons = {
+        viewer: <FiEye />,
+        editor: <FiEdit />,
+        admin: <FiShield />
+    };
     const roleColors = { viewer: darkMode ? "#1a1a1a" : "#E0F7FA", editor: darkMode ? "#2a1a00" : "#FFF3E0", admin: darkMode ? "#142a14" : "#E8F5E9" };
 
     return (
